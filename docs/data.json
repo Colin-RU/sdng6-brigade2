@@ -9,7 +9,8 @@
     "pdfUrl": "https://drive.google.com/file/d/1lMgTI1lg4Eoko-m60AsgT0I173Yk14Yg/view",
     "sourceModifiedAt": "2026-10-21",
     "importedAt": "2026-11-12",
-    "classification": "Типы извлечены из заливки ячеек DOCX и проверены по легенде PDF. Золотой — добывающая (ЭЦН), красный номер со звёздочкой — фонтан; зелёный — ППД; синий — пьезометрическая; жёлтый — законсервирована; чёрный — ликвидирована; белый — не указан."
+    "classification": "Типы извлечены из заливки ячеек DOCX и проверены по легенде PDF. Золотой — добывающая (ЭЦН), красный номер со звёздочкой — фонтан; зелёный — ППД; синий — пьезометрическая; жёлтый — законсервирована; чёрный — ликвидирована; белый — не указан.",
+    "updatedAt": "2026-11-12"
   },
   "pads": [
     {
@@ -261,19 +262,19 @@
           "group": 1
         },
         {
-          "id": "2655",
-          "type": "production",
-          "method": "esp",
-          "sourceColor": "#BF8F00",
-          "sourceOrder": 17,
-          "group": 2
-        },
-        {
           "id": "2656",
           "type": "abandoned",
           "method": "unknown",
           "sourceColor": "#262626",
           "sourceOrder": 18,
+          "group": 2
+        },
+        {
+          "id": "2655",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 17,
           "group": 2
         },
         {
@@ -316,7 +317,20 @@
           "sourceOrder": 23,
           "group": 2
         }
-      ]
+      ],
+      "layoutCorrectedAt": "2026-11-12",
+      "layoutCorrection": {
+        "before": [
+          "2655",
+          "2656"
+        ],
+        "after": [
+          "2656",
+          "2655"
+        ],
+        "typesChanged": false,
+        "source": "operator-confirmed"
+      }
     },
     {
       "id": "163Б",
@@ -3148,7 +3162,14 @@
           "sourceOrder": 14,
           "group": 2
         }
-      ]
+      ],
+      "status": {
+        "code": "drilling",
+        "label": "В бурении",
+        "confirmedAt": "2026-11-12",
+        "source": "operator-confirmed"
+      },
+      "registryNote": "Куст в бурении. В реестре указаны известные скважины; состав пополняется."
     },
     {
       "id": "1131",
@@ -4066,7 +4087,14 @@
           "sourceOrder": 19,
           "group": 1
         }
-      ]
+      ],
+      "status": {
+        "code": "drilling",
+        "label": "В бурении",
+        "confirmedAt": "2026-11-12",
+        "source": "operator-confirmed"
+      },
+      "registryNote": "Куст в бурении. В реестре указаны известные скважины; состав пополняется."
     },
     {
       "id": "ОД",

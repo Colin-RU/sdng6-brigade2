@@ -258,7 +258,7 @@ public final class MainActivity extends Activity implements LocationListener {
         }
     }
     @Override public void onBackPressed() {
-        if (trustedPage()) webView.evaluateJavascript("(()=>{const m=document.querySelector('#modal');if(m&&m.open){m.close();return true}const d=document.querySelector('#drawer');if(d&&!d.classList.contains('hidden')&&typeof closeDrawer==='function'){closeDrawer();return true}return false})()", handled -> { if (!"true".equals(handled)) finish(); });
+        if (trustedPage()) webView.evaluateJavascript("(()=>{const m=document.querySelector('#modal');if(m&&m.open){m.close();return true}const d=document.querySelector('#drawer');if(d&&!d.classList.contains('hidden')&&typeof closeDrawer==='function'){closeDrawer();return true}if(document.documentElement.classList.contains('map-expanded')){document.querySelector('[data-map-expand]')?.click();return true}return false})()", handled -> { if (!"true".equals(handled)) finish(); });
         else super.onBackPressed();
     }
 }

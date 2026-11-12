@@ -22,6 +22,7 @@ window.OfflineNavigator=(()=>{
       geoMarkers=L.markerClusterGroup({maxClusterRadius:36,disableClusteringAtZoom:15,showCoverageOnHover:false,spiderfyOnMaxZoom:true,iconCreateFunction:c=>L.divIcon({className:'atlas-cluster',html:`<div>${c.getChildCount()}<small>КУСТОВ</small></div>`,iconSize:[42,42]})}).addTo(geoMap);
       geoMap.on('click',e=>{if(geoPickingTarget){confirmMapCoordinate(e.latlng);return;}showPointPopup(e.latlng);});
     }
+    if(!geoWellMarkers)geoWellMarkers=L.layerGroup().addTo(geoMap);
     renderGeoMarkers();
     load().then(()=>{
       if(!vectorLayer){

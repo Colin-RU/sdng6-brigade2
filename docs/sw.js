@@ -1,7 +1,7 @@
 'use strict';
 
 // Bump this value with every release that changes the app shell or its data.
-const VERSION = '2026-11-12-v6';
+const VERSION = '2026-11-12-v7';
 const CACHE_PREFIX = 'sdng6-brigade2-';
 const CACHE_NAME = CACHE_PREFIX + VERSION;
 const APP_MARKER = '<meta name="sdng6-app-shell" content="brigade-2">';
@@ -16,6 +16,8 @@ const ASSETS = [
   ['local-router.js', 'js', true],
   ['local-navigation.css', 'css', true],
   ['logo-mask.css', 'css', true],
+  ['feedback.css', 'css', true],
+  ['map-view.js', 'js', true],
   ['geo-roads.json', 'json', true],
   ['geo-network.json', 'json', true],
   ['scheme-network.json', 'json', true],

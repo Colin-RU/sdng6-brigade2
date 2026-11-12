@@ -1,0 +1,108 @@
+/* The same six status colours are used by cells, strips, charts and legends. */
+html[data-theme]{--production:#ef8a3e;--injection:#157a60;--piezometric:#216fb6;--conserved:#f5d84c;--abandoned:#667686;--unknown:#d8dde4}
+.atlas-donut .atlas-donut-svg{width:100%;height:auto}
+.pad-pin.od{font-size:11px}
+html[data-theme] .well-cell{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  min-height:61px;padding:11px 4px 9px;border:1px solid #00000024;border-left-width:1px;
+  background:var(--c);color:var(--well-ink);box-shadow:inset 0 1px 0 #ffffff1a;
+}
+html[data-theme] .well-cell .well-number{font-size:14px;font-weight:750;line-height:1.1;font-variant-numeric:tabular-nums}
+html[data-theme] .well-cell small{margin:0;color:inherit;font-size:9px;font-weight:650;line-height:1.2;letter-spacing:.01em}
+html[data-theme] .well-cell:hover,html[data-theme] .well-cell.selected{
+  background:var(--c);color:var(--well-ink);border-color:var(--well-ink);
+  box-shadow:inset 0 0 0 1px var(--well-ink),0 3px 10px #0a27311a;
+}
+html[data-theme] .well-cell.selected{outline:2px solid var(--ink);outline-offset:2px}
+html[data-theme] .well-cell:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+html[data-theme] .well-cell[data-well-type="unknown"]{border:1px dashed #5d6a77}
+html[data-theme] .well-cell.noted:after{width:6px;height:6px;right:4px;top:4px;background:var(--well-ink);box-shadow:0 0 0 1px var(--c)}
+html[data-theme] .well-cell.fav:before{left:4px;top:2px;color:var(--well-ink);font-size:9px;line-height:1}
+html[data-theme="dark"] .well-cell{border-color:#ffffff2e}
+html[data-theme="dark"] .well-cell[data-well-type="unknown"]{border-color:#6b7785}
+html[data-text-size="large"] .well-cell{min-height:68px}
+html[data-text-size="large"] .well-cell .well-number{font-size:18px}
+html[data-text-size="large"] .well-cell small{font-size:11px}
+.drilling-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 7px;border:1px solid #b8751d;border-radius:5px;background:#fff0cf;color:#80500b;font-size:9px;font-weight:700;line-height:1.2;white-space:nowrap}
+.drilling-badge:before{content:"";display:block;width:5px;height:5px;background:currentColor;border-radius:50%}
+.drilling-note{padding:14px 15px;border:1px solid #e7c58b;border-radius:10px;background:#fff8e8;margin:0 0 18px}
+.drilling-note p{font-size:12px;line-height:1.65;color:#795c2a;margin:9px 0 0}
+.pad-pin .map-drilling-label{display:block;position:absolute;left:50%;top:calc(100% + 3px);transform:translateX(-50%);padding:3px 5px;border:1px solid #cf9c4a;border-radius:4px;background:#fff0cf;color:#724208;font-family:inherit;font-size:8px;font-weight:700;line-height:1.2;font-style:normal;white-space:nowrap;box-shadow:0 2px 5px #0a273122}
+html[data-theme="dark"] .drilling-badge{background:#694418;border-color:#aa783b;color:#ffe4b2}
+html[data-theme="dark"] .drilling-note{background:#3b321f;border-color:#755b32}
+html[data-theme="dark"] .drilling-note p{color:#e0cfa8}
+html[data-theme="dark"] .pad-pin .map-drilling-label{background:#70481c;border-color:#be8e4e;color:#ffebc7}
+
+.map-toolbar .map-toolbar-tools{display:flex;align-items:center;gap:9px;min-width:0}
+.map-expand{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;padding:7px 10px;border:1px solid var(--line);border-radius:7px;background:var(--surface,#fff);color:var(--ink);font-size:10px;font-weight:650;white-space:nowrap}
+.map-expand svg{width:15px;height:15px;color:currentColor;flex-shrink:0}
+.map-expand:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
+.map-expand .map-collapse-icon{display:none}
+html[data-theme="dark"] .map-expand{background:#23434e;border-color:#42626c;color:#f0f8f6}
+
+/* CSS expansion also works in installed iPhone web apps. */
+html.map-expanded,html.map-expanded body{overflow:hidden;overscroll-behavior:none}
+html.map-expanded body{position:fixed;left:0;right:0;top:var(--map-scroll-offset,0px)}
+html.map-expanded .map-panel{
+  position:fixed;inset:0;z-index:750;width:100%;height:100dvh;min-height:0;max-height:none;
+  border:0;border-radius:0;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);
+}
+html.map-expanded .map-toolbar{height:55px;min-height:55px}
+html.map-expanded .map-panel.has-route{height:100dvh;min-height:0;max-height:none}
+html.map-expanded .map-expand{min-height:40px}
+html.map-expanded .map-expand .map-expand-icon{display:none}
+html.map-expanded .map-expand .map-collapse-icon{display:block}
+html.map-expanded .map-actions{top:calc(74px + env(safe-area-inset-top,0px));right:calc(16px + env(safe-area-inset-right,0px))}
+html.map-expanded .map-float-label{top:calc(72px + env(safe-area-inset-top,0px))}
+html.map-expanded .map-caption{bottom:env(safe-area-inset-bottom,0px);width:calc(100% - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px))}
+html.map-expanded .map-legend{bottom:calc(47px + env(safe-area-inset-bottom,0px))}
+html.map-expanded .local-route-card{bottom:calc(42px + env(safe-area-inset-bottom,0px))}
+
+@media(max-width:600px){
+  .topbar{height:59px;padding:0 14px}
+  .brand{gap:9px;font-size:15px}
+  .brand img{width:84px}
+  .brand small{font-size:7px;margin-top:3px}
+  .brand-divider{height:23px}
+  #workspace{padding:16px 12px 0}
+  .page-heading{margin-bottom:14px;gap:9px}
+  .page-heading .eyebrow{font-size:6px;margin-bottom:7px}
+  .page-heading h1{font-size:23px;line-height:1.15}
+  .page-heading p{font-size:9px;margin-top:5px;line-height:1.45}
+  .headline-stats b{font-size:23px}
+  .headline-stats>div{gap:3px}
+  .directory-top,.list-mode .directory-top{padding:12px 13px}
+  .directory-top .section-label{font-size:8px;margin-bottom:9px}
+  .searchbox{min-height:45px;padding:10px}
+  .searchbox input{font-size:16px;min-height:22px}
+  .filter-line{margin-top:8px;gap:8px}
+  .filter-line select{font-size:13px;padding:10px;min-height:43px}
+  .filter-line .icon-btn{width:43px;height:43px;min-width:43px}
+  .map-panel{height:64dvh;min-height:440px;max-height:720px}
+  .map-panel.has-route{height:66dvh;min-height:460px;max-height:none}
+  .map-toolbar{height:52px;min-height:52px;padding:0 10px;gap:6px}
+  .map-toolbar>div:first-child{gap:4px;font-size:9px;min-width:0}
+  .map-toolbar-tools{gap:5px!important}
+  .map-toolbar .segmented button{padding:8px 7px;font-size:8px;min-height:32px}
+  .map-toolbar .map-expand{min-height:34px;padding:6px 8px;gap:4px;font-size:9px}
+  .map-toolbar .map-expand svg{width:13px;height:13px}
+  .map-actions{top:68px}
+  .map-panel .map-float-label{top:67px}
+  .map-legend{left:11px;right:11px;bottom:40px;gap:10px;padding:9px 10px;font-size:8px}
+  .map-caption{height:28px;padding:0 11px;font-size:7px}
+  .map-caption>span{font-size:6px}
+  html.map-expanded .map-toolbar{justify-content:space-between}
+  html.map-expanded .map-toolbar>div:first-child{display:flex}
+  html.map-expanded .map-expand{min-height:40px;padding:8px 10px}
+}
+@media(max-width:370px){
+  .map-toolbar>div:first-child{display:none}
+  .map-toolbar{justify-content:flex-end}
+  .map-toolbar .map-toolbar-tools{width:100%;justify-content:space-between}
+  html.map-expanded .map-toolbar>div:first-child{display:none}
+  .page-heading h1{font-size:21px}
+}
+@media(max-width:600px) and (max-height:600px){
+  .map-panel{height:66dvh;min-height:360px}
+  .map-panel.has-route{min-height:380px}
+}

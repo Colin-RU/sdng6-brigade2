@@ -22,6 +22,7 @@
   <link rel="stylesheet" href="visuals.css">
   <link rel="stylesheet" href="local-navigation.css">
   <link rel="stylesheet" href="logo-mask.css">
+  <link rel="stylesheet" href="feedback.css">
   <script src="preferences.js"></script>
   <script src="vendor/leaflet.js" defer></script>
   <script src="vendor/leaflet.markercluster.js" defer></script>
@@ -30,6 +31,7 @@
   <script src="offline-navigation.js" defer></script>
   <script src="app.js" defer></script>
   <script src="offline.js" defer></script>
+  <script src="map-view.js" defer></script>
 </head>
 <body>
   <svg class="icon-defs" xmlns="http://www.w3.org/2000/svg"><defs>
@@ -71,7 +73,7 @@
           <div class="directory-footer"><span class="source-dot"></span>Реестр от 21.10.2026 <button data-action="info" aria-label="Об источниках"><svg><use href="#i-info"/></svg></button></div>
         </aside>
         <section class="map-panel" aria-label="Интерактивная карта">
-          <div class="map-toolbar"><div><svg><use href="#i-map"/></svg><span id="map-title">Схема проезда</span></div><div class="segmented" aria-label="Слой карты"><button class="active" data-layer="clean">Схема</button><button data-layer="original">Фото</button><button data-layer="geo">GPS-карта</button></div></div>
+          <div class="map-toolbar"><div><svg><use href="#i-map"/></svg><span id="map-title">Схема проезда</span></div><div class="map-toolbar-tools"><div class="segmented" aria-label="Слой карты"><button class="active" data-layer="clean">Схема</button><button data-layer="original">Фото</button><button data-layer="geo">GPS-карта</button></div><button class="map-expand" type="button" data-map-expand aria-label="Развернуть карту на весь экран" aria-pressed="false" aria-controls="field-map geo-map" title="Развернуть карту на весь экран"><svg class="map-expand-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg><svg class="map-collapse-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8h5V3m13 5h-5V3M8 21v-5H3m13 5v-5h5"/></svg><span data-map-expand-label>Развернуть</span></button></div></div>
           <div id="field-map" role="region" aria-label="Схема кустов второй бригады"></div><div id="geo-map" class="hidden" role="region" aria-label="Географическая карта"></div>
           <div class="map-float-label"><span class="live-dot"></span>ФЁДОРОВСКОЕ <span>ЦДНГ-6</span></div>
           <div class="map-actions"><button class="map-action" data-action="gps" aria-label="Моё местоположение" title="Моё местоположение"><svg><use href="#i-gps"/></svg></button><button class="map-action" data-action="fit" aria-label="Показать все кусты" title="Показать все кусты"><svg><use href="#i-map"/></svg></button></div>
