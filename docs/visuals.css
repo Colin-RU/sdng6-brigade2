@@ -1,0 +1,59 @@
+.atlas-donut{--atlas-track:#e9efea;--atlas-orbit:#dce6df;display:grid;grid-template-columns:minmax(112px,var(--atlas-donut-size,144px)) minmax(0,1fr);gap:17px;align-items:center;max-width:100%;margin:0 0 20px;padding:17px 15px 17px 10px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(135deg,#f6f9f4,#fff 78%);overflow:hidden}
+.atlas-donut-graphic{min-width:0;position:relative;aspect-ratio:1}
+.atlas-donut-svg{display:block;width:100%;height:auto;overflow:visible;stroke:none;fill:none;flex-shrink:1}
+.atlas-donut-orbit,.atlas-donut-ticks{stroke:var(--atlas-orbit)}
+.atlas-donut-track{stroke:var(--atlas-track)}
+.atlas-donut-segment{stroke:var(--atlas-segment-color);stroke-linecap:butt;animation:atlas-segment-reveal 850ms cubic-bezier(.2,.75,.2,1) var(--atlas-segment-delay) both}
+.atlas-donut-total{font-family:inherit;fill:var(--navy);stroke:none;font-size:39px;font-weight:600;letter-spacing:-2px;font-variant-numeric:tabular-nums}
+.atlas-donut-unit{font-family:inherit;fill:var(--muted);stroke:none;font-size:11px;letter-spacing:.3px}
+.atlas-donut-copy{min-width:0;display:flex;align-items:flex-start;flex-direction:column}
+.atlas-donut-kicker{font-size:8px;letter-spacing:.1em;text-transform:uppercase;font-weight:650;color:var(--muted);line-height:1.5;margin-bottom:6px}
+.atlas-donut-copy>strong{font-size:14px;line-height:1.4;letter-spacing:-.02em;font-weight:600;color:var(--ink);overflow-wrap:anywhere}
+.atlas-donut-share{display:flex;align-items:center;gap:10px;margin:6px 0 10px}
+.atlas-donut-share>b{font-size:30px;line-height:1.1;letter-spacing:-.05em;font-weight:550;color:var(--navy);font-variant-numeric:tabular-nums}
+.atlas-donut-share small{font-size:15px;font-weight:400;margin-left:2px}
+.atlas-donut-share>span{font-size:9px;line-height:1.6;color:var(--muted)}
+.atlas-donut-types{display:inline-flex;align-items:center;gap:6px;font-size:9px;line-height:1.5;color:var(--muted)}
+.atlas-donut-types i{width:5px;height:5px;border-radius:50%;background:var(--atlas-dot-color);flex-shrink:0}
+.atlas-donut-empty{font-size:11px;line-height:1.6;color:var(--muted);margin-top:10px}
+.atlas-donut-overview{grid-template-columns:minmax(110px,min(46%,var(--atlas-donut-size,190px))) minmax(0,1fr);padding:20px 20px 20px 10px;gap:22px;margin-top:20px}
+.atlas-donut-overview .atlas-donut-kicker{font-size:9px}
+.atlas-donut-overview .atlas-donut-copy>strong{font-size:17px}
+.atlas-donut-overview .atlas-donut-share>b{font-size:38px}
+.atlas-donut-overview .atlas-donut-share>span,.atlas-donut-overview .atlas-donut-types{font-size:10px}
+html[data-theme="dark"] .atlas-donut{--atlas-track:#263f48;--atlas-orbit:#304d56;background:linear-gradient(135deg,#193942,#132c36 80%)}
+html[data-text-size="large"] .atlas-donut-kicker{font-size:10px}
+html[data-text-size="large"] .atlas-donut-copy>strong{font-size:16px}
+html[data-text-size="large"] .atlas-donut-share>span,html[data-text-size="large"] .atlas-donut-types{font-size:11px}
+html[data-text-size="large"] .atlas-donut-unit{font-size:12px}
+
+.drawer:not(.hidden){animation:atlas-drawer-enter 320ms cubic-bezier(.22,.7,.24,1) both}
+.drawer-backdrop:not(.hidden){animation:atlas-backdrop-enter 220ms ease-out both}
+.pad-card{animation:atlas-card-enter 220ms ease-out both;animation-delay:70ms;transition:background-color 160ms,box-shadow 160ms,border-color 160ms}
+.pad-card:nth-child(1){animation-delay:0ms}.pad-card:nth-child(2){animation-delay:12ms}.pad-card:nth-child(3){animation-delay:24ms}.pad-card:nth-child(4){animation-delay:36ms}.pad-card:nth-child(5){animation-delay:48ms}.pad-card:nth-child(6){animation-delay:60ms}
+.well-cell{animation:atlas-well-enter 180ms ease-out both;transition:background-color 150ms,border-color 150ms,transform 150ms,box-shadow 150ms}
+.well-cell:nth-child(4n+2){animation-delay:16ms}.well-cell:nth-child(4n+3){animation-delay:32ms}.well-cell:nth-child(4n+4){animation-delay:48ms}
+.well-detail{animation:atlas-detail-enter 240ms ease-out both}
+.info-card,.settings-card{animation:atlas-card-enter 280ms ease-out both}
+.info-card:nth-child(2),.settings-card:nth-child(2){animation-delay:30ms}.info-card:nth-child(3){animation-delay:60ms}.info-card:nth-child(n+4){animation-delay:90ms}
+.btn,.icon-btn,.map-action,.segmented button,.nav-item{transition:background-color 160ms,border-color 160ms,box-shadow 160ms,color 160ms,transform 140ms}
+.btn:active,.icon-btn:active,.map-action:active,.well-cell:active,.theme-option:active{transform:scale(.97)}
+.pad-card:active .pad-number{transform:translateX(2px)}
+.pad-number{transition:transform 140ms}
+.icon-btn.active svg{transform-box:fill-box;transform-origin:center;animation:atlas-star-enter 370ms cubic-bezier(.2,.7,.3,1) both}
+.card-fav{animation:atlas-star-enter 370ms cubic-bezier(.2,.7,.3,1) both}
+.pad-pin.selected:after{content:"";position:absolute;inset:-5px;border:1px solid var(--teal);border-radius:10px;pointer-events:none;animation:atlas-marker-ring 1.1s ease-out 2 both}
+.pad-pin{transition:opacity 180ms,background-color 160ms,border-color 160ms,box-shadow 160ms,color 160ms}
+@media(hover:hover) and (pointer:fine){.btn:hover,.map-action:hover{transform:translateY(-1px)}.well-cell:hover{transform:translateY(-2px);box-shadow:0 4px 10px #123c4b0b}.pad-card:hover>svg{transform:translateX(2px)}.pad-card>svg{transition:transform 160ms}.atlas-marker:hover .pad-pin{box-shadow:0 0 0 3px #0c7f8e19,0 3px 12px #123c4b1a}}
+@keyframes atlas-segment-reveal{from{stroke-dasharray:0 100;opacity:.35}to{stroke-dasharray:var(--atlas-dash);opacity:1}}
+@keyframes atlas-drawer-enter{from{opacity:.5;transform:translateX(35px)}to{opacity:1;transform:translateX(0)}}
+@keyframes atlas-backdrop-enter{from{opacity:0}to{opacity:1}}
+@keyframes atlas-card-enter{from{opacity:.55;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@keyframes atlas-well-enter{from{opacity:.55;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
+@keyframes atlas-detail-enter{from{opacity:.35;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes atlas-star-enter{0%{transform:scale(.8) rotate(-12deg)}60%{transform:scale(1.12) rotate(4deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes atlas-marker-ring{0%{transform:scale(.94);opacity:.5}100%{transform:scale(1.2);opacity:0}}
+@media(max-width:600px){.drawer:not(.hidden){animation-name:atlas-drawer-enter-mobile}.atlas-donut{grid-template-columns:minmax(108px,140px) minmax(0,1fr);gap:16px}.atlas-donut-overview{grid-template-columns:minmax(118px,152px) minmax(0,1fr);gap:16px;padding:17px 12px 17px 7px}.atlas-donut-overview .atlas-donut-copy>strong{font-size:15px}.atlas-donut-overview .atlas-donut-share>b{font-size:33px}.atlas-donut-overview .atlas-donut-share>span{font-size:9px}@keyframes atlas-drawer-enter-mobile{from{opacity:.65;transform:translateY(36px)}to{opacity:1;transform:translateY(0)}}}
+@media(max-width:360px){.atlas-donut{grid-template-columns:112px minmax(0,1fr);gap:10px;padding-right:10px}.atlas-donut-copy>strong{font-size:12px}.atlas-donut-share{gap:7px}.atlas-donut-share>b{font-size:27px}.atlas-donut-share>span{font-size:8px}.atlas-donut-overview .atlas-donut-copy>strong{font-size:13px}}
+@media(prefers-reduced-motion:reduce){.atlas-donut-segment,.drawer:not(.hidden),.drawer-backdrop:not(.hidden),.pad-card,.well-cell,.well-detail,.info-card,.settings-card,.icon-btn.active svg,.card-fav,.pad-pin.selected:after{animation:none!important}.btn,.icon-btn,.map-action,.segmented button,.nav-item,.well-cell,.pad-pin,.pad-number,.pad-card>svg{transition:none!important}.pad-pin.selected:after{display:none}.btn:active,.icon-btn:active,.map-action:active,.well-cell:active,.theme-option:active,.btn:hover,.map-action:hover,.well-cell:hover,.pad-card:hover>svg,.pad-card:active .pad-number{transform:none}}
+@media print{.atlas-donut{break-inside:avoid;background:white!important;--atlas-track:#e9efea;--atlas-orbit:#dce6df}.atlas-donut-total{fill:#123c4b}.atlas-donut-unit{fill:#6f8383}}

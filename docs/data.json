@@ -1,0 +1,4223 @@
+{
+  "source": {
+    "title": "БРИГАДА №2",
+    "organization": "Сургутнефтегаз",
+    "unit": "ЦДНГ-6",
+    "brigade": "2",
+    "fileName": "исход.бр2.docx",
+    "url": "https://docs.google.com/document/d/13c4He-qFr77Ak40G1YV7VhrUG4XoVyhq/edit",
+    "pdfUrl": "https://drive.google.com/file/d/1lMgTI1lg4Eoko-m60AsgT0I173Yk14Yg/view",
+    "sourceModifiedAt": "2026-10-21",
+    "importedAt": "2026-11-12",
+    "classification": "Типы извлечены из заливки ячеек DOCX и проверены по легенде PDF. Золотой — добывающая (ЭЦН), красный номер со звёздочкой — фонтан; зелёный — ППД; синий — пьезометрическая; жёлтый — законсервирована; чёрный — ликвидирована; белый — не указан."
+  },
+  "pads": [
+    {
+      "id": "162",
+      "wells": [
+        {
+          "id": "3563",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "3566",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "3562",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "2777",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "3122",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 5,
+          "group": 0
+        },
+        {
+          "id": "3565",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 6,
+          "group": 0
+        },
+        {
+          "id": "3570",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 7,
+          "group": 0
+        },
+        {
+          "id": "3564",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 8,
+          "group": 0
+        },
+        {
+          "id": "2800",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 10,
+          "group": 1
+        },
+        {
+          "id": "2776",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 11,
+          "group": 1
+        },
+        {
+          "id": "2775",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 12,
+          "group": 1
+        },
+        {
+          "id": "2755",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 13,
+          "group": 1
+        },
+        {
+          "id": "2734",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 14,
+          "group": 1
+        },
+        {
+          "id": "3569",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 15,
+          "group": 1
+        },
+        {
+          "id": "2733",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 16,
+          "group": 1
+        },
+        {
+          "id": "2754",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 17,
+          "group": 1
+        }
+      ]
+    },
+    {
+      "id": "163",
+      "wells": [
+        {
+          "id": "3583",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "3266",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "3002",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "3585",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "3001",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 5,
+          "group": 0
+        },
+        {
+          "id": "3582",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 6,
+          "group": 0
+        },
+        {
+          "id": "2657Б",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 8,
+          "group": 1
+        },
+        {
+          "id": "3240",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 9,
+          "group": 1
+        },
+        {
+          "id": "2635",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 10,
+          "group": 1
+        },
+        {
+          "id": "3243",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 11,
+          "group": 1
+        },
+        {
+          "id": "2634",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 12,
+          "group": 1
+        },
+        {
+          "id": "2657",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 13,
+          "group": 1
+        },
+        {
+          "id": "3242",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 14,
+          "group": 1
+        },
+        {
+          "id": "3219",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 15,
+          "group": 1
+        },
+        {
+          "id": "2655",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 17,
+          "group": 2
+        },
+        {
+          "id": "2656",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 18,
+          "group": 2
+        },
+        {
+          "id": "2680",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 19,
+          "group": 2
+        },
+        {
+          "id": "2679",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 20,
+          "group": 2
+        },
+        {
+          "id": "2706",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 21,
+          "group": 2
+        },
+        {
+          "id": "2678",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 22,
+          "group": 2
+        },
+        {
+          "id": "2705",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 23,
+          "group": 2
+        }
+      ]
+    },
+    {
+      "id": "163Б",
+      "wells": [
+        {
+          "id": "3265",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "3296",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "3254",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "3297",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "3298",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 5,
+          "group": 0
+        },
+        {
+          "id": "3262",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 7,
+          "group": 1
+        },
+        {
+          "id": "2918",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 8,
+          "group": 1
+        },
+        {
+          "id": "3286",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 9,
+          "group": 1
+        },
+        {
+          "id": "3559",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 10,
+          "group": 1
+        },
+        {
+          "id": "3287",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 11,
+          "group": 1
+        },
+        {
+          "id": "3515",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 13,
+          "group": 2
+        },
+        {
+          "id": "3516",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 14,
+          "group": 2
+        },
+        {
+          "id": "3263",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 15,
+          "group": 2
+        },
+        {
+          "id": "3288",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 16,
+          "group": 2
+        },
+        {
+          "id": "2633",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 17,
+          "group": 2
+        },
+        {
+          "id": "3289",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 18,
+          "group": 2
+        }
+      ]
+    },
+    {
+      "id": "164",
+      "wells": [
+        {
+          "id": "3533",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "3525",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "3526",
+          "type": "unknown",
+          "method": "unknown",
+          "sourceColor": "#FFFFFF",
+          "sourceOrder": 3,
+          "group": 0,
+          "note": "В исходнике белая ячейка, тип в легенде не указан."
+        },
+        {
+          "id": "3528",
+          "type": "unknown",
+          "method": "unknown",
+          "sourceColor": "#FFFFFF",
+          "sourceOrder": 4,
+          "group": 0,
+          "note": "В исходнике белая ячейка, тип в легенде не указан."
+        },
+        {
+          "id": "3527",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 5,
+          "group": 0
+        },
+        {
+          "id": "2603",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 7,
+          "group": 1
+        },
+        {
+          "id": "2604",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 8,
+          "group": 1
+        },
+        {
+          "id": "2600",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 9,
+          "group": 1
+        },
+        {
+          "id": "2599",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 10,
+          "group": 1
+        },
+        {
+          "id": "2601",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 11,
+          "group": 1
+        },
+        {
+          "id": "2605",
+          "type": "production",
+          "method": "fountain",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 12,
+          "group": 1
+        },
+        {
+          "id": "2602",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 13,
+          "group": 1
+        },
+        {
+          "id": "2606",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 14,
+          "group": 1
+        },
+        {
+          "id": "3268",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 15,
+          "group": 1
+        },
+        {
+          "id": "3299",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 17,
+          "group": 2
+        },
+        {
+          "id": "3500",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 18,
+          "group": 2
+        },
+        {
+          "id": "2617",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 19,
+          "group": 2
+        },
+        {
+          "id": "2615",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 20,
+          "group": 2
+        },
+        {
+          "id": "2616",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 21,
+          "group": 2
+        },
+        {
+          "id": "3501",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 22,
+          "group": 2
+        },
+        {
+          "id": "2618",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 23,
+          "group": 2
+        },
+        {
+          "id": "3502",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 24,
+          "group": 2
+        }
+      ]
+    },
+    {
+      "id": "165",
+      "wells": [
+        {
+          "id": "2619",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "3270",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "2607",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "3269",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "2620",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 5,
+          "group": 0
+        },
+        {
+          "id": "2621",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 6,
+          "group": 0
+        },
+        {
+          "id": "3503",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 7,
+          "group": 0
+        },
+        {
+          "id": "2638",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 8,
+          "group": 0
+        },
+        {
+          "id": "2639",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 10,
+          "group": 1
+        },
+        {
+          "id": "3271",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 11,
+          "group": 1
+        },
+        {
+          "id": "3534",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 12,
+          "group": 1
+        },
+        {
+          "id": "3247",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 13,
+          "group": 1
+        },
+        {
+          "id": "2640",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 14,
+          "group": 1
+        },
+        {
+          "id": "2608",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 15,
+          "group": 1
+        },
+        {
+          "id": "2622",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 16,
+          "group": 1
+        },
+        {
+          "id": "3504",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 17,
+          "group": 1
+        },
+        {
+          "id": "2609",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 19,
+          "group": 2
+        },
+        {
+          "id": "3535",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 20,
+          "group": 2
+        },
+        {
+          "id": "2623",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 21,
+          "group": 2
+        }
+      ]
+    },
+    {
+      "id": "165Б",
+      "wells": [
+        {
+          "id": "3290",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "2610",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "3536",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "3517",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 4,
+          "group": 0
+        }
+      ]
+    },
+    {
+      "id": "166",
+      "wells": [
+        {
+          "id": "3192",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "2708",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "2709",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "2710",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "3193",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 5,
+          "group": 0
+        },
+        {
+          "id": "3194",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 6,
+          "group": 0
+        },
+        {
+          "id": "2711",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 7,
+          "group": 0
+        },
+        {
+          "id": "3195",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 8,
+          "group": 0
+        },
+        {
+          "id": "2682",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 10,
+          "group": 1
+        },
+        {
+          "id": "2659",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 11,
+          "group": 1
+        },
+        {
+          "id": "2636",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 12,
+          "group": 1
+        },
+        {
+          "id": "2684",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 13,
+          "group": 1
+        },
+        {
+          "id": "3244",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 14,
+          "group": 1
+        },
+        {
+          "id": "2683",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 15,
+          "group": 1
+        },
+        {
+          "id": "2658",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 16,
+          "group": 1
+        },
+        {
+          "id": "3220",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 17,
+          "group": 1
+        },
+        {
+          "id": "3221",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 19,
+          "group": 2
+        },
+        {
+          "id": "2637",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 20,
+          "group": 2
+        },
+        {
+          "id": "2660",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 21,
+          "group": 2
+        },
+        {
+          "id": "3245",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 22,
+          "group": 2
+        },
+        {
+          "id": "3246",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 23,
+          "group": 2
+        },
+        {
+          "id": "3223",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 24,
+          "group": 2
+        },
+        {
+          "id": "2661",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 25,
+          "group": 2
+        },
+        {
+          "id": "3222",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 26,
+          "group": 2
+        },
+        {
+          "id": "2707",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 27,
+          "group": 2
+        },
+        {
+          "id": "2681",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 28,
+          "group": 2
+        }
+      ]
+    },
+    {
+      "id": "279",
+      "wells": [
+        {
+          "id": "7786",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "7788",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "7785",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "7789",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "7782",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 5,
+          "group": 0
+        },
+        {
+          "id": "3373",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 7,
+          "group": 1
+        },
+        {
+          "id": "3374",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 8,
+          "group": 1
+        },
+        {
+          "id": "3371",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 9,
+          "group": 1
+        },
+        {
+          "id": "3523",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 10,
+          "group": 1
+        },
+        {
+          "id": "3538",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 11,
+          "group": 1
+        },
+        {
+          "id": "3514",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 12,
+          "group": 1
+        },
+        {
+          "id": "3581",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 13,
+          "group": 1
+        },
+        {
+          "id": "3584",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 14,
+          "group": 1
+        },
+        {
+          "id": "5329",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 16,
+          "group": 2
+        },
+        {
+          "id": "5318",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 18,
+          "group": 3
+        },
+        {
+          "id": "3370",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 20,
+          "group": 4
+        },
+        {
+          "id": "3369",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 21,
+          "group": 4
+        }
+      ]
+    },
+    {
+      "id": "291",
+      "wells": [
+        {
+          "id": "7768",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "8071",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "7769",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "7772",
+          "type": "production",
+          "method": "fountain",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "7767",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 5,
+          "group": 0
+        },
+        {
+          "id": "8052",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 6,
+          "group": 0
+        },
+        {
+          "id": "8070",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 7,
+          "group": 0
+        },
+        {
+          "id": "7770",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 8,
+          "group": 0
+        },
+        {
+          "id": "8069",
+          "type": "production",
+          "method": "fountain",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 9,
+          "group": 0
+        }
+      ]
+    },
+    {
+      "id": "380",
+      "wells": [
+        {
+          "id": "7547",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "7548",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "7558",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 3,
+          "group": 0
+        }
+      ]
+    },
+    {
+      "id": "381",
+      "wells": [
+        {
+          "id": "7559",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "7560",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "7557",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "7561",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 5,
+          "group": 1
+        },
+        {
+          "id": "7556",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 6,
+          "group": 1
+        },
+        {
+          "id": "7563",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 7,
+          "group": 1
+        },
+        {
+          "id": "7562",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 8,
+          "group": 1
+        }
+      ]
+    },
+    {
+      "id": "383",
+      "wells": [
+        {
+          "id": "7536",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "7537",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "7544",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "7545",
+          "type": "production",
+          "method": "fountain",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 4,
+          "group": 0
+        }
+      ]
+    },
+    {
+      "id": "512",
+      "wells": [
+        {
+          "id": "5368",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "5377",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "5370",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "4850",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "5351",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 5,
+          "group": 0
+        },
+        {
+          "id": "5369",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 6,
+          "group": 0
+        }
+      ]
+    },
+    {
+      "id": "513",
+      "wells": [
+        {
+          "id": "4849",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "3553",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "4821",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "3Ш",
+          "type": "unknown",
+          "method": "unknown",
+          "sourceColor": "#FFFFFF",
+          "sourceOrder": 4,
+          "group": 0,
+          "note": "В исходнике белая ячейка, тип в легенде не указан."
+        },
+        {
+          "id": "4Ш",
+          "type": "unknown",
+          "method": "unknown",
+          "sourceColor": "#FFFFFF",
+          "sourceOrder": 5,
+          "group": 0,
+          "note": "В исходнике белая ячейка, тип в легенде не указан."
+        },
+        {
+          "id": "5Ш",
+          "type": "unknown",
+          "method": "unknown",
+          "sourceColor": "#FFFFFF",
+          "sourceOrder": 6,
+          "group": 0,
+          "note": "В исходнике белая ячейка, тип в легенде не указан."
+        },
+        {
+          "id": "4820",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 7,
+          "group": 0
+        },
+        {
+          "id": "4819",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 8,
+          "group": 0
+        },
+        {
+          "id": "131В",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 10,
+          "group": 1
+        },
+        {
+          "id": "5352",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 11,
+          "group": 1
+        },
+        {
+          "id": "3552",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 12,
+          "group": 1
+        },
+        {
+          "id": "3540",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 13,
+          "group": 1,
+          "sourceRepeatedOrders": [
+            27
+          ]
+        },
+        {
+          "id": "13137",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 14,
+          "group": 1
+        },
+        {
+          "id": "3579",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 15,
+          "group": 1
+        },
+        {
+          "id": "5350",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 16,
+          "group": 1
+        },
+        {
+          "id": "3573",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 17,
+          "group": 1
+        },
+        {
+          "id": "3537",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 18,
+          "group": 1
+        },
+        {
+          "id": "3567",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 19,
+          "group": 1
+        },
+        {
+          "id": "5367",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 20,
+          "group": 1
+        },
+        {
+          "id": "3541",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 21,
+          "group": 1
+        },
+        {
+          "id": "3539",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 22,
+          "group": 1
+        },
+        {
+          "id": "4848",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 23,
+          "group": 1
+        },
+        {
+          "id": "3529",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 24,
+          "group": 1
+        },
+        {
+          "id": "3580",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 25,
+          "group": 1
+        },
+        {
+          "id": "5359",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 26,
+          "group": 1
+        }
+      ]
+    },
+    {
+      "id": "514",
+      "wells": [
+        {
+          "id": "4893",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "5378",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "13100",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "4876",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "5381",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 5,
+          "group": 0
+        },
+        {
+          "id": "13102",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 7,
+          "group": 1
+        },
+        {
+          "id": "13097",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 8,
+          "group": 1
+        },
+        {
+          "id": "13099",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 10,
+          "group": 2
+        },
+        {
+          "id": "13098",
+          "type": "production",
+          "method": "fountain",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 11,
+          "group": 2
+        },
+        {
+          "id": "13101",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 13,
+          "group": 3,
+          "sourceRepeatedOrders": [
+            16
+          ]
+        },
+        {
+          "id": "4875",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 14,
+          "group": 3,
+          "sourceRepeatedOrders": [
+            17
+          ]
+        },
+        {
+          "id": "4874",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 15,
+          "group": 3,
+          "sourceRepeatedOrders": [
+            18
+          ]
+        },
+        {
+          "id": "1Ш",
+          "type": "unknown",
+          "method": "unknown",
+          "sourceColor": "#FFFFFF",
+          "sourceOrder": 19,
+          "group": 3,
+          "note": "В исходнике белая ячейка, тип в легенде не указан."
+        },
+        {
+          "id": "2Ш",
+          "type": "unknown",
+          "method": "unknown",
+          "sourceColor": "#FFFFFF",
+          "sourceOrder": 20,
+          "group": 3,
+          "note": "В исходнике белая ячейка, тип в легенде не указан."
+        }
+      ]
+    },
+    {
+      "id": "516",
+      "wells": [
+        {
+          "id": "5391",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "4912",
+          "type": "production",
+          "method": "fountain",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "5386",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "4892",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "5384",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 5,
+          "group": 0
+        },
+        {
+          "id": "4712",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 6,
+          "group": 0
+        },
+        {
+          "id": "5385",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 7,
+          "group": 0
+        },
+        {
+          "id": "5312",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 8,
+          "group": 0
+        }
+      ]
+    },
+    {
+      "id": "829",
+      "wells": [
+        {
+          "id": "13360",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "13354",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "13359",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "13079",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "13082",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 6,
+          "group": 1
+        },
+        {
+          "id": "13361",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 7,
+          "group": 1
+        },
+        {
+          "id": "9Ш",
+          "type": "unknown",
+          "method": "unknown",
+          "sourceColor": "#FFFFFF",
+          "sourceOrder": 8,
+          "group": 1,
+          "note": "В исходнике белая ячейка, тип в легенде не указан."
+        },
+        {
+          "id": "10Ш",
+          "type": "unknown",
+          "method": "unknown",
+          "sourceColor": "#FFFFFF",
+          "sourceOrder": 9,
+          "group": 1,
+          "note": "В исходнике белая ячейка, тип в легенде не указан."
+        },
+        {
+          "id": "13086",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 10,
+          "group": 1
+        },
+        {
+          "id": "13362",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 11,
+          "group": 1
+        },
+        {
+          "id": "13078",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 12,
+          "group": 1
+        }
+      ]
+    },
+    {
+      "id": "856",
+      "wells": [
+        {
+          "id": "476В",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "12985",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "13514",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "13591",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "12986",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 5,
+          "group": 0
+        },
+        {
+          "id": "13535",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 6,
+          "group": 0
+        },
+        {
+          "id": "12956",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 7,
+          "group": 0
+        },
+        {
+          "id": "13590",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 8,
+          "group": 0
+        },
+        {
+          "id": "12930",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 9,
+          "group": 0
+        },
+        {
+          "id": "13534",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 10,
+          "group": 0
+        },
+        {
+          "id": "13592",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 11,
+          "group": 0
+        },
+        {
+          "id": "13573",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 12,
+          "group": 0
+        },
+        {
+          "id": "477В",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 14,
+          "group": 1
+        },
+        {
+          "id": "13576",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 15,
+          "group": 1
+        },
+        {
+          "id": "13516",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 16,
+          "group": 1
+        },
+        {
+          "id": "13556",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 17,
+          "group": 1
+        },
+        {
+          "id": "12987",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 18,
+          "group": 1
+        },
+        {
+          "id": "13554",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 19,
+          "group": 1
+        },
+        {
+          "id": "13557",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 20,
+          "group": 1
+        },
+        {
+          "id": "13575",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 21,
+          "group": 1
+        },
+        {
+          "id": "12957",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 22,
+          "group": 1
+        },
+        {
+          "id": "13536",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 23,
+          "group": 1
+        }
+      ]
+    },
+    {
+      "id": "862",
+      "wells": [
+        {
+          "id": "551В",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "13531",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "13515",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "13588",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "13572",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 5,
+          "group": 0
+        },
+        {
+          "id": "13513",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 6,
+          "group": 0
+        },
+        {
+          "id": "13552",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 7,
+          "group": 0
+        },
+        {
+          "id": "13553",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 8,
+          "group": 0
+        },
+        {
+          "id": "13574",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 9,
+          "group": 0
+        },
+        {
+          "id": "13533",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 10,
+          "group": 0
+        },
+        {
+          "id": "13532",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 11,
+          "group": 0
+        },
+        {
+          "id": "13555",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 12,
+          "group": 0
+        },
+        {
+          "id": "13571",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 13,
+          "group": 0
+        },
+        {
+          "id": "13512",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 14,
+          "group": 0
+        }
+      ]
+    },
+    {
+      "id": "870",
+      "wells": [
+        {
+          "id": "13307",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "13312",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "13313",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "21Ш",
+          "type": "unknown",
+          "method": "unknown",
+          "sourceColor": "#FFFFFF",
+          "sourceOrder": 5,
+          "group": 1,
+          "note": "В исходнике белая ячейка, тип в легенде не указан."
+        },
+        {
+          "id": "22Ш",
+          "type": "unknown",
+          "method": "unknown",
+          "sourceColor": "#FFFFFF",
+          "sourceOrder": 6,
+          "group": 1,
+          "note": "В исходнике белая ячейка, тип в легенде не указан."
+        },
+        {
+          "id": "13300",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 8,
+          "group": 2
+        },
+        {
+          "id": "13301",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 9,
+          "group": 2
+        },
+        {
+          "id": "13303",
+          "type": "conserved",
+          "method": "unknown",
+          "sourceColor": "#FFFF00",
+          "sourceOrder": 11,
+          "group": 3
+        },
+        {
+          "id": "13299",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 13,
+          "group": 4
+        }
+      ]
+    },
+    {
+      "id": "871",
+      "wells": [
+        {
+          "id": "13288",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "13295",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 3,
+          "group": 1
+        },
+        {
+          "id": "13287",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 4,
+          "group": 1
+        },
+        {
+          "id": "13279",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 6,
+          "group": 2
+        },
+        {
+          "id": "13280",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 7,
+          "group": 2
+        },
+        {
+          "id": "42Ш",
+          "type": "unknown",
+          "method": "unknown",
+          "sourceColor": "#FFFFFF",
+          "sourceOrder": 9,
+          "group": 3,
+          "note": "В исходнике белая ячейка, тип в легенде не указан."
+        },
+        {
+          "id": "13282",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 11,
+          "group": 4
+        },
+        {
+          "id": "13281",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 12,
+          "group": 4
+        },
+        {
+          "id": "13278",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 13,
+          "group": 4
+        }
+      ]
+    },
+    {
+      "id": "1004",
+      "wells": [
+        {
+          "id": "12824",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "12774",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "337В",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "12826",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "12880",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 5,
+          "group": 0
+        },
+        {
+          "id": "12825",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 6,
+          "group": 0
+        },
+        {
+          "id": "12798",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 7,
+          "group": 0
+        },
+        {
+          "id": "338В",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 8,
+          "group": 0
+        },
+        {
+          "id": "12799",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 9,
+          "group": 0
+        },
+        {
+          "id": "12800",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 10,
+          "group": 0
+        },
+        {
+          "id": "12878",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 11,
+          "group": 0
+        },
+        {
+          "id": "12852",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 12,
+          "group": 0
+        },
+        {
+          "id": "12850",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 14,
+          "group": 1
+        },
+        {
+          "id": "12851",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 15,
+          "group": 1
+        },
+        {
+          "id": "12801",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 16,
+          "group": 1
+        },
+        {
+          "id": "12879",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 17,
+          "group": 1
+        },
+        {
+          "id": "12905",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 18,
+          "group": 1
+        },
+        {
+          "id": "12904",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 19,
+          "group": 1
+        },
+        {
+          "id": "12935",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 20,
+          "group": 1
+        },
+        {
+          "id": "12903",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 21,
+          "group": 1
+        }
+      ]
+    },
+    {
+      "id": "1122",
+      "wells": [
+        {
+          "id": "12661",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "12599",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "457В",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "458В",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "12598",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 5,
+          "group": 0
+        },
+        {
+          "id": "12692",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 6,
+          "group": 0
+        },
+        {
+          "id": "12659",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 7,
+          "group": 0
+        },
+        {
+          "id": "12660",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 8,
+          "group": 0
+        },
+        {
+          "id": "12629",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 9,
+          "group": 0
+        },
+        {
+          "id": "12630",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 10,
+          "group": 0
+        },
+        {
+          "id": "12723",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 11,
+          "group": 0
+        },
+        {
+          "id": "12693",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 12,
+          "group": 0
+        },
+        {
+          "id": "16718",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 14,
+          "group": 1
+        },
+        {
+          "id": "16724",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 15,
+          "group": 1
+        },
+        {
+          "id": "16708",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 16,
+          "group": 1
+        },
+        {
+          "id": "16716",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 17,
+          "group": 1
+        },
+        {
+          "id": "16722",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 18,
+          "group": 1
+        },
+        {
+          "id": "16727",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 19,
+          "group": 1
+        },
+        {
+          "id": "16726",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 20,
+          "group": 1
+        },
+        {
+          "id": "16717",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 21,
+          "group": 1
+        },
+        {
+          "id": "16709",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 22,
+          "group": 1
+        },
+        {
+          "id": "12691",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 23,
+          "group": 1
+        },
+        {
+          "id": "16734",
+          "type": "piezometric",
+          "method": "unknown",
+          "sourceColor": "#5B9BD5",
+          "sourceOrder": 24,
+          "group": 1
+        },
+        {
+          "id": "16707",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 25,
+          "group": 1
+        }
+      ]
+    },
+    {
+      "id": "1123",
+      "wells": [
+        {
+          "id": "12828",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "12881",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "459В",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "460В",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "12882",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 5,
+          "group": 0
+        },
+        {
+          "id": "12906",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 6,
+          "group": 0
+        },
+        {
+          "id": "12936",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 7,
+          "group": 0
+        },
+        {
+          "id": "12854",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 8,
+          "group": 0
+        },
+        {
+          "id": "12907",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 9,
+          "group": 0
+        },
+        {
+          "id": "12964",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 10,
+          "group": 0
+        },
+        {
+          "id": "12993",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 11,
+          "group": 0
+        },
+        {
+          "id": "12965",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 12,
+          "group": 0
+        },
+        {
+          "id": "12995",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 14,
+          "group": 1
+        },
+        {
+          "id": "13522",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 15,
+          "group": 1
+        },
+        {
+          "id": "12994",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 16,
+          "group": 1
+        },
+        {
+          "id": "12937",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 17,
+          "group": 1
+        }
+      ]
+    },
+    {
+      "id": "1128",
+      "wells": [
+        {
+          "id": "540В",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "12721",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "16582",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "16714",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "12749",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 6,
+          "group": 1
+        },
+        {
+          "id": "12750",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 7,
+          "group": 1
+        },
+        {
+          "id": "12777",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 8,
+          "group": 1
+        },
+        {
+          "id": "16732",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 9,
+          "group": 1
+        },
+        {
+          "id": "16733",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 11,
+          "group": 2
+        },
+        {
+          "id": "16724",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 12,
+          "group": 2
+        },
+        {
+          "id": "16741",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 13,
+          "group": 2
+        },
+        {
+          "id": "16725",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 14,
+          "group": 2
+        },
+        {
+          "id": "16581",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 16,
+          "group": 3
+        },
+        {
+          "id": "16715",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 17,
+          "group": 3
+        },
+        {
+          "id": "16706",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 18,
+          "group": 3
+        },
+        {
+          "id": "16705",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 19,
+          "group": 3
+        },
+        {
+          "id": "12720",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 21,
+          "group": 4
+        },
+        {
+          "id": "12690",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 22,
+          "group": 4
+        },
+        {
+          "id": "12751",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 23,
+          "group": 4
+        }
+      ]
+    },
+    {
+      "id": "1129",
+      "wells": [
+        {
+          "id": "321В",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "16764",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "12938",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "16750",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "16780",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 6,
+          "group": 1
+        },
+        {
+          "id": "12908",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 7,
+          "group": 1
+        },
+        {
+          "id": "16763",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 8,
+          "group": 1
+        },
+        {
+          "id": "17756",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 9,
+          "group": 1
+        },
+        {
+          "id": "16752",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 11,
+          "group": 2
+        },
+        {
+          "id": "16742",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 12,
+          "group": 2
+        },
+        {
+          "id": "16749",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 13,
+          "group": 2
+        },
+        {
+          "id": "16771",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 14,
+          "group": 2
+        }
+      ]
+    },
+    {
+      "id": "1131",
+      "wells": [
+        {
+          "id": "344В",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "16826",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "16858",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "13545",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "16828",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 6,
+          "group": 1
+        },
+        {
+          "id": "16842",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 7,
+          "group": 1
+        },
+        {
+          "id": "16841",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 8,
+          "group": 1
+        },
+        {
+          "id": "16857",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 9,
+          "group": 1
+        },
+        {
+          "id": "13564",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 11,
+          "group": 2
+        },
+        {
+          "id": "13524",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 12,
+          "group": 2
+        },
+        {
+          "id": "13565",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 13,
+          "group": 2
+        },
+        {
+          "id": "13544",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 14,
+          "group": 2
+        },
+        {
+          "id": "16799",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 16,
+          "group": 3
+        },
+        {
+          "id": "16807",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 17,
+          "group": 3
+        },
+        {
+          "id": "16827",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 18,
+          "group": 3
+        },
+        {
+          "id": "12966",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 19,
+          "group": 3
+        },
+        {
+          "id": "16790",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 21,
+          "group": 4
+        },
+        {
+          "id": "12996",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 22,
+          "group": 4
+        },
+        {
+          "id": "16798",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 23,
+          "group": 4
+        },
+        {
+          "id": "16789",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 24,
+          "group": 4
+        }
+      ]
+    },
+    {
+      "id": "1136",
+      "wells": [
+        {
+          "id": "537В",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "12991",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "12934",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "13521",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "13541",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 5,
+          "group": 0
+        },
+        {
+          "id": "12963",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 6,
+          "group": 0
+        },
+        {
+          "id": "12933",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 7,
+          "group": 0
+        },
+        {
+          "id": "12962",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 8,
+          "group": 0
+        },
+        {
+          "id": "13543",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 9,
+          "group": 0
+        },
+        {
+          "id": "12992",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 10,
+          "group": 0
+        },
+        {
+          "id": "13520",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 11,
+          "group": 0
+        },
+        {
+          "id": "13523",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 12,
+          "group": 0
+        },
+        {
+          "id": "16824",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 13,
+          "group": 0
+        },
+        {
+          "id": "16821",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 14,
+          "group": 0
+        },
+        {
+          "id": "16822",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 15,
+          "group": 0
+        },
+        {
+          "id": "16816",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 16,
+          "group": 0
+        }
+      ]
+    },
+    {
+      "id": "1137",
+      "wells": [
+        {
+          "id": "246В",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "12928",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "12770",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "12820",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "12874",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 5,
+          "group": 0
+        },
+        {
+          "id": "12899",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 6,
+          "group": 0
+        },
+        {
+          "id": "12821",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 7,
+          "group": 0
+        },
+        {
+          "id": "12743",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 8,
+          "group": 0
+        },
+        {
+          "id": "12873",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 9,
+          "group": 0
+        },
+        {
+          "id": "12795",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 10,
+          "group": 0
+        },
+        {
+          "id": "12846",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 11,
+          "group": 0
+        },
+        {
+          "id": "18593",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 12,
+          "group": 0
+        },
+        {
+          "id": "12847",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 13,
+          "group": 0
+        }
+      ]
+    },
+    {
+      "id": "1139",
+      "wells": [
+        {
+          "id": "247В",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "13609",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "13578",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "13648",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "13647",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 5,
+          "group": 0
+        },
+        {
+          "id": "16882",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 6,
+          "group": 0
+        },
+        {
+          "id": "13577",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 7,
+          "group": 0
+        },
+        {
+          "id": "13610",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 8,
+          "group": 0
+        },
+        {
+          "id": "16852",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 9,
+          "group": 0
+        },
+        {
+          "id": "13627",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 10,
+          "group": 0
+        },
+        {
+          "id": "13628",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 11,
+          "group": 0
+        },
+        {
+          "id": "13594",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 12,
+          "group": 0
+        },
+        {
+          "id": "13595",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 14,
+          "group": 1
+        },
+        {
+          "id": "13558",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 15,
+          "group": 1
+        },
+        {
+          "id": "13669",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 16,
+          "group": 1
+        },
+        {
+          "id": "13593",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 17,
+          "group": 1
+        },
+        {
+          "id": "16905",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 18,
+          "group": 1
+        },
+        {
+          "id": "16868",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 19,
+          "group": 1
+        },
+        {
+          "id": "16869",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 20,
+          "group": 1
+        },
+        {
+          "id": "16894",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 21,
+          "group": 1
+        }
+      ]
+    },
+    {
+      "id": "1144",
+      "wells": [
+        {
+          "id": "506В",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "502В",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "13802",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "13745",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "13690",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 5,
+          "group": 0
+        },
+        {
+          "id": "13692",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 6,
+          "group": 0
+        },
+        {
+          "id": "13774",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 7,
+          "group": 0
+        },
+        {
+          "id": "13691",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 8,
+          "group": 0
+        },
+        {
+          "id": "13773",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 9,
+          "group": 0
+        },
+        {
+          "id": "13744",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 10,
+          "group": 0
+        },
+        {
+          "id": "13715",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 11,
+          "group": 0
+        },
+        {
+          "id": "13666",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 12,
+          "group": 0
+        },
+        {
+          "id": "13607",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 14,
+          "group": 1
+        },
+        {
+          "id": "13622",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 15,
+          "group": 1
+        },
+        {
+          "id": "13668",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 16,
+          "group": 1
+        },
+        {
+          "id": "13717",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 17,
+          "group": 1
+        },
+        {
+          "id": "13646",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 18,
+          "group": 1
+        },
+        {
+          "id": "13645",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 19,
+          "group": 1
+        },
+        {
+          "id": "13667",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 20,
+          "group": 1
+        },
+        {
+          "id": "13625",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 21,
+          "group": 1
+        },
+        {
+          "id": "13606",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 22,
+          "group": 1
+        },
+        {
+          "id": "13716",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 23,
+          "group": 1
+        },
+        {
+          "id": "13626",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 24,
+          "group": 1
+        },
+        {
+          "id": "13608",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 25,
+          "group": 1
+        }
+      ]
+    },
+    {
+      "id": "1158",
+      "wells": [
+        {
+          "id": "413В",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "16862",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "16891",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "16830",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "16877",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 5,
+          "group": 0
+        },
+        {
+          "id": "16844",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 6,
+          "group": 0
+        },
+        {
+          "id": "16808",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 7,
+          "group": 0
+        },
+        {
+          "id": "16829",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 8,
+          "group": 0
+        },
+        {
+          "id": "16860",
+          "type": "injection",
+          "method": "unknown",
+          "sourceColor": "#70AD47",
+          "sourceOrder": 9,
+          "group": 0
+        },
+        {
+          "id": "16846",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 10,
+          "group": 0
+        },
+        {
+          "id": "16845",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 11,
+          "group": 0
+        },
+        {
+          "id": "16861",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 12,
+          "group": 0
+        },
+        {
+          "id": "16875",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 14,
+          "group": 1
+        },
+        {
+          "id": "16878",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 15,
+          "group": 1
+        },
+        {
+          "id": "16843",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 16,
+          "group": 1
+        },
+        {
+          "id": "16859",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 17,
+          "group": 1
+        },
+        {
+          "id": "16876",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 18,
+          "group": 1
+        },
+        {
+          "id": "16890",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 19,
+          "group": 1
+        }
+      ]
+    },
+    {
+      "id": "ОД",
+      "wells": [
+        {
+          "id": "136Р",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 1,
+          "group": 0
+        },
+        {
+          "id": "4201Р",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 2,
+          "group": 0
+        },
+        {
+          "id": "4204Р",
+          "type": "abandoned",
+          "method": "unknown",
+          "sourceColor": "#262626",
+          "sourceOrder": 3,
+          "group": 0
+        },
+        {
+          "id": "4205Р",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 4,
+          "group": 0
+        },
+        {
+          "id": "4286Р",
+          "type": "production",
+          "method": "esp",
+          "sourceColor": "#BF8F00",
+          "sourceOrder": 5,
+          "group": 0
+        }
+      ],
+      "label": "Отдельные скважины"
+    }
+  ],
+  "issues": [
+    {
+      "kind": "duplicate_within_pad",
+      "padId": "513",
+      "wellId": "3540",
+      "note": "Идентичный повтор в исходном реестре объединён.",
+      "sourceOrders": [
+        13,
+        27
+      ]
+    },
+    {
+      "kind": "duplicate_within_pad",
+      "padId": "514",
+      "wellId": "13101",
+      "note": "Идентичный повтор в исходном реестре объединён.",
+      "sourceOrders": [
+        13,
+        16
+      ]
+    },
+    {
+      "kind": "duplicate_within_pad",
+      "padId": "514",
+      "wellId": "4875",
+      "note": "Идентичный повтор в исходном реестре объединён.",
+      "sourceOrders": [
+        14,
+        17
+      ]
+    },
+    {
+      "kind": "duplicate_within_pad",
+      "padId": "514",
+      "wellId": "4874",
+      "note": "Идентичный повтор в исходном реестре объединён.",
+      "sourceOrders": [
+        15,
+        18
+      ]
+    },
+    {
+      "kind": "multiple_pads",
+      "wellId": "16724",
+      "padIds": [
+        "1122",
+        "1128"
+      ],
+      "note": "Один номер указан на нескольких кустах. Нужна проверка исходных данных."
+    },
+    {
+      "kind": "unclassified_wells",
+      "wells": [
+        {
+          "padId": "164",
+          "wellId": "3526"
+        },
+        {
+          "padId": "164",
+          "wellId": "3528"
+        },
+        {
+          "padId": "513",
+          "wellId": "3Ш"
+        },
+        {
+          "padId": "513",
+          "wellId": "4Ш"
+        },
+        {
+          "padId": "513",
+          "wellId": "5Ш"
+        },
+        {
+          "padId": "514",
+          "wellId": "1Ш"
+        },
+        {
+          "padId": "514",
+          "wellId": "2Ш"
+        },
+        {
+          "padId": "829",
+          "wellId": "9Ш"
+        },
+        {
+          "padId": "829",
+          "wellId": "10Ш"
+        },
+        {
+          "padId": "870",
+          "wellId": "21Ш"
+        },
+        {
+          "padId": "870",
+          "wellId": "22Ш"
+        },
+        {
+          "padId": "871",
+          "wellId": "42Ш"
+        }
+      ],
+      "note": "Белые ячейки не расшифрованы в легенде; тип оставлен неизвестным."
+    }
+  ]
+}

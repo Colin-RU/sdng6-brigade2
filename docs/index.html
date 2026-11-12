@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#123c4b">
+  <meta name="sdng6-app-shell" content="brigade-2">
+  <meta name="description" content="Мобильный атлас кустов и скважин второй бригады ЦДНГ-6. Фёдоровское месторождение.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>ЦДНГ-6 · Бригада №2</title>
+  <link rel="icon" href="icon-192.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="vendor/leaflet.css">
+  <link rel="stylesheet" href="vendor/MarkerCluster.css">
+  <link rel="stylesheet" href="app.css">
+  <link rel="stylesheet" href="ui.css">
+  <link rel="stylesheet" href="navigation.css">
+  <link rel="stylesheet" href="offline.css">
+  <link rel="stylesheet" href="theme.css">
+  <link rel="stylesheet" href="visuals.css">
+  <link rel="stylesheet" href="local-navigation.css">
+  <link rel="stylesheet" href="logo-mask.css">
+  <script src="preferences.js"></script>
+  <script src="vendor/leaflet.js" defer></script>
+  <script src="vendor/leaflet.markercluster.js" defer></script>
+  <script src="visuals.js" defer></script>
+  <script src="local-router.js" defer></script>
+  <script src="offline-navigation.js" defer></script>
+  <script src="app.js" defer></script>
+  <script src="offline.js" defer></script>
+</head>
+<body>
+  <svg class="icon-defs" xmlns="http://www.w3.org/2000/svg"><defs>
+    <symbol id="i-map" viewBox="0 0 24 24"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3Zm6-3v15m6-12v15"/></symbol>
+    <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h12M9 12h12M9 18h12M3 6h1M3 12h1M3 18h1"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9Z"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v1"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-cross" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+    <symbol id="i-gps" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+    <symbol id="i-route" viewBox="0 0 24 24"><path d="M5 18V8a3 3 0 0 1 3-3h10m-4-4 4 4-4 4M8 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></symbol>
+    <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 2S5 10 5 15a7 7 0 0 0 14 0c0-5-7-13-7-13Z"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="m9 3-.7 2.2-2.2 1L4 5.7 2.7 8l1.7 1.7v2.6L2.7 14 4 16.3l2.1-.5 2.2 1L9 19h3l.7-2.2 2.2-1 2.1.5 1.3-2.3-1.7-1.7V9.7L18.3 8 17 5.7l-2.1.5-2.2-1L12 3Z" transform="translate(1 1)"/><circle cx="11.5" cy="12" r="3"/></symbol>
+  </defs></svg>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="На главную"><img src="logo.png" alt="Сургутнефтегаз"><span class="brand-divider"></span><span>ЦДНГ-6<small>Фёдоровское месторождение</small></span></a>
+    <div class="header-tools"><span class="connection" id="connection"><i></i>Есть сеть</span><button class="btn subtle install-btn" data-action="install"><svg><use href="#i-download"/></svg><span>На телефон</span></button><span class="brigade-tag">БРИГАДА <b>02</b></span></div>
+  </header>
+  <div class="app-shell">
+    <nav class="rail" aria-label="Основная навигация">
+      <div class="rail-mark">Б<span>2</span></div>
+      <button class="nav-item active" data-view="map"><svg><use href="#i-map"/></svg><span>Карта</span></button>
+      <button class="nav-item" data-view="list"><svg><use href="#i-list"/></svg><span>Реестр</span></button>
+      <button class="nav-item" data-view="favorites"><svg><use href="#i-star"/></svg><span>Избранное</span></button>
+      <button class="nav-item" data-view="info"><svg><use href="#i-drop"/></svg><span>Обзор</span></button>
+      <button class="nav-item" data-view="settings"><svg><use href="#i-settings"/></svg><span>Настройки</span></button>
+      <div class="rail-bottom">ЦДНГ<span>06</span></div>
+    </nav>
+    <main id="workspace">
+      <section class="page-heading"><div><div class="eyebrow">РАБОЧИЙ АТЛАС · БРИГАДА №2</div><h1 id="page-title">Кусты и скважины<span class="title-dot">.</span></h1><p id="page-subtitle">Найдите куст, откройте скважину, постройте маршрут.</p></div><div class="headline-stats"><div><b id="pad-total">32</b><span>куста</span></div><div><b id="well-total">489</b><span>записей скважин</span></div></div></section>
+      <section id="atlas-view" class="atlas-layout">
+        <aside class="directory">
+          <div class="directory-top"><div class="section-label">ОБЪЕКТЫ БРИГАДЫ <span id="result-count"></span></div><label class="searchbox"><svg><use href="#i-search"/></svg><input id="search" type="search" placeholder="Номер куста или скважины" autocomplete="off" enterkeyhint="go" aria-label="Номер куста или скважины"><kbd>/</kbd></label><div class="filter-line"><select id="type-filter" aria-label="Тип скважин"><option value="all">Все типы скважин</option><option value="production">Добывающие</option><option value="injection">ППД</option><option value="piezometric">Пьезометрические</option><option value="conserved">Законсервированные</option><option value="abandoned">Ликвидированные</option><option value="unknown">Тип не указан</option><option value="fountain">Фонтан</option></select><button id="favorite-filter" class="icon-btn" aria-label="Только избранные кусты" aria-pressed="false"><svg><use href="#i-star"/></svg></button></div><div id="quick-route"></div></div>
+          <div id="pad-list" class="pad-list"><div class="loading">Загружаем реестр…</div></div>
+          <div class="directory-footer"><span class="source-dot"></span>Реестр от 21.10.2026 <button data-action="info" aria-label="Об источниках"><svg><use href="#i-info"/></svg></button></div>
+        </aside>
+        <section class="map-panel" aria-label="Интерактивная карта">
+          <div class="map-toolbar"><div><svg><use href="#i-map"/></svg><span id="map-title">Схема проезда</span></div><div class="segmented" aria-label="Слой карты"><button class="active" data-layer="clean">Схема</button><button data-layer="original">Фото</button><button data-layer="geo">GPS-карта</button></div></div>
+          <div id="field-map" role="region" aria-label="Схема кустов второй бригады"></div><div id="geo-map" class="hidden" role="region" aria-label="Географическая карта"></div>
+          <div class="map-float-label"><span class="live-dot"></span>ФЁДОРОВСКОЕ <span>ЦДНГ-6</span></div>
+          <div class="map-actions"><button class="map-action" data-action="gps" aria-label="Моё местоположение" title="Моё местоположение"><svg><use href="#i-gps"/></svg></button><button class="map-action" data-action="fit" aria-label="Показать все кусты" title="Показать все кусты"><svg><use href="#i-map"/></svg></button></div>
+          <div id="geo-help" class="geo-help hidden"><b>Своя карта. Без связи.</b><span>Нажмите на карту → «Маршрут сюда». Кусты можно искать по номеру после привязки их точек.</span><button class="btn" data-action="gps"><svg><use href="#i-gps"/></svg>Где я?</button></div>
+          <div class="map-legend"><div><i class="legend-pad"></i>Куст бригады №2</div><div><i class="legend-od"></i>Отдельная скважина</div><span id="map-hint">Схема без GPS-привязки · нажмите на куст</span></div>
+          <div class="map-caption">По вашей схеме проезда <span>Нажмите на число — приблизить</span></div>
+        </section>
+      </section>
+      <section id="info-view" class="hidden info-view"></section>
+      <section id="settings-view" class="hidden info-view"></section>
+      <footer class="app-footer"><span>ЦДНГ-6 / Бригада №2</span><span>Фёдоровское месторождение</span><span id="offline-state">Подготовка доступа без сети…</span></footer>
+    </main>
+  </div>
+  <div id="drawer-backdrop" class="drawer-backdrop hidden"></div><aside id="drawer" class="drawer hidden" aria-label="Карточка куста" role="dialog" aria-modal="true" tabindex="-1"></aside>
+  <dialog id="modal"><div id="modal-content"></div></dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <noscript><p class="fatal">Для интерактивного атласа включите JavaScript.</p></noscript>
+</body>
+</html>

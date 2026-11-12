@@ -1,0 +1,10 @@
+.gradle/
+local.properties
+**/build/
+app/src/main/assets/www/
+app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+app/build-assets.json
+*.jks
+*.keystore
+*.p12
+*.password*

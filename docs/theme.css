@@ -1,0 +1,276 @@
+/* Appearance is selected with data-theme and data-text-size on the root element. */
+html{color-scheme:light}
+html[data-theme="dark"]{
+  color-scheme:dark;
+  --navy:#deefef;--navy-deep:#081b24;--teal:#73cfcc;--gold:#d8bc83;
+  --ink:#e3efed;--muted:#98b2b5;--line:#29434c;--paper:#0b1b24;--white:#122a34;
+  --production:#d4b16c;--injection:#83b694;--piezometric:#73b8d5;
+  --conserved:#dcc573;--abandoned:#9baeb3;--unknown:#a2b1b6;
+  --shadow:0 12px 40px #020b123b;
+  background:#0b1b24;color:var(--ink)
+}
+html[data-theme="dark"] body{background:radial-gradient(ellipse at 85% 0,#15344166,transparent 55%),var(--paper)}
+html[data-theme="dark"] ::selection{background:#2d727f;color:#fff}
+html[data-theme="dark"] button:focus-visible,
+html[data-theme="dark"] a:focus-visible,
+html[data-theme="dark"] input:focus-visible,
+html[data-theme="dark"] select:focus-visible,
+html[data-theme="dark"] textarea:focus-visible{outline-color:#73cfcc}
+html[data-theme="dark"] .topbar{background:#102730;border-color:var(--line)}
+html[data-theme="dark"] .brand img{background:#fff;border-radius:7px;padding:3px}
+html[data-theme="dark"] .brand small,
+html[data-theme="dark"] .brigade-tag,
+html[data-theme="dark"] .headline-stats span{color:#9bb3b6}
+html[data-theme="dark"] .connection{color:#a5c5bb}
+html[data-theme="dark"] .connection i{background:#8ac4a4}
+html[data-theme="dark"] .connection.offline i{background:var(--gold)}
+html[data-theme="dark"] .rail{background:#081b24;border-color:#27424a}
+html[data-theme="dark"] .rail-mark{color:#94bac1;border-color:#35515d}
+html[data-theme="dark"] .rail-mark span{color:var(--gold)}
+html[data-theme="dark"] .nav-item{color:#93adb5}
+html[data-theme="dark"] .nav-item:hover{background:#143440;color:#ddf2ee}
+html[data-theme="dark"] .nav-item.active{background:#1c4350;color:#e2f6f3;box-shadow:inset 3px 0 var(--gold)}
+html[data-theme="dark"] .eyebrow{color:#85b4b3}
+html[data-theme="dark"] .page-heading p{color:#9bb3b6}
+html[data-theme="dark"] .btn,
+html[data-theme="dark"] .icon-btn{background:#18323d;border-color:#34515a;color:#cee1e0}
+html[data-theme="dark"] .btn:hover,
+html[data-theme="dark"] .icon-btn:hover{background:#21434e;border-color:#4e7279}
+html[data-theme="dark"] .btn.primary{background:#247e8d;border-color:#3e9ba7;color:#fff}
+html[data-theme="dark"] .btn.primary:hover{background:#2b94a2;border-color:#60b4bd}
+html[data-theme="dark"] .btn.subtle{background:#18363f;border-color:transparent;color:#b9d5d6}
+html[data-theme="dark"] .btn.gold,
+html[data-theme="dark"] .icon-btn.active{background:#3c382a;border-color:#76684a;color:#ead29c}
+html[data-theme="dark"] .icon-btn.active svg{fill:#c5a96830}
+html[data-theme="dark"] .atlas-layout{background:#122a34;border-color:#2d4851}
+html[data-theme="dark"] .directory,
+html[data-theme="dark"] .pad-card{background:#122a34}
+html[data-theme="dark"] .directory-top,
+html[data-theme="dark"] .directory-footer{border-color:#2a444c}
+html[data-theme="dark"] .section-label{color:#a2bec1}
+html[data-theme="dark"] .section-label span{color:#839fa5}
+html[data-theme="dark"] .searchbox{background:#0d222c;border-color:#34505a}
+html[data-theme="dark"] .searchbox svg{color:#8dafb5}
+html[data-theme="dark"] .searchbox input{color:#e3eeec}
+html[data-theme="dark"] .searchbox input::placeholder,
+html[data-theme="dark"] textarea::placeholder,
+html[data-theme="dark"] .form-field input::placeholder{color:#829ea5;opacity:1}
+html[data-theme="dark"] .searchbox kbd{color:#8aa6ac;border-color:#3b565f}
+html[data-theme="dark"] .filter-line select,
+html[data-theme="dark"] .well-controls select{background:#162f39;border-color:#36515a;color:#bad1d2}
+html[data-theme="dark"] .pad-list{scrollbar-color:#3b5962 transparent}
+html[data-theme="dark"] .pad-card{border-bottom-color:#243e47}
+html[data-theme="dark"] .pad-card:hover,
+html[data-theme="dark"] .pad-card.selected{background:#1b3b45}
+html[data-theme="dark"] .pad-card.selected{box-shadow:inset 3px 0 #71c8c5}
+html[data-theme="dark"] .pad-number{color:#e0eeeb}
+html[data-theme="dark"] .pad-number small{color:#8caab0}
+html[data-theme="dark"] .pad-card-count{color:#b0c9cb}
+html[data-theme="dark"] .pad-card>svg{color:#6f929c}
+html[data-theme="dark"] .match-list{color:#90d9d4}
+html[data-theme="dark"] .directory-footer{color:#93afb1}
+html[data-theme="dark"] .directory-footer button{color:#91b9bc}
+html[data-theme="dark"] .app-footer{color:#809da3}
+html[data-theme="dark"] .app-footer>span:first-child{color:#abc5c6}
+html[data-theme="dark"] .loading,
+html[data-theme="dark"] .empty-state{color:#a1bbc0}
+html[data-theme="dark"] .empty-state svg{color:#6f929b}
+
+/* Map surfaces and controls stay distinct from the selected map image. */
+html[data-theme="dark"] .map-panel,
+html[data-theme="dark"] #field-map,
+html[data-theme="dark"] #geo-map{background:#112832}
+html[data-theme="dark"] .map-toolbar{background:#122b35f5;border-color:#2d4851}
+html[data-theme="dark"] .map-toolbar>div:first-child{color:#c4dddd}
+html[data-theme="dark"] .map-toolbar svg{color:#8fb8bf}
+html[data-theme="dark"] .segmented{background:#0b222c}
+html[data-theme="dark"] .segmented button{color:#8fadb5}
+html[data-theme="dark"] .segmented button.active{background:#254b58;color:#e6f3ef;box-shadow:0 1px 5px #020b1255}
+html[data-theme="dark"] .map-panel[data-layer="clean"] #field-map .leaflet-image-layer{filter:invert(1) sepia(1) saturate(2) hue-rotate(160deg) brightness(1.3)}
+html[data-theme="dark"] .map-panel[data-layer="original"] #field-map .leaflet-image-layer{filter:brightness(.76) saturate(.8)}
+html[data-theme="dark"] #geo-map .leaflet-tile-pane{filter:invert(.9) hue-rotate(180deg) saturate(.55) brightness(.9) contrast(.9)}
+html[data-theme="dark"] .map-float-label{background:#142f39ed;border-color:#36545b;color:#b1cfcd;box-shadow:0 3px 12px #030d1540}
+html[data-theme="dark"] .map-float-label>span:last-child{color:#84a6aa}
+html[data-theme="dark"] .map-action{background:#17343f;border-color:#3a5862;color:#b9d7d9;box-shadow:0 2px 8px #020c1640}
+html[data-theme="dark"] .map-action:hover{background:#24505c}
+html[data-theme="dark"] .leaflet-control-zoom{border-color:#3a5862!important;box-shadow:0 2px 8px #020c1640!important}
+html[data-theme="dark"] .leaflet-control-zoom a{background:#17343f!important;color:#d3e6e6!important;border-color:#3a5862!important}
+html[data-theme="dark"] .leaflet-control-zoom a:hover{background:#24505c!important}
+html[data-theme="dark"] .map-legend{background:#132e38f0;border-color:#36525b;color:#b4cecf}
+html[data-theme="dark"] .legend-pad{background:#72c7c5;box-shadow:0 0 0 3px #28505a}
+html[data-theme="dark"] .legend-od{border-color:#d8bd85}
+html[data-theme="dark"] #map-hint{color:#8fb0b4}
+html[data-theme="dark"] .map-caption{background:#112a34f5;border-color:#2e4a54;color:#aac8c9}
+html[data-theme="dark"] .map-caption>span{color:#85a5aa}
+html[data-theme="dark"] .pad-pin{background:#173b46f5;border-color:#527a83;color:#d8ece7;box-shadow:0 3px 10px #020c1655}
+html[data-theme="dark"] .pad-pin:before{background:#7cd4cf}
+html[data-theme="dark"] .pad-pin span{background:#2c5360;color:#bdd8d8}
+html[data-theme="dark"] .pad-pin.selected{background:#2c8291;border-color:#8bc7cb;color:#fff;box-shadow:0 0 0 4px #8bd2d530,0 4px 12px #020c1666}
+html[data-theme="dark"] .pad-pin.selected:before{background:#edcf93}
+html[data-theme="dark"] .pad-pin.selected span{background:#ffffff1f;color:#fff}
+html[data-theme="dark"] .pad-pin.od{background:#373b32f5;border-color:#8c805e;color:#ead2a4}
+html[data-theme="dark"] .pad-pin.od:before{background:#dcc28e}
+html[data-theme="dark"] .leaflet-tooltip,
+html[data-theme="dark"] .leaflet-popup-content-wrapper,
+html[data-theme="dark"] .leaflet-popup-tip{background:#17333f;color:#e2edeb;border-color:#45616b;box-shadow:0 4px 15px #030d1555}
+html[data-theme="dark"] .leaflet-tooltip-top:before{border-top-color:#45616b}
+html[data-theme="dark"] .leaflet-tooltip-bottom:before{border-bottom-color:#45616b}
+html[data-theme="dark"] .leaflet-tooltip-left:before{border-left-color:#45616b}
+html[data-theme="dark"] .leaflet-tooltip-right:before{border-right-color:#45616b}
+html[data-theme="dark"] .leaflet-control-attribution{background:#122c36e8;color:#99b7bd}
+html[data-theme="dark"] .leaflet-control-attribution a{color:#91d1ce}
+
+/* Object cards, notes, dialogs and the reference pages. */
+html[data-theme="dark"] .drawer-backdrop{background:#020d1778}
+html[data-theme="dark"] .drawer{background:#102731;box-shadow:-15px 0 70px #020a1666}
+html[data-theme="dark"] .drawer-head{background:linear-gradient(135deg,#183945,#132e38);border-color:#304d56}
+html[data-theme="dark"] .drawer-head:before{background:#44616b}
+html[data-theme="dark"] .drawer-eyebrow,
+html[data-theme="dark"] .drawer-subtitle,
+html[data-theme="dark"] .small-label{color:#9ab9bb}
+html[data-theme="dark"] .type-stat{background:#142e38;border-color:#2d4953;color:#acc7c8}
+html[data-theme="dark"] .well-cell{background:#15323b;border-color:#34515a;border-left-color:var(--c);color:#d8e9e5}
+html[data-theme="dark"] .well-cell:hover,
+html[data-theme="dark"] .well-cell.selected{background:#24505a;border-color:#709e9f;border-left-color:var(--c)}
+html[data-theme="dark"] .well-cell small{color:#dfc488}
+html[data-theme="dark"] .well-detail{border-color:#36535b}
+html[data-theme="dark"] .well-detail-head{background:#1a3b45}
+html[data-theme="dark"] .well-detail-body{background:#122b35}
+html[data-theme="dark"] .type-badge{background:#22434c;color:#c0d8d6}
+html[data-theme="dark"] .note-label,
+html[data-theme="dark"] .form-field>span{color:#abc7c8}
+html[data-theme="dark"] .well-detail textarea,
+html[data-theme="dark"] .form-field input,
+html[data-theme="dark"] .form-field textarea{background:#0c222c;border-color:#3c5962;color:#e0eeeb}
+html[data-theme="dark"] input[type="file"]::file-selector-button{background:#244955;color:#d3e7e5;border:1px solid #42636e;border-radius:5px;padding:6px 9px;margin-right:10px}
+html[data-theme="dark"] .note-help,
+html[data-theme="dark"] .form-help{color:#91b0b0}
+html[data-theme="dark"] .gps-summary p{color:#a0bbbd}
+html[data-theme="dark"] .source-note{background:#172f38;color:#a1bbba}
+html[data-theme="dark"] .source-note a{color:#a9d5d0}
+html[data-theme="dark"] .warning-note{background:#3b3526;color:#e3c98f}
+html[data-theme="dark"] .info-card{background:#122b35;border-color:#2d4952}
+html[data-theme="dark"] .info-card p,
+html[data-theme="dark"] .info-card li,
+html[data-theme="dark"] .info-card .legend-row{color:#abc6c6}
+html[data-theme="dark"] .data-total span{color:#9bb8b8}
+html[data-theme="dark"] .info-issues{color:#abc0bf}
+html[data-theme="dark"] .status-chip{background:#21493f;color:#b0ddc2}
+html[data-theme="dark"] dialog{background:#122b35;color:#e3eeec;box-shadow:0 25px 110px #01071099}
+html[data-theme="dark"] dialog::backdrop{background:#020d177d}
+html[data-theme="dark"] .modal-copy{color:#adc7c6}
+html[data-theme="dark"] .modal-copy h3{color:#deeeea}
+html[data-theme="dark"] .error-text{color:#f3ad96}
+html[data-theme="dark"] .gps-result{background:#1b3c45;color:#bed8d4}
+html[data-theme="dark"] #toast{background:#245969;color:#edf9f5;border:1px solid #4c7a86;box-shadow:0 6px 30px #020b1666}
+
+/* Shared setting controls, also usable with the light appearance. */
+.settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.settings-card{border:1px solid var(--line);background:var(--white);border-radius:12px;padding:24px}
+.settings-card h2{font-size:19px;font-weight:600;margin:0 0 18px;letter-spacing:-.02em}
+.settings-row{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:17px 0;border-bottom:1px solid var(--line)}
+.settings-row:last-child{border-bottom:0;padding-bottom:0}
+.settings-label{font-size:13px;line-height:1.5;font-weight:600;color:var(--ink)}
+.settings-copy,.settings-note{font-size:12px;line-height:1.7;color:var(--muted);margin:5px 0 0}
+.theme-options{display:flex;gap:10px;flex-wrap:wrap}
+.theme-option{border:1px solid var(--line);background:#f5f8f5;padding:13px 17px;border-radius:9px;font-size:12px;min-height:46px;display:flex;align-items:center;gap:9px;color:var(--ink)}
+.theme-option.active,.theme-option[aria-pressed="true"]{border-color:var(--teal);background:#eaf5f2;color:var(--teal);box-shadow:0 0 0 1px var(--teal)}
+.setting-switch{width:44px;height:26px;flex-shrink:0;border:0;border-radius:20px;padding:3px;background:#bdccc7;display:inline-flex;align-items:center;position:relative}
+.setting-switch:before{content:"";width:20px;height:20px;border-radius:50%;background:white;box-shadow:0 1px 4px #163c4b26;transition:transform .18s}
+.setting-switch[aria-checked="true"],.setting-switch.active{background:#257e89}
+.setting-switch[aria-checked="true"]:before,.setting-switch.active:before{transform:translateX(18px)}
+html[data-theme="dark"] .settings-card{background:#122b35;border-color:#2d4952}
+html[data-theme="dark"] .theme-option{background:#152f39;border-color:#3a555e;color:#c2d9d8}
+html[data-theme="dark"] .theme-option.active,
+html[data-theme="dark"] .theme-option[aria-pressed="true"]{background:#214b55;border-color:#79c5c3;color:#daf3ed;box-shadow:0 0 0 1px #79c5c3}
+html[data-theme="dark"] .setting-switch{background:#455b62}
+html[data-theme="dark"] .setting-switch[aria-checked="true"],
+html[data-theme="dark"] .setting-switch.active{background:#367f8a}
+
+/* A larger reading size changes the working content, not the map geometry. */
+html[data-text-size="large"] .searchbox input,
+html[data-text-size="large"] .filter-line select,
+html[data-text-size="large"] .well-controls select{font-size:15px}
+html[data-text-size="large"] .pad-card{min-height:88px}
+html[data-text-size="large"] .pad-number{font-size:23px;min-width:64px}
+html[data-text-size="large"] .pad-number small{font-size:10px}
+html[data-text-size="large"] .pad-card-count{font-size:15px;line-height:1.4}
+html[data-text-size="large"] .match-list{font-size:12px}
+html[data-text-size="large"] .section-label{font-size:11px;letter-spacing:.08em}
+html[data-text-size="large"] .section-label span{font-size:12px}
+html[data-text-size="large"] .drawer-subtitle{font-size:15px;line-height:1.55}
+html[data-text-size="large"] .drawer-actions .btn,
+html[data-text-size="large"] .gps-summary .btn{font-size:13px}
+html[data-text-size="large"] .small-label{font-size:11px}
+html[data-text-size="large"] .type-stat{font-size:12px;line-height:1.5;flex-wrap:wrap}
+html[data-text-size="large"] .type-stat strong{font-size:19px}
+html[data-text-size="large"] .well-controls{gap:10px;flex-wrap:wrap}
+html[data-text-size="large"] .well-controls>span{font-size:14px}
+html[data-text-size="large"] .well-controls select{max-width:100%}
+html[data-text-size="large"] .well-cell{font-size:17px;min-height:59px;padding:12px 3px}
+html[data-text-size="large"] .well-cell small{font-size:10px}
+html[data-text-size="large"] .well-detail-head h3{font-size:19px}
+html[data-text-size="large"] .type-badge{font-size:12px;line-height:1.4}
+html[data-text-size="large"] .note-label,
+html[data-text-size="large"] .note-save,
+html[data-text-size="large"] .form-field>span{font-size:13px}
+html[data-text-size="large"] .well-detail textarea,
+html[data-text-size="large"] .form-field input,
+html[data-text-size="large"] .form-field textarea{font-size:16px;line-height:1.6}
+html[data-text-size="large"] .note-help,
+html[data-text-size="large"] .source-note{font-size:11px}
+html[data-text-size="large"] .gps-summary p,
+html[data-text-size="large"] .form-help,
+html[data-text-size="large"] .warning-note{font-size:13px;line-height:1.75}
+html[data-text-size="large"] .gps-value{font-size:17px}
+html[data-text-size="large"] .info-card h2,
+html[data-text-size="large"] .settings-card h2{font-size:22px}
+html[data-text-size="large"] .info-card p,
+html[data-text-size="large"] .info-card li,
+html[data-text-size="large"] .modal-copy{font-size:16px;line-height:1.75}
+html[data-text-size="large"] .info-card .legend-row,
+html[data-text-size="large"] .settings-label{font-size:15px}
+html[data-text-size="large"] .settings-copy,
+html[data-text-size="large"] .settings-note,
+html[data-text-size="large"] .theme-option{font-size:14px}
+html[data-text-size="large"] .info-issues{font-size:14px;line-height:1.8}
+html[data-text-size="large"] .modal-copy h3{font-size:17px}
+html[data-text-size="large"] .nearest-row,
+html[data-text-size="large"] .gps-result{font-size:15px}
+html[data-text-size="large"] .empty-state{font-size:15px}
+
+@media(max-width:800px){.settings-grid{grid-template-columns:1fr}}
+@media(max-width:600px){
+  html[data-theme="dark"] .rail{background:#102a34;border-color:#32505a;box-shadow:0 -4px 24px #020b1640}
+  html[data-theme="dark"] .nav-item.active{background:transparent;color:#8cdbd4;box-shadow:inset 0 2px #8cdbd4}
+  html[data-theme="dark"] .nav-item:hover{background:#163741}
+  html[data-theme="dark"] .install-btn{background:#18363f!important}
+  .searchbox input,.filter-line select,.well-controls select{font-size:16px;min-height:22px}
+  .searchbox{min-height:48px}
+  .well-controls{gap:9px;flex-wrap:wrap}
+  .well-controls select{max-width:100%;min-height:44px;padding:10px}
+  .form-field input,.form-field textarea,.well-detail textarea{font-size:16px}
+  .settings-card{padding:22px 20px}
+  .settings-row{gap:14px}
+  .theme-option{flex:1;justify-content:center;padding:13px 12px}
+  html[data-text-size="large"] .searchbox input,
+  html[data-text-size="large"] .filter-line select,
+  html[data-text-size="large"] .well-controls select{font-size:16px}
+  html[data-text-size="large"] .pad-number{font-size:23px}
+  html[data-text-size="large"] .drawer-actions{flex-wrap:wrap}
+  html[data-text-size="large"] .drawer-actions .btn{flex-basis:40%;min-height:44px;font-size:13px}
+  html[data-text-size="large"] .type-stat{padding:11px 9px;font-size:12px}
+  html[data-text-size="large"] .well-grid{gap:6px}
+  html[data-text-size="large"] .info-card .btn{font-size:13px}
+  html[data-text-size="large"] .theme-options{gap:8px}
+}
+select.setting-switch{width:136px;min-width:136px;height:auto;min-height:41px;border:1px solid var(--line);border-radius:7px;padding:9px 10px;display:block;background:#f8faf6;color:#59796f;font-size:12px;position:static}
+.settings-row>div{flex:1;min-width:0}
+html[data-theme="dark"] select.setting-switch{background:#0e2933;border-color:#35545b;color:#cee4df}
+@media(max-width:600px){select.setting-switch{min-width:115px;width:115px;font-size:14px;padding:9px 7px}.settings-row .settings-copy{font-size:11px}html[data-text-size="large"] select.setting-switch{font-size:16px;min-width:125px;width:125px}}
+@media(prefers-reduced-motion:reduce){.setting-switch:before{transition:none}}
+@media print{
+  html[data-theme="dark"],html[data-theme="dark"] body{background:#fff!important;color:#20383e!important}
+  html[data-theme="dark"] .directory,html[data-theme="dark"] .pad-card{background:#fff!important;color:#20383e!important;border-color:#dce4df!important}
+  html[data-theme="dark"] .pad-number,html[data-theme="dark"] .pad-card-count{color:#20383e!important}
+}
