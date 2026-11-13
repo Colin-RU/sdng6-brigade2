@@ -49,7 +49,7 @@ async function readPage(env,table,url,key=null,viewerId=null) {
 async function createMessage(request,env,user,table,key=null,ctx=null,hooks={}) {
   const b=await bodyJson(request);ownKeys(b,key===null?['clientId','body','mediaIds','replyToId','sharedPadId']:['clientId','body','mediaIds','parentId']);
   const clientId=text(b.clientId,'clientId',8,80);if(!/^[A-Za-z0-9_-]+$/.test(clientId))fail(400,'invalid_input','Некорректный clientId.');
-  const body=text(b.body??'','body',0,4000),ids=b.mediaIds??[];
+  const body=text(b.body??'','body',0,table==='object_notes'?5000:4000),ids=b.mediaIds??[];
   const replyToId=key===null&&b.replyToId!=null?text(b.replyToId,'replyToId',1,64):null,sharedPadId=key===null&&b.sharedPadId!=null?padId(b.sharedPadId):null;
   if(replyToId&&!/^[A-Za-z0-9-]+$/.test(replyToId))fail(400,'invalid_reply','Некорректное исходное сообщение.');
   const media=await mediaForIds(env,ids,user.id);if(!body&&!media.length&&!sharedPadId)fail(400,'empty_message','Введите текст, добавьте изображение или данные куста.');
@@ -80,7 +80,7 @@ async function editMessage(request,env,user,table,id) {
   if(request.method==='DELETE'){await run(env,`DELETE FROM ${table} WHERE id=? AND user_id=?`,id,user.id);return json({ok:true});}
   const b=await bodyJson(request);ownKeys(b,['body','mediaIds','revision']);
   const revision=b.revision??row.revision;if(!Number.isInteger(revision)||revision<1)fail(400,'invalid_input','Некорректная версия записи.');
-  const body='body'in b?text(b.body,'body',0,4000):row.body;
+  const body='body'in b?text(b.body,'body',0,table==='object_notes'?5000:4000):row.body;
   const ids='mediaIds'in b?b.mediaIds:JSON.parse(row.media_ids);await mediaForIds(env,ids,user.id);if(!body&&!ids.length&&!row.shared_pad_id)fail(400,'empty_message','Введите текст или добавьте изображение.');
   const mentionUpdate=table==='chat_messages'?',mentioned_user_ids=?':'',args=[body,JSON.stringify(ids),now()];
   if(mentionUpdate)args.push(JSON.stringify((await resolveMentions(env,body)).map(profile=>profile.id)));

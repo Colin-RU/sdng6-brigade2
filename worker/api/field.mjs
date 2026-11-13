@@ -1,5 +1,5 @@
 import {all,first,run,fail,now,iso,uuid,json,text,choice,integer,boolean,ownKeys,bodyJson,authorFrom} from './core.mjs';
-import {padId,objectKey,samplingPadIds,samplingPadId,productionWellIds} from '../registry.mjs';
+import {padId,objectKey,samplingPadIds,samplingPadId,samplingWellIds} from '../registry.mjs';
 import {currentSamplingPeriod,samplingPeriod,periodStart,periodEnd} from './sampling-periods.mjs';
 const authorCols='p.login,p.nickname,p.position,p.grade,p.avatar_media_id';
 function stateView(row,pad=null,period=null) {
@@ -7,7 +7,7 @@ function stateView(row,pad=null,period=null) {
   if(pad&&row&&period&&(row.round_key??samplingPeriod(Number(row.updated_at)).key)!==period.key)row=null;
   let sample;
   if(pad){
-    const eligible=productionWellIds[pad]??[];let selected=[];
+    const eligible=samplingWellIds[pad]??[];let selected=[];
     if(row?.well_ids==null)selected=row?.sampled?eligible:[];
     else {try{const value=JSON.parse(row.well_ids);if(Array.isArray(value))selected=eligible.filter(id=>value.includes(id));}catch{}}
     const sampled=eligible.length>0&&selected.length===eligible.length;
@@ -17,10 +17,10 @@ function stateView(row,pad=null,period=null) {
   return {...(sample??{status:row.status}),revision:row.revision,updatedAt:iso(row.updated_at),author:authorFrom(row),note:row.note};
 }
 function selectedWells(body,pad){
-  const hasIds=Object.hasOwn(body,'wellIds'),hasLegacy=Object.hasOwn(body,'sampled'),eligible=productionWellIds[pad]??[];
+  const hasIds=Object.hasOwn(body,'wellIds'),hasLegacy=Object.hasOwn(body,'sampled'),eligible=samplingWellIds[pad]??[];
   if(hasIds===hasLegacy)fail(400,'invalid_selection','Передайте список скважин или общую отметку отбора, но не оба поля.');
   if(hasLegacy)return boolean(body.sampled,'sampled')?[...eligible]:[];
-  if(!Array.isArray(body.wellIds)||body.wellIds.length>100||body.wellIds.some(id=>typeof id!=='string'||!eligible.includes(id)))fail(400,'invalid_well_selection','Выберите только добывающие скважины этого куста из списка.');
+  if(!Array.isArray(body.wellIds)||body.wellIds.length>100||body.wellIds.some(id=>typeof id!=='string'||!eligible.includes(id)))fail(400,'invalid_well_selection','Выберите скважины из списка отбора проб. Фонтанные скважины в отбор не включаются.');
   const ids=new Set(body.wellIds);return eligible.filter(id=>ids.has(id));
 }
 async function sampleGet(env,id){return first(env,`SELECT s.*,s.updated_by AS user_id,${authorCols} FROM samples s JOIN profiles p ON p.id=s.updated_by WHERE s.pad_id=?`,id);}
@@ -36,7 +36,7 @@ async function updateState(request,env,user,id,isSample) {
   if(!isSample&&b.status==='absent'&&!id.startsWith('equipment:'))fail(400,'equipment_status_only','Состояние «Отсутствует» доступно только для оборудования.');
   const statuses=id.startsWith('equipment:')?['unknown','ok','attention','stopped','absent']:['unknown','ok','attention','stopped'];
   const selection=isSample?selectedWells(b,id):null,selectionJson=isSample?JSON.stringify(selection):null;
-  const revision=integer(b.revision,'revision',0,2147483646),value=isSample?(selection.length>0&&selection.length===(productionWellIds[id]??[]).length?1:0):choice(b.status,'status',statuses);
+  const revision=integer(b.revision,'revision',0,2147483646),value=isSample?(selection.length>0&&selection.length===(samplingWellIds[id]??[]).length?1:0):choice(b.status,'status',statuses);
   const note=text(b.note??'','note',0,1000),time=isSample?Date.parse(period.asOf):now(),mutationId=uuid();
   const table=isSample?'samples':'object_statuses',key=isSample?'pad_id':'object_key',column=isSample?'sampled':'status',audit=isSample?'sample_audit':'status_audit';
   const extraColumn=isSample?',well_ids,round_key':'',extraPlaceholder=isSample?',?,?':'',extraSet=isSample?',well_ids=?,round_key=?':'',extraArgs=isSample?[selectionJson,period.key]:[];

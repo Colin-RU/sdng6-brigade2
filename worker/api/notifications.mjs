@@ -43,6 +43,18 @@ export async function handleNotifications(request,env,path,user) {
   m=path.match(/^\/notifications\/([A-Za-z0-9-]{1,64})$/);
   if(m&&request.method==='GET'){const row=await first(env,"SELECT n.*,p.nickname,p.avatar_media_id,cm.mentioned_user_ids AS message_mentioned_user_ids FROM notifications n LEFT JOIN profiles p ON p.id=n.actor_id LEFT JOIN chat_messages cm ON n.type='chat' AND cm.id=n.note_id WHERE n.id=? AND n.recipient_id=?",m[1],user.id);if(!row)fail(404,'not_found','Уведомление не найдено.');return json({item:notificationView(row)});}
   if(path==='/push/public-key'&&request.method==='GET')return json({publicKey:env.VAPID_PUBLIC_KEY??null});
+  if(path==='/push/visibility'&&request.method==='POST'){
+    const b=await bodyJson(request);ownKeys(b,['endpoint','visible','documentId','sequence']);const endpoint=subscriptionEndpoint(b.endpoint);if(typeof b.visible!=='boolean'||typeof b.documentId!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(b.documentId)||!Number.isSafeInteger(b.sequence)||b.sequence<1)fail(400,'invalid_visibility','Некорректное состояние приложения.');
+    const subscription=await first(env,'SELECT id,user_id FROM push_subscriptions WHERE endpoint=?',endpoint);if(!subscription)fail(404,'not_found','Подписка уведомлений не найдена.');if(subscription.user_id!==user.id)fail(403,'forbidden','Нет доступа к этой подписке.');
+    const id=subscription.id,doc=b.documentId.toLowerCase(),results=await env.DB.batch([
+      // Lock the parent before pruning/CAS/aggregation so concurrent documents
+      // cannot overwrite a newer MAX with an older transaction's snapshot.
+      env.DB.prepare('UPDATE push_subscriptions SET visible_until=visible_until WHERE id=? AND user_id=? RETURNING id').bind(id,user.id),
+      env.DB.prepare('DELETE FROM push_visibility_leases WHERE sub_id=? AND updated_at<atlas_now_ms()-300000 AND EXISTS (SELECT 1 FROM push_subscriptions WHERE id=? AND user_id=?)').bind(id,id,user.id),
+      env.DB.prepare(`INSERT INTO push_visibility_leases (sub_id,document_id,sequence,visible_until,updated_at) SELECT ?,?,?,${b.visible?'atlas_now_ms()+20000':'0'},atlas_now_ms() WHERE EXISTS (SELECT 1 FROM push_subscriptions WHERE id=? AND user_id=?) ON CONFLICT(sub_id,document_id) DO UPDATE SET sequence=excluded.sequence,visible_until=excluded.visible_until,updated_at=excluded.updated_at WHERE push_visibility_leases.sequence<excluded.sequence RETURNING sub_id`).bind(id,doc,b.sequence,id,user.id),
+      env.DB.prepare('UPDATE push_subscriptions SET visible_until=COALESCE((SELECT MAX(visible_until) FROM push_visibility_leases WHERE sub_id=?),0) WHERE id=? AND user_id=? RETURNING id').bind(id,id,user.id)
+    ]);if(!results[0].results?.length||!results[3].results?.length)fail(404,'not_found','Подписка уведомлений не найдена.');return json({ok:true});
+  }
   if(path==='/push/subscriptions'&&request.method==='POST'){
     const b=await bodyJson(request);ownKeys(b,['endpoint','keys','expirationTime']);const endpoint=subscriptionEndpoint(b.endpoint);if(!b.keys||typeof b.keys!=='object'||Array.isArray(b.keys))fail(400,'invalid_subscription','Некорректная подписка.');ownKeys(b.keys,['p256dh','auth']);
     const p256dh=text(b.keys.p256dh,'p256dh',1,128),auth=text(b.keys.auth,'auth',1,64);let publicBytes,authBytes;try{publicBytes=unbase64url(p256dh);authBytes=unbase64url(auth);}catch{fail(400,'invalid_subscription','Некорректная подписка.');}if(publicBytes.length!==65||publicBytes[0]!==4||authBytes.length!==16)fail(400,'invalid_subscription','Некорректная подписка.');

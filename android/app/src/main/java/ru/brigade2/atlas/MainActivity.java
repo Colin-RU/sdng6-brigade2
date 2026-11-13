@@ -332,11 +332,14 @@ public final class MainActivity extends Activity implements LocationListener {
     @Override public void onProviderEnabled(String provider) { if (requestedGps) { stopGps(); startGps(); } }
     @Override public void onProviderDisabled(String provider) { if (requestedGps) { stopGps(); startGps(); } }
     @Override public void onStatusChanged(String provider, int status, Bundle extras) { }
+    @Override protected void onStart() { super.onStart(); NativeVisibility.started(this); }
+    @Override protected void onStop() { NativeVisibility.stopped(this); super.onStop(); }
     void refreshNativeNotificationState() { if (notificationPageReady && trustedPage()) send("atlas-native-notification-state", NativeNotifications.state(this)); }
     @Override protected void onResume() { super.onResume(); foreground = true; if (webView != null) webView.onResume(); sendSystemTheme(); startGps(); NativeNotifications.schedule(this, false); refreshNativeNotificationState(); }
     @Override protected void onPause() { foreground = false; stopGps(); if (webView != null) webView.onPause(); super.onPause(); }
     @Override protected void onSaveInstanceState(Bundle state) { if (webView != null) webView.saveState(state); super.onSaveInstanceState(state); }
     @Override protected void onDestroy() {
+        NativeVisibility.stopped(this);
         NativePush.detach(this);
         stopGps();
         trustedDocument = false; notificationCommands.shutdown();

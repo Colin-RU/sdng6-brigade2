@@ -36,7 +36,7 @@ export async function sendPush(env,userIds,payload){
  const config={publicKey:env.VAPID_PUBLIC_KEY,privateJwk:env.VAPID_PRIVATE_JWK,subject:env.VAPID_SUBJECT};
  const result={sent:0,failed:0,expired:0,retryable:0};if(!config.publicKey||!config.privateJwk||!config.subject)return result;
  const ids=[...new Set(userIds)].filter(x=>typeof x==='string').slice(0,20);if(!ids.length)return result;
- const rows=(await env.DB.prepare(`SELECT id,user_id,endpoint,p256dh,auth FROM push_subscriptions WHERE user_id IN (${ids.map(()=>'?').join(',')})`).bind(...ids).all()).results||[];
+ const rows=(await env.DB.prepare(`SELECT id,user_id,endpoint,p256dh,auth FROM push_subscriptions WHERE user_id IN (${ids.map(()=>'?').join(',')}) AND visible_until<=atlas_now_ms()`).bind(...ids).all()).results||[];
  const fetcher=env.PUSH_FETCH||fetch;
  for(let offset=0;offset<rows.length;offset+=5)await Promise.all(rows.slice(offset,offset+5).map(async row=>{
   if(!providerAllowed(row.endpoint)){result.failed++;return;}

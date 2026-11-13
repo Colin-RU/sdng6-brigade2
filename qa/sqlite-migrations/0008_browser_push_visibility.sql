@@ -1,0 +1,1 @@
+ALTER TABLE `push_subscriptions` ADD `visible_until` integer DEFAULT 0 NOT NULL;

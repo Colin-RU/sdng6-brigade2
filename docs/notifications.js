@@ -12,6 +12,20 @@
   const format=value=>new Date(value).toLocaleString('ru-RU',{timeZone:'Asia/Yekaterinburg',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
   const key=()=>STORE+String(user()?.id||'guest');
   const native=()=>Boolean(window.SdngGps?.getNotificationState&&window.SdngGps?.configureNotifications);
+  let browserEndpoint='',visibilityDocumentId=null,visibilitySequence=0,browserPageActive=true;
+  function documentId(){
+    if(visibilityDocumentId)return visibilityDocumentId;const crypto=window.crypto;if(crypto?.randomUUID)return visibilityDocumentId=crypto.randomUUID();if(!crypto?.getRandomValues)return null;
+    const bytes=crypto.getRandomValues(new Uint8Array(16));bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;const hex=[...bytes].map(value=>value.toString(16).padStart(2,'0')).join('');return visibilityDocumentId=hex.slice(0,8)+'-'+hex.slice(8,12)+'-'+hex.slice(12,16)+'-'+hex.slice(16,20)+'-'+hex.slice(20);
+  }
+  async function sendBrowserVisibility(isVisible){
+    if(native()||!browserEndpoint||!user()||!online())return;const id=documentId();if(!id)return;
+    const endpoint=browserEndpoint,visible=Boolean(isVisible&&browserPageActive&&document.visibilityState==='visible'&&enabled());
+    try{await api('/push/visibility',{method:'POST',body:{endpoint,visible,documentId:id,sequence:++visibilitySequence},keepalive:true,timeout:4000});}catch{}
+  }
+  async function restoreBrowserSubscription(){
+    if(native()||!user())return;const generation=authGeneration,owner=user()?.id;
+    try{const registration=await navigator.serviceWorker?.getRegistration(),subscription=await registration?.pushManager?.getSubscription();if(generation!==authGeneration||owner!==user()?.id||native())return;browserEndpoint=subscription?.endpoint||'';browserSubscriptionActive=Boolean(subscription);await sendBrowserVisibility(true);if(generation===authGeneration&&visible())render();}catch{}
+  }
   function setting(){try{return JSON.parse(localStorage.getItem(key())||'null')||{enabled:false};}catch{return {enabled:false};}}
   function saveSetting(value){try{localStorage.setItem(key(),JSON.stringify(value));}catch{}}
   function sourceCopy(){try{return JSON.parse(localStorage.getItem(key()+'.feed.'+filter)||(filter==='all'?localStorage.getItem(key()+'.feed'):null)||'null');}catch{return null;}}
@@ -117,13 +131,22 @@
     const [registration,result]=await Promise.all([Promise.race([navigator.serviceWorker.ready,new Promise((_,reject)=>setTimeout(()=>reject(Error('Откройте атлас с интернетом и повторите включение уведомлений.')),15000))]),api('/push/public-key')]);
     check();if(!result.publicKey)throw Error('Фоновая доставка пока не подключена. Все ответы доступны в этом разделе.');
     let subscription=await registration.pushManager.getSubscription();if(!subscription)subscription=await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:decodeKey(result.publicKey)});
-    check();await api('/push/subscriptions',{method:'POST',body:subscription.toJSON()});check();browserSubscriptionActive=true;saveSetting({enabled:true});pushMessage='Уведомления включены на этом устройстве.';
+    check();await api('/push/subscriptions',{method:'POST',body:subscription.toJSON()});check();browserEndpoint=subscription.endpoint;browserSubscriptionActive=true;saveSetting({enabled:true});await sendBrowserVisibility(true);check();pushMessage='Уведомления включены на этом устройстве.';
   }
   async function disable(){
-    if(native()){Community.configureNativeNotifications(false);await waitNative(false);saveSetting({enabled:false});pushMessage='Уведомления на этом устройстве выключены.';return;}
-    try{await unsubscribe(true);}finally{saveSetting({enabled:false});pushMessage='Уведомления на этом устройстве выключены.';}
+    const generation=authGeneration,owner=user()?.id||null,current=()=>generation===authGeneration&&owner===(user()?.id||null);
+    if(native()){Community.configureNativeNotifications(false);await waitNative(false);if(current()){saveSetting({enabled:false});pushMessage='Уведомления на этом устройстве выключены.';}return;}
+    try{await unsubscribe(true);}finally{if(current()){saveSetting({enabled:false});pushMessage='Уведомления на этом устройстве выключены.';}}
   }
-  async function unsubscribe(server=false){let subscription,registration;try{registration=await navigator.serviceWorker?.getRegistration();subscription=await registration?.pushManager?.getSubscription();if(subscription&&server&&user())await api('/push/subscriptions',{method:'DELETE',body:{endpoint:subscription.endpoint}});}finally{try{if(subscription)await subscription.unsubscribe();}finally{browserSubscriptionActive=false;try{const shown=await registration?.getNotifications?.();for(const notification of shown||[])notification.close();}catch{}}}}
+  async function unsubscribe(server=false){
+    if(native())return;const generation=authGeneration,owner=user()?.id||null,current=()=>generation===authGeneration&&owner===(user()?.id||null),safeLocal=()=>current()||!user();let subscription,registration;
+    try{
+      registration=await navigator.serviceWorker?.getRegistration();if(!safeLocal())return;subscription=await registration?.pushManager?.getSubscription();if(!safeLocal())return;
+      if(subscription&&server&&user()&&current()){browserEndpoint=subscription.endpoint;await sendBrowserVisibility(false);if(!current())return;await api('/push/subscriptions',{method:'DELETE',body:{endpoint:subscription.endpoint}});}
+    }finally{
+      if(safeLocal()){try{if(subscription)await subscription.unsubscribe();}finally{if(safeLocal()){browserSubscriptionActive=false;browserEndpoint='';try{const shown=await registration?.getNotifications?.();if(safeLocal())for(const notification of shown||[])notification.close();}catch{}}}}
+    }
+  }
   async function prepareLogout(){saveSetting({enabled:false});try{Community.configureNativeNotifications(false);}catch{}try{await unsubscribe(true);}catch{}}
   async function openNotification(id){
     id=String(id||'');if(!id||id.length>200||openingIds.has(id))return;const generation=authGeneration;openingIds.add(id);
@@ -138,14 +161,17 @@
   function openView(){opened=true;if(host())host().dataset.communitySection='notifications';render();if(user())load();return host()?.innerHTML||'';}
   window.AtlasNotifications=Object.freeze({openView,openNotification,enable,disable,prepareLogout,requestPermission,isEnabled:enabled,getDeliveryState:deliveryState,retryPushRegistration:retryNativePush,refresh:unread,getCount:()=>count});
   window.Notifications=window.AtlasNotifications;
-  window.addEventListener('atlas-auth-change',()=>{authGeneration++;feedGeneration++;filter='all';items=[];nextCursor=null;loading=false;pushBusy=false;pushMessage='';setCount(0);if(visible())render();if(!user())return;if(native()&&setting().enabled&&Community.sessionRemembered()){try{Community.configureNativeNotifications(true);}catch{}}unread();if(pendingNotification)openNotification(pendingNotification);if(visible())load();});
+  window.addEventListener('atlas-auth-change',()=>{authGeneration++;browserEndpoint='';browserSubscriptionActive=false;feedGeneration++;filter='all';items=[];nextCursor=null;loading=false;pushBusy=false;pushMessage='';setCount(0);if(visible())render();if(!user())return;if(native()&&setting().enabled&&Community.sessionRemembered()){try{Community.configureNativeNotifications(true);}catch{}}if(!native())restoreBrowserSubscription();unread();if(pendingNotification)openNotification(pendingNotification);if(visible())load();});
   window.addEventListener('atlas-native-notification-state',()=>{pushMessage='';if(visible())render();});
   window.addEventListener('atlas-session-ended',()=>{saveSetting({enabled:false});unsubscribe(false).catch(()=>{});});
   window.addEventListener('atlas-notification-open',event=>{if(event.detail?.id)openNotification(event.detail.id);});
   navigator.serviceWorker?.addEventListener?.('message',event=>{if(event.data?.type==='ATLAS_NOTIFICATION_OPEN'&&typeof event.data.id==='string')openNotification(event.data.id);});
-  window.addEventListener('online',()=>{unread();if(visible())load();});
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')unread();});
+  window.addEventListener('online',()=>{if(browserEndpoint)sendBrowserVisibility(true);else restoreBrowserSubscription();unread();if(visible())load();});
+  document.addEventListener('visibilitychange',()=>{sendBrowserVisibility(document.visibilityState==='visible');if(document.visibilityState==='visible')unread();});
+  window.addEventListener('pagehide',()=>{browserPageActive=false;sendBrowserVisibility(false);});
+  window.addEventListener('pageshow',()=>{browserPageActive=true;if(browserEndpoint)sendBrowserVisibility(true);else restoreBrowserSubscription();});
+  setInterval(()=>{if(!native()&&browserPageActive&&document.visibilityState==='visible'&&enabled())sendBrowserVisibility(true);},8000);
   setInterval(()=>{if(document.visibilityState==='visible'){unread();if(visible())load();}},3000);
-  if(user()){unread();if(pendingNotification)setTimeout(()=>openNotification(pendingNotification),250);if(!native())navigator.serviceWorker?.getRegistration().then(registration=>registration?.pushManager?.getSubscription()).then(subscription=>{browserSubscriptionActive=Boolean(subscription);if(visible())render();}).catch(()=>{});}
+  if(user()){unread();if(pendingNotification)setTimeout(()=>openNotification(pendingNotification),250);if(!native())restoreBrowserSubscription();}
   else{unsubscribe(false).catch(()=>{});try{Community.configureNativeNotifications(false);}catch{}}
 })();

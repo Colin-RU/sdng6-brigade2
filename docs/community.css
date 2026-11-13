@@ -181,6 +181,10 @@ html[data-motion="reduced"] .community-page,html[data-motion="reduced"] .communi
 .community-avatar-editor-actions .btn{font-size:10px;min-height:40px}
 
 .community-chat-page{--chat-wall:#dceaf3;--chat-incoming:#fff;--chat-outgoing:#d8f4cf;--chat-blue:#318fc0;--chat-chrome:#fff;--chat-muted:#6b8898;position:relative;display:flex;flex-direction:column;max-width:none;width:100%;height:calc(100dvh - 110px);min-height:240px;margin:0;animation:none;gap:0;background:var(--chat-wall);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.community-chat-page.community-chat-viewport{position:fixed;top:var(--chat-viewport-top,0px);left:0;right:0;width:100%;min-height:0;margin:0;border:0;border-radius:0;z-index:600}
+html.community-chat-contained .topbar{position:fixed;top:0;left:0;right:0}
+html.community-keyboard-open .community-chat-page.community-chat-viewport{z-index:750}
+html.community-keyboard-open .community-chat-page.community-chat-viewport .community-composer{padding-bottom:7px}
 .community-chat-page .community-chat-header{flex-shrink:0;justify-content:flex-start;gap:11px;margin:0;padding:11px 18px;background:var(--chat-chrome)}
 .community-chat-header .community-group-avatar{display:flex;align-items:center;justify-content:center;width:43px;height:43px;border-radius:50%;color:white;background:#55a9cf;flex-shrink:0}
 .community-group-avatar svg{width:26px;height:26px}

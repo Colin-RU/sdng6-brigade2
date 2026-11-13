@@ -1,6 +1,6 @@
 // Server-side only. The service role key is supplied by the Edge runtime, never a browser.
 export function postgresSql(sql) {
-  const tables='profiles|sessions|rate_limits|media|chat_messages|chat_reactions|object_notes|samples|sample_audit|object_statuses|status_audit|shifts|notifications|push_subscriptions|native_push_tokens|sample_round_events|app_secrets';
+  const tables='profiles|sessions|rate_limits|media|chat_messages|chat_reactions|object_notes|samples|sample_audit|object_statuses|status_audit|shifts|notifications|push_subscriptions|push_visibility_leases|native_push_tokens|sample_round_events|app_secrets';
   return sql.replace(/\batlas_now_ms\(\)/g,'CAST(floor(extract(epoch FROM clock_timestamp())*1000) AS bigint)').replace(/\bLIMIT -1\b/g,'LIMIT ALL').replace(/json_each\(\?\)/g,'jsonb_array_elements_text(?::jsonb) AS json_each(value)').replace(new RegExp(`\\b(FROM|JOIN|INTO|UPDATE)\\s+(${tables})\\b`,'gi'),(_,keyword,table)=>`${keyword} brigade."${table}"`);
 }
 export class SupabaseD1 {

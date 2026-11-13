@@ -186,8 +186,11 @@ final class NativeNotifications {
         synchronized (LOCK) {
             if (!current(context, session) || !hasPermission(context)) return false;
             if (notified(context).contains(id)) return true;
-            // A disabled category must not prevent delivery of the other category.
-            if (channelAllowed(context, notification.getChannelId())) NotificationManagerCompat.from(context).notify(id, 1, notification);
+            // Recheck actual visibility at delivery time, after the authorized fetch.
+            // Consuming the ID also prevents a foreground message resurfacing after Home.
+            NativeVisibility.whileHidden(() -> {
+                if (channelAllowed(context, notification.getChannelId())) NotificationManagerCompat.from(context).notify(id, 1, notification);
+            });
             remember(context, session, id);
             return true;
         }
