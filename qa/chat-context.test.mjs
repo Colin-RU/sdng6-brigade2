@@ -107,5 +107,22 @@ await check('Colleague profiles are authenticated public fields only, read-only 
   assert.equal((await a('/me')).data.user.id,users[0].user.id);
  }finally{env.DB.raw.close();}
 });
+await check('Шурф labels cover ten Ш IDs in fresh replies and old projections without rewriting stored rows',async()=>{
+ const {env,users,calls:[a,b]}=await fixture(),push=[];try{
+  const shurfs=[['513','3Ш'],['513','4Ш'],['513','5Ш'],['514','1Ш'],['514','2Ш'],['829','9Ш'],['829','10Ш'],['870','21Ш'],['870','22Ш'],['871','42Ш']];
+  assert.deepEqual(Object.entries(registry).flatMap(([pad,ids])=>ids.filter(id=>id.includes('Ш')).map(id=>pad+':'+id)).sort(),shurfs.map(([pad,id])=>pad+':'+id).sort());
+  const expected=new Map();let i=0;
+  for(const [pad,id]of [...shurfs,['164','3526'],['164','3528']]){
+   const key=`well:${pad}:${id}`,route='/objects/'+encodeURIComponent(key)+'/notes',parent=(await a(route,'POST',{clientId:'shurf-parent-'+i,body:'Исходная запись'})).data.item;
+   const reply=await b(route,'POST',{clientId:'shurf-reply-'+i++,body:'Ответ',parentId:parent.id},{sendPush:async(...args)=>push.push(args)});assert.equal(reply.status,201);
+   const stored=env.DB.raw.prepare('SELECT * FROM notifications WHERE recipient_id=? AND note_id=?').get(users[0].user.id,reply.data.item.id),label=`${id.includes('Ш')?'Шурф':'Скважина'} №${id} · куст №${pad}`;
+   assert.equal(stored.object_label,label);assert.equal(stored.object_key,key);assert.equal(stored.type,'comment');assert.ok(push.at(-1)[2].title.startsWith(label+' · '));
+   assert.equal((await a('/notifications/'+stored.id)).data.item.objectLabel,label);
+   if(id.includes('Ш')){env.DB.raw.prepare('UPDATE notifications SET object_label=? WHERE id=?').run(`Скважина №${id} · куст №${pad}`,stored.id);expected.set(stored.id,label);}
+   else{const manual='Сохранённая подпись '+id;env.DB.raw.prepare('UPDATE notifications SET object_label=? WHERE id=?').run(manual,stored.id);expected.set(stored.id,manual);}
+  }
+  const snapshot=env.DB.raw.prepare('SELECT * FROM notifications ORDER BY seq').all(),inbox=(await a('/notifications')).data.items;assert.equal(inbox.length,12);for(const item of inbox)assert.equal(item.objectLabel,expected.get(item.id));assert.deepEqual(env.DB.raw.prepare('SELECT * FROM notifications ORDER BY seq').all(),snapshot);assert.equal((await a('/notifications/unread-count')).data.count,12);assert.equal(push.length,12);
+ }finally{env.DB.raw.close();}
+});
 const sourceFiles=['worker/api/messages.mjs','worker/api/reactions.mjs','worker/api/notifications.mjs','worker/api/auth.mjs','worker/adapters/supabase.mjs'];
 await writeFile(new URL('chat-context-report.json',import.meta.url),JSON.stringify({checkedAt:new Date().toISOString(),passed:checks.every(c=>c.passed),runtime:process.version,storage:'Real in-memory SQLite; actual handleApi and transactional D1 adapter; synthetic accounts only',productionMutations:false,sourceHashes:Object.fromEntries(await Promise.all(sourceFiles.map(async file=>[file,createHash('sha256').update(await readFile(new URL('../'+file,import.meta.url))).digest('hex')]))),checks},null,2)+'\n');

@@ -15,8 +15,8 @@ android {
         applicationId 'ru.brigade2.atlas'
         minSdk 26
         targetSdk 35
-        versionCode 6
-        versionName '2.0.3'
+        versionCode 7
+        versionName '2.0.4'
         buildConfigField 'String', 'FIREBASE_APP_ID', quoted(firebaseValue('appId'))
         buildConfigField 'String', 'FIREBASE_API_KEY', quoted(firebaseValue('apiKey'))
         buildConfigField 'String', 'FIREBASE_PROJECT_ID', quoted(firebaseValue('projectId'))
