@@ -8,8 +8,8 @@ android {
         applicationId 'ru.brigade2.atlas'
         minSdk 26
         targetSdk 35
-        versionCode 2
-        versionName '1.0.1'
+        versionCode 3
+        versionName '2.0.0'
     }
     signingConfigs {
         release {
@@ -36,4 +36,6 @@ android {
 
 dependencies {
     implementation 'androidx.webkit:webkit:1.12.1'
+    implementation 'androidx.core:core:1.15.0'
+    implementation 'androidx.work:work-runtime:2.10.1'
 }

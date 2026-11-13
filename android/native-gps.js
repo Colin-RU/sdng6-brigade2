@@ -3,6 +3,8 @@
 (() => {
   if (!window.SdngGps || location.origin !== 'https://appassets.androidplatform.net') return;
   window.isNativeAtlas = true;
+  const pageReady=()=>{try{SdngGps.notificationsPageReady?.();}catch{}};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',pageReady,{once:true});else setTimeout(pageReady,0);
   const requests = new Map();
   let nextId = 1, lastPosition;
   const asyncCall = fn => setTimeout(fn, 0);

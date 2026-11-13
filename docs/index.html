@@ -23,6 +23,11 @@
   <link rel="stylesheet" href="local-navigation.css">
   <link rel="stylesheet" href="logo-mask.css">
   <link rel="stylesheet" href="feedback.css">
+  <link rel="stylesheet" href="community.css">
+  <link rel="stylesheet" href="navigation-pack.css">
+  <link rel="stylesheet" href="calendar.css">
+  <link rel="stylesheet" href="work-shell.css">
+  <script src="config.js"></script>
   <script src="preferences.js"></script>
   <script src="vendor/leaflet.js" defer></script>
   <script src="vendor/leaflet.markercluster.js" defer></script>
@@ -32,6 +37,11 @@
   <script src="app.js" defer></script>
   <script src="offline.js" defer></script>
   <script src="map-view.js" defer></script>
+  <script src="navigation-pack.js" defer></script>
+  <script src="community.js" defer></script>
+  <script src="notifications.js" defer></script>
+  <script src="calendar.js" defer></script>
+  <script src="work-shell.js" defer></script>
 </head>
 <body>
   <svg class="icon-defs" xmlns="http://www.w3.org/2000/svg"><defs>
@@ -49,11 +59,19 @@
     <symbol id="i-route" viewBox="0 0 24 24"><path d="M5 18V8a3 3 0 0 1 3-3h10m-4-4 4 4-4 4M8 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></symbol>
     <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 2S5 10 5 15a7 7 0 0 0 14 0c0-5-7-13-7-13Z"/></symbol>
     <symbol id="i-settings" viewBox="0 0 24 24"><path d="m9 3-.7 2.2-2.2 1L4 5.7 2.7 8l1.7 1.7v2.6L2.7 14 4 16.3l2.1-.5 2.2 1L9 19h3l.7-2.2 2.2-1 2.1.5 1.3-2.3-1.7-1.7V9.7L18.3 8 17 5.7l-2.1.5-2.2-1L12 3Z" transform="translate(1 1)"/><circle cx="11.5" cy="12" r="3"/></symbol>
+    <symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3M16 4a3 3 0 0 1 0 6m2 4a5 5 0 0 1 3 4v3"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11a8 8 0 0 1-8 8H6l-4 3 1-6a8 8 0 0 1-1-5 9 9 0 0 1 19 0Z"/><path d="M7 10h10M7 14h6"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M4 18h16l-2-4V9a6 6 0 0 0-12 0v5l-2 4Zm6 3h4"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18m-13 4h1m6 0h1m-8 4h1"/></symbol>
+    <symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></symbol>
   </defs></svg>
   <header class="topbar">
+    <button class="work-menu-toggle" id="work-menu-toggle" aria-label="Открыть меню разделов" aria-expanded="false" aria-controls="work-menu"><svg><use href="#i-more"/></svg></button>
     <a class="brand" href="./" aria-label="На главную"><img src="logo.png" alt="Сургутнефтегаз"><span class="brand-divider"></span><span>ЦДНГ-6<small>Фёдоровское месторождение</small></span></a>
-    <div class="header-tools"><span class="connection" id="connection"><i></i>Есть сеть</span><button class="btn subtle install-btn" data-action="install"><svg><use href="#i-download"/></svg><span>На телефон</span></button><span class="brigade-tag">БРИГАДА <b>02</b></span></div>
+    <div class="header-tools"><button class="header-notifications" data-work-view="notifications" aria-label="Уведомления"><svg><use href="#i-bell"/></svg><span class="notification-count hidden" data-notification-count>0</span></button><button class="header-profile" id="header-profile" data-work-view="profile" aria-label="Войти в профиль"><span data-profile-initial></span><svg><use href="#i-people"/></svg></button><span class="connection" id="connection"><i></i>Есть сеть</span><button class="btn subtle install-btn" data-action="install"><svg><use href="#i-download"/></svg><span>На телефон</span></button><span class="brigade-tag">БРИГАДА <b>02</b></span></div>
   </header>
+  <div class="work-menu-backdrop hidden" id="work-menu-backdrop"></div>
+  <nav class="work-menu hidden" id="work-menu" aria-label="Разделы приложения"><div class="work-menu-profile"><div class="menu-avatar"><span data-profile-initial></span></div><div><b data-profile-name>Войти в профиль</b><small data-profile-position>Профиль сотрудника</small></div></div><button data-work-view="map"><svg><use href="#i-map"/></svg><span>Карта</span></button><button data-work-view="list"><svg><use href="#i-list"/></svg><span>Кусты и скважины</span></button><button data-work-view="samples"><svg><use href="#i-drop"/></svg><span>Отбор проб</span></button><button data-work-view="equipment"><svg><use href="#i-settings"/></svg><span>Оборудование</span></button><button data-work-view="chat"><svg><use href="#i-chat"/></svg><span>Чат бригады</span></button><button data-work-view="notifications"><svg><use href="#i-bell"/></svg><span>Уведомления</span><span class="notification-count hidden" data-notification-count>0</span></button><button data-work-view="calendar"><svg><use href="#i-calendar"/></svg><span>Календарь и смены</span></button><button data-work-view="profile"><svg><use href="#i-people"/></svg><span>Мой профиль</span></button><button data-work-view="downloads"><svg><use href="#i-download"/></svg><span>Загруженные карты</span></button><button data-work-view="favorites"><svg><use href="#i-star"/></svg><span>Избранное</span></button><button data-work-view="info"><svg><use href="#i-info"/></svg><span>Обзор бригады</span></button><button data-work-view="settings"><svg><use href="#i-settings"/></svg><span>Настройки</span></button><div class="menu-divider"></div><button data-action="install"><svg><use href="#i-download"/></svg>На главный экран</button></nav>
   <div class="app-shell">
     <nav class="rail" aria-label="Основная навигация">
       <div class="rail-mark">Б<span>2</span></div>
@@ -84,6 +102,11 @@
       </section>
       <section id="info-view" class="hidden info-view"></section>
       <section id="settings-view" class="hidden info-view"></section>
+      <section id="community-view" class="hidden info-view" aria-live="polite"></section>
+      <section id="calendar-view" class="hidden info-view"></section>
+      <section id="equipment-view" class="hidden info-view"></section>
+      <section id="samples-view" class="hidden info-view"></section>
+      <section id="downloads-view" class="hidden info-view"></section>
       <footer class="app-footer"><span>ЦДНГ-6 / Бригада №2</span><span>Фёдоровское месторождение</span><span id="offline-state">Подготовка доступа без сети…</span></footer>
     </main>
   </div>

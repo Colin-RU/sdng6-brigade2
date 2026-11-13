@@ -3,6 +3,7 @@ package ru.brigade2.atlas;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -33,23 +34,34 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-/** Local-only atlas. Satellite fixes come directly from the Android LocationManager. */
+/** Bundled atlas with satellite GPS and optional authenticated brigade notifications. */
 public final class MainActivity extends Activity implements LocationListener {
     private static final String ORIGIN = "https://appassets.androidplatform.net";
     private static final String HOME = ORIGIN + "/assets/www/index.html";
-    private static final int LOCATION_REQUEST = 10, OPEN_FILE = 11, SAVE_FILE = 12;
+    private static final int LOCATION_REQUEST = 10, OPEN_FILE = 11, SAVE_FILE = 12, NOTIFICATION_REQUEST = 13;
     private WebView webView;
     private LocationManager locations;
     private Location lastGpsFix;
     private boolean requestedGps, listening, foreground, permissionRequestPending;
     private ValueCallback<Uri[]> fileCallback;
+    private int selectedFileLimit = 1;
     private byte[] pendingExport;
     private GeolocationPermissions.Callback pendingGeolocation;
     private String pendingOrigin;
+    private final ExecutorService notificationCommands = Executors.newSingleThreadExecutor();
+    private volatile boolean trustedDocument;
+    private boolean notificationPageReady;
+    private String pendingNotificationId;
 
     @Override public void onCreate(Bundle savedState) {
         super.onCreate(savedState);
+        captureNotificationIntent(getIntent());
+        if (android.os.Build.VERSION.SDK_INT >= 33) getOnBackInvokedDispatcher().registerOnBackInvokedCallback(android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT, this::handleBack);
         locations = (LocationManager) getSystemService(LOCATION_SERVICE);
         FrameLayout root = new FrameLayout(this);
         root.setBackgroundColor(Color.rgb(18, 60, 75));
@@ -80,11 +92,12 @@ public final class MainActivity extends Activity implements LocationListener {
             .addPathHandler("/assets/", new WebViewAssetLoader.AssetsPathHandler(this)).build();
         webView.setWebViewClient(new WebViewClient() {
             @Override public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                if (isAllowedApi(request.getUrl()) && !request.isForMainFrame()) return null;
                 if (!isLocal(request.getUrl())) return blocked();
                 WebResourceResponse response = loader.shouldInterceptRequest(request.getUrl());
                 if (response == null) return blocked();
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Security-Policy", "default-src 'self' data: blob:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'");
+                headers.put("Content-Security-Policy", "default-src 'self' data: blob:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://ufwrdwndlzwxtlkougrv.supabase.co; frame-src 'none'; object-src 'none'; base-uri 'self'");
                 headers.put("X-Content-Type-Options", "nosniff");
                 response.setResponseHeaders(headers);
                 return response;
@@ -95,6 +108,8 @@ public final class MainActivity extends Activity implements LocationListener {
                 return true;
             }
             @Override public void onPageStarted(WebView view, String url, android.graphics.Bitmap favicon) {
+                trustedDocument = isLocal(Uri.parse(url));
+                notificationPageReady = false;
                 if (!isLocal(Uri.parse(url))) {
                     view.removeJavascriptInterface("SdngGps");
                     view.stopLoading();
@@ -115,7 +130,18 @@ public final class MainActivity extends Activity implements LocationListener {
                 if (!trustedPage()) return false;
                 if (fileCallback != null) fileCallback.onReceiveValue(null);
                 fileCallback = callback;
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType("application/json");
+                boolean images = false, json = false;
+                for (String accepted : params.getAcceptTypes()) for (String value : accepted.split(",")) {
+                    String type = value.trim().toLowerCase(java.util.Locale.ROOT);
+                    if (type.startsWith("image/") || type.matches("\\.(jpg|jpeg|png|webp)")) images = true;
+                    if (type.equals("application/json") || type.equals(".json")) json = true;
+                }
+                String mime = images ? (json ? "*/*" : "image/*") : "application/json";
+                boolean multiple = params.getMode() == FileChooserParams.MODE_OPEN_MULTIPLE;
+                selectedFileLimit = multiple ? 3 : 1;
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType(mime)
+                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION).putExtra(Intent.EXTRA_ALLOW_MULTIPLE, multiple);
+                if (images && json) intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*", "application/json"});
                 try { startActivityForResult(intent, OPEN_FILE); }
                 catch (ActivityNotFoundException e) { fileCallback.onReceiveValue(null); fileCallback = null; }
                 return true;
@@ -127,6 +153,12 @@ public final class MainActivity extends Activity implements LocationListener {
     private static boolean isLocal(Uri url) {
         return "https".equals(url.getScheme()) && "appassets.androidplatform.net".equals(url.getHost())
             && url.getPort() == -1 && url.getPath() != null && url.getPath().startsWith("/assets/www/");
+    }
+    private static boolean isAllowedApi(Uri url) {
+        String path = url.getEncodedPath();
+        return "https".equals(url.getScheme()) && "ufwrdwndlzwxtlkougrv.supabase.co".equals(url.getHost())
+            && url.getPort() == -1 && url.getUserInfo() == null && url.getFragment() == null
+            && path != null && (path.equals("/functions/v1/brigade-api") || path.startsWith("/functions/v1/brigade-api/"));
     }
     private boolean trustedPage() { return webView != null && webView.getUrl() != null && isLocal(Uri.parse(webView.getUrl())); }
     private static WebResourceResponse blocked() {
@@ -149,6 +181,49 @@ public final class MainActivity extends Activity implements LocationListener {
     }
 
     public final class NativeBridge {
+        @JavascriptInterface public void configureNotifications(String apiBase, String token, boolean enabled) {
+            runOnUiThread(() -> {
+                if (!trustedPage()) return;
+                notificationCommands.execute(() -> {
+                    String error = null;
+                    try { NativeNotifications.configure(MainActivity.this, apiBase, token, enabled); }
+                    catch (Exception ignored) { error = "Не удалось сохранить настройки уведомлений. Войдите ещё раз."; }
+                    final String message = error;
+                    runOnUiThread(() -> {
+                        JSONObject state = NativeNotifications.state(MainActivity.this);
+                        if (message != null) try { state.put("error", message); } catch (org.json.JSONException ignored) { }
+                        send("atlas-native-notification-state", state);
+                    });
+                });
+            });
+        }
+        @JavascriptInterface public String getNotificationState() {
+            return trustedDocument ? NativeNotifications.state(MainActivity.this).toString() : "{\"available\":false}";
+        }
+        @JavascriptInterface public void requestNotificationPermission() {
+            runOnUiThread(() -> {
+                if (!trustedPage()) return;
+                NativeNotifications.createChannel(MainActivity.this);
+                if (android.os.Build.VERSION.SDK_INT >= 33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    NativeNotifications.permissionRequested(MainActivity.this);
+                    requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, NOTIFICATION_REQUEST);
+                } else if (!NativeNotifications.hasPermission(MainActivity.this)) {
+                    try { startActivity(new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName())); }
+                    catch (ActivityNotFoundException ignored) { }
+                } else {
+                    NativeNotifications.schedule(MainActivity.this, true);
+                    send("atlas-native-notification-state", NativeNotifications.state(MainActivity.this));
+                }
+            });
+        }
+        @JavascriptInterface public void notificationsPageReady() {
+            runOnUiThread(() -> {
+                if (!trustedPage()) return;
+                notificationPageReady = true;
+                send("atlas-native-notification-state", NativeNotifications.state(MainActivity.this));
+                flushNotificationIntent();
+            });
+        }
         @JavascriptInterface public void start() {
             runOnUiThread(() -> {
                 if (!trustedPage()) return;
@@ -172,6 +247,19 @@ public final class MainActivity extends Activity implements LocationListener {
             });
         }
     }
+
+    private void captureNotificationIntent(Intent intent) {
+        if (intent == null) return;
+        String id = intent.getStringExtra(NativeNotifications.EXTRA_ID);
+        if (NotificationPolicy.validId(id)) pendingNotificationId = id;
+        intent.removeExtra(NativeNotifications.EXTRA_ID);
+    }
+    private void flushNotificationIntent() {
+        if (!notificationPageReady || !trustedPage() || pendingNotificationId == null) return;
+        try { JSONObject detail = new JSONObject().put("id", pendingNotificationId); pendingNotificationId = null; send("atlas-notification-open", detail); }
+        catch (org.json.JSONException ignored) { }
+    }
+    @Override protected void onNewIntent(Intent intent) { super.onNewIntent(intent); setIntent(intent); captureNotificationIntent(intent); flushNotificationIntent(); }
 
     private void startGps() {
         if (!requestedGps || !foreground || listening || !trustedPage()) return;
@@ -225,17 +313,23 @@ public final class MainActivity extends Activity implements LocationListener {
     @Override public void onProviderEnabled(String provider) { if (requestedGps) { stopGps(); startGps(); } }
     @Override public void onProviderDisabled(String provider) { if (requestedGps) { stopGps(); startGps(); } }
     @Override public void onStatusChanged(String provider, int status, Bundle extras) { }
-    @Override protected void onResume() { super.onResume(); foreground = true; if (webView != null) webView.onResume(); startGps(); }
+    @Override protected void onResume() { super.onResume(); foreground = true; if (webView != null) webView.onResume(); startGps(); NativeNotifications.schedule(this, false); if (notificationPageReady) send("atlas-native-notification-state", NativeNotifications.state(this)); }
     @Override protected void onPause() { foreground = false; stopGps(); if (webView != null) webView.onPause(); super.onPause(); }
     @Override protected void onSaveInstanceState(Bundle state) { if (webView != null) webView.saveState(state); super.onSaveInstanceState(state); }
     @Override protected void onDestroy() {
         stopGps();
+        trustedDocument = false; notificationCommands.shutdown();
         if (fileCallback != null) fileCallback.onReceiveValue(null);
         if (webView != null) { webView.removeJavascriptInterface("SdngGps"); webView.destroy(); webView = null; }
         super.onDestroy();
     }
     @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == NOTIFICATION_REQUEST) {
+            NativeNotifications.schedule(this, true);
+            send("atlas-native-notification-state", NativeNotifications.state(this));
+            return;
+        }
         if (requestCode != LOCATION_REQUEST) return;
         permissionRequestPending = false;
         boolean allowed = hasLocationPermission();
@@ -245,8 +339,15 @@ public final class MainActivity extends Activity implements LocationListener {
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == OPEN_FILE && fileCallback != null) {
-            Uri uri = resultCode == RESULT_OK && data != null ? data.getData() : null;
-            fileCallback.onReceiveValue(uri == null ? null : new Uri[]{uri}); fileCallback = null;
+            List<Uri> selected = new ArrayList<>();
+            if (resultCode == RESULT_OK && data != null) {
+                ClipData clips = data.getClipData();
+                if (clips != null) for (int i=0;i<clips.getItemCount() && selected.size()<selectedFileLimit;i++) {
+                    Uri uri = clips.getItemAt(i).getUri(); if (uri != null && "content".equals(uri.getScheme()) && !selected.contains(uri)) selected.add(uri);
+                }
+                else { Uri uri=data.getData();if(uri!=null && "content".equals(uri.getScheme()))selected.add(uri); }
+            }
+            fileCallback.onReceiveValue(selected.isEmpty() ? null : selected.toArray(new Uri[0])); fileCallback = null; selectedFileLimit = 1;
         }
         if (requestCode == SAVE_FILE) {
             byte[] bytes = pendingExport; pendingExport = null;
@@ -258,7 +359,10 @@ public final class MainActivity extends Activity implements LocationListener {
         }
     }
     @Override public void onBackPressed() {
-        if (trustedPage()) webView.evaluateJavascript("(()=>{const m=document.querySelector('#modal');if(m&&m.open){m.close();return true}const d=document.querySelector('#drawer');if(d&&!d.classList.contains('hidden')&&typeof closeDrawer==='function'){closeDrawer();return true}if(document.documentElement.classList.contains('map-expanded')){document.querySelector('[data-map-expand]')?.click();return true}return false})()", handled -> { if (!"true".equals(handled)) finish(); });
+        handleBack();
+    }
+    private void handleBack() {
+        if (trustedPage()) webView.evaluateJavascript("(()=>{const m=document.querySelector('#modal');if(m&&m.open){m.close();return true}const d=document.querySelector('#drawer');if(d&&!d.classList.contains('hidden')&&typeof closeDrawer==='function'){closeDrawer();return true}if(document.documentElement.classList.contains('map-expanded')){document.querySelector('[data-map-expand]')?.click();return true}const menu=document.querySelector('#work-menu');if(menu&&!menu.classList.contains('hidden')&&window.WorkShell?.closeMenu){WorkShell.closeMenu();return true}return false})()", handled -> { if (!"true".equals(handled)) finish(); });
         else super.onBackPressed();
     }
 }

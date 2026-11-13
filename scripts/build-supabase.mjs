@@ -1,0 +1,12 @@
+import {build} from 'esbuild';
+import {mkdir,readFile,writeFile} from 'node:fs/promises';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const output=path.join(root,'build/brigade-api/index.ts');
+await mkdir(path.dirname(output),{recursive:true});
+await build({entryPoints:[path.join(root,'supabase/functions/brigade-api/index.ts')],outfile:output,bundle:true,format:'esm',platform:'neutral',target:'es2022',minify:false,legalComments:'none',logLevel:'warning'});
+const content=await readFile(output,'utf8');
+if(/SUPABASE_SERVICE_ROLE_KEY\s*[:=]\s*['"]/.test(content))throw Error('Unexpected embedded server key');
+await writeFile(path.join(root,'build/brigade-api/deno.json'),JSON.stringify({compilerOptions:{lib:['deno.ns','dom','es2022']}})+'\n');
+console.log(JSON.stringify({output,bytes:Buffer.byteLength(content)}));

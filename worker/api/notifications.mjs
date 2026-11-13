@@ -1,0 +1,40 @@
+import {all,first,run,fail,now,iso,uuid,json,text,ownKeys,bodyJson,authorFrom,pageArgs,unbase64url} from './core.mjs';
+export function notificationView(row){return {id:row.id,cursor:String(row.seq),actor:{id:row.actor_id,nickname:row.nickname,avatarId:row.avatar_media_id??null,avatarMediaId:row.avatar_media_id??null},type:row.type,objectKey:row.object_key,objectLabel:row.object_label,noteId:row.note_id,parentId:row.parent_id,preview:row.preview,createdAt:iso(row.created_at),readAt:iso(row.read_at)};}
+function objectLabel(key){const parts=key.split(':'),[type,pad,item]=parts;if(type==='pad')return `Куст №${pad}`;if(type==='well')return pad==='ОД'?`Отдельная скважина №${item}`:`Скважина №${item} · куст №${pad}`;const names={'agzu':'АГЗУ','btma':'БТМА','bg':'БГ','drainage':'Дренажная ёмкость','control-stations':'Станции управления','cable-racks':'Кабельные стойки'},kind=parts.at(-1),position=parts.length===4?Number(item.slice(1)):null;return `${names[kind]??'Оборудование'} · куст №${pad}${position?` · ${position}-я позиция`:''}`;}
+export function replyNotificationStatement(env,user,note,parent) {
+  const id=uuid(),time=now(),label=objectLabel(note.object_key);
+  // The note insert and this conditional notification run in one D1 transaction.
+  return env.DB.prepare('INSERT INTO notifications (id,recipient_id,actor_id,type,object_key,object_label,note_id,parent_id,preview,created_at) SELECT ?,?,?,?,?,?,?,?,?,? WHERE EXISTS (SELECT 1 FROM object_notes WHERE id=?) ON CONFLICT(recipient_id,note_id) DO NOTHING RETURNING id').bind(id,parent.user_id,user.id,'comment',note.object_key,label,note.id,parent.id,note.body.slice(0,160),time,note.id);
+}
+export function dispatchReplyPush(env,userIds,id,note,parent,ctx,hooks={},actor=null) {
+  if(hooks.sendPush&&ctx?.waitUntil)ctx.waitUntil(Promise.resolve().then(()=>hooks.sendPush(env,userIds,{type:'comment',notificationId:id,objectKey:note.object_key,noteId:note.id,parentId:parent.id,title:actor?`${actor.nickname}: новый комментарий`:'Новый комментарий',body:`${objectLabel(note.object_key)} — ${note.body.slice(0,160)||'Добавлено изображение'}`})).catch(()=>{}));
+}
+function subscriptionEndpoint(value){const endpoint=text(value,'endpoint',1,2048);let url;try{url=new URL(endpoint);}catch{fail(400,'invalid_subscription','Некорректная подписка.');}
+  // Push delivery is restricted to known browser push providers to avoid arbitrary server fetches.
+  const host=url.hostname;const allowed=host==='fcm.googleapis.com'||host==='updates.push.services.mozilla.com'||host.endsWith('.push.services.mozilla.com')||host==='web.push.apple.com'||host.endsWith('.push.apple.com')||host==='wns2-db5p.notify.windows.com'||host.endsWith('.notify.windows.com');
+  if(url.protocol!=='https:'||url.username||url.password||url.port||!allowed)fail(400,'invalid_subscription','Неподдерживаемый сервис уведомлений.');return url.href;
+}
+export async function handleNotifications(request,env,path,user) {
+  if(path==='/notifications/unread-count'&&request.method==='GET')return json({count:(await first(env,'SELECT COUNT(*) AS count FROM notifications WHERE recipient_id=? AND read_at IS NULL',user.id)).count});
+  if(path==='/notifications'&&request.method==='GET'){
+    const url=new URL(request.url),{before,after,limit}=pageArgs(url),args=[user.id],where=['n.recipient_id=?'];
+    if(url.searchParams.get('unread')==='1'||url.searchParams.get('unread')==='true')where.push('n.read_at IS NULL');
+    if(before){where.push('n.seq<?');args.push(before);}if(after){where.push('n.seq>?');args.push(after);}
+    const rows=await all(env,`SELECT n.*,p.nickname,p.avatar_media_id FROM notifications n JOIN profiles p ON p.id=n.actor_id WHERE ${where.join(' AND ')} ORDER BY n.seq ${after?'ASC':'DESC'} LIMIT ?`,...args,limit+1);const more=rows.length>limit;if(more)rows.pop();if(!after)rows.reverse();return json({items:rows.map(notificationView),nextCursor:more?String(after?rows.at(-1).seq:rows[0].seq):null});
+  }
+  if(path==='/notifications/read-all'&&request.method==='POST'){await run(env,'UPDATE notifications SET read_at=? WHERE recipient_id=? AND read_at IS NULL',now(),user.id);return json({ok:true});}
+  let m=path.match(/^\/notifications\/([A-Za-z0-9-]{1,64})\/read$/);
+  if(m&&request.method==='POST'){const row=await first(env,'SELECT id FROM notifications WHERE id=? AND recipient_id=?',m[1],user.id);if(!row)fail(404,'not_found','Уведомление не найдено.');await run(env,'UPDATE notifications SET read_at=COALESCE(read_at,?) WHERE id=? AND recipient_id=?',now(),m[1],user.id);return json({ok:true});}
+  m=path.match(/^\/notifications\/([A-Za-z0-9-]{1,64})$/);
+  if(m&&request.method==='GET'){const row=await first(env,'SELECT n.*,p.nickname,p.avatar_media_id FROM notifications n JOIN profiles p ON p.id=n.actor_id WHERE n.id=? AND n.recipient_id=?',m[1],user.id);if(!row)fail(404,'not_found','Уведомление не найдено.');return json({item:notificationView(row)});}
+  if(path==='/push/public-key'&&request.method==='GET')return json({publicKey:env.VAPID_PUBLIC_KEY??null});
+  if(path==='/push/subscriptions'&&request.method==='POST'){
+    const b=await bodyJson(request);ownKeys(b,['endpoint','keys','expirationTime']);const endpoint=subscriptionEndpoint(b.endpoint);if(!b.keys||typeof b.keys!=='object'||Array.isArray(b.keys))fail(400,'invalid_subscription','Некорректная подписка.');ownKeys(b.keys,['p256dh','auth']);
+    const p256dh=text(b.keys.p256dh,'p256dh',1,128),auth=text(b.keys.auth,'auth',1,64);let publicBytes,authBytes;try{publicBytes=unbase64url(p256dh);authBytes=unbase64url(auth);}catch{fail(400,'invalid_subscription','Некорректная подписка.');}if(publicBytes.length!==65||publicBytes[0]!==4||authBytes.length!==16)fail(400,'invalid_subscription','Некорректная подписка.');
+    const count=(await first(env,'SELECT COUNT(*) AS count FROM push_subscriptions WHERE user_id=?',user.id)).count;
+    const old=await first(env,'SELECT id,user_id FROM push_subscriptions WHERE endpoint=?',endpoint);if(old&&old.user_id!==user.id)fail(409,'subscription_conflict','Подписка уже связана с другим профилем.');if(!old&&count>=10)fail(409,'subscription_limit','Достигнут лимит устройств.');
+    await run(env,'INSERT INTO push_subscriptions (id,user_id,endpoint,p256dh,auth,created_at) VALUES (?,?,?,?,?,?) ON CONFLICT(endpoint) DO UPDATE SET p256dh=excluded.p256dh,auth=excluded.auth',old?.id??uuid(),user.id,endpoint,p256dh,auth,now());return json({ok:true});
+  }
+  if(path==='/push/subscriptions'&&request.method==='DELETE'){const b=await bodyJson(request);ownKeys(b,['endpoint']);const endpoint=subscriptionEndpoint(b.endpoint);await run(env,'DELETE FROM push_subscriptions WHERE endpoint=? AND user_id=?',endpoint,user.id);return json({ok:true});}
+  return null;
+}

@@ -9,15 +9,19 @@ function phone() {
   const context = {
     location:{origin:'https://appassets.androidplatform.net'}, navigator:{},
     setTimeout, clearTimeout, console,
-    SdngGps:{start(){calls.push('start');},stop(){calls.push('stop');}}
+    document:{readyState:'loading',addEventListener(name,callback){listeners.set(name,callback);}},
+    SdngGps:{start(){calls.push('start');},stop(){calls.push('stop');},notificationsPageReady(){calls.push('page-ready');}}
   };
   context.window = context;
   context.addEventListener = (name, callback) => listeners.set(name, callback);
   vm.runInNewContext(source, context);
   return {api:context.navigator.geolocation, calls,
+    ready(){listeners.get('DOMContentLoaded')();},
     fix(latitude=61.6) {listeners.get('sdng:gps')({detail:{latitude,longitude:73.7,accuracy:5,timestamp:Date.now()}});},
     error(code) {listeners.get('sdng:gps-error')({detail:{code,message:'GPS error'}});}};
 }
+
+test('native notification taps wait until deferred page listeners are ready',()=>{const p=phone();assert.deepEqual(p.calls,[]);p.ready();assert.deepEqual(p.calls,['page-ready']);});
 test('independent current requests and watches keep the receiver active until the last subscriber leaves', async () => {
   const p = phone(), positions = [], errors = [];
   const first = p.api.watchPosition(v => positions.push(['first',v.coords.latitude]), e => errors.push(e));

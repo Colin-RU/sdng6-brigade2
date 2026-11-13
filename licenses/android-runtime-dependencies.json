@@ -1,0 +1,871 @@
+{
+  "configuration": "releaseRuntimeClasspath",
+  "components": [
+    {
+      "group": "androidx.annotation",
+      "name": "annotation",
+      "version": "1.8.1",
+      "dependencies": [
+        "androidx.annotation:annotation-jvm:1.8.1"
+      ]
+    },
+    {
+      "group": "androidx.annotation",
+      "name": "annotation-experimental",
+      "version": "1.4.1",
+      "dependencies": [
+        "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
+      ]
+    },
+    {
+      "group": "androidx.annotation",
+      "name": "annotation-jvm",
+      "version": "1.8.1",
+      "dependencies": [
+        "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
+      ]
+    },
+    {
+      "group": "androidx.arch.core",
+      "name": "core-common",
+      "version": "2.2.0",
+      "dependencies": [
+        "androidx.annotation:annotation:1.8.1"
+      ]
+    },
+    {
+      "group": "androidx.arch.core",
+      "name": "core-runtime",
+      "version": "2.2.0",
+      "dependencies": [
+        "androidx.annotation:annotation:1.8.1",
+        "androidx.arch.core:core-common:2.2.0"
+      ]
+    },
+    {
+      "group": "androidx.collection",
+      "name": "collection",
+      "version": "1.4.2",
+      "dependencies": [
+        "androidx.collection:collection-jvm:1.4.2"
+      ]
+    },
+    {
+      "group": "androidx.collection",
+      "name": "collection-jvm",
+      "version": "1.4.2",
+      "dependencies": [
+        "androidx.annotation:annotation:1.8.1",
+        "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
+      ]
+    },
+    {
+      "group": "androidx.concurrent",
+      "name": "concurrent-futures",
+      "version": "1.1.0",
+      "dependencies": [
+        "androidx.annotation:annotation:1.8.1",
+        "com.google.guava:listenablefuture:1.0"
+      ]
+    },
+    {
+      "group": "androidx.concurrent",
+      "name": "concurrent-futures-ktx",
+      "version": "1.1.0",
+      "dependencies": [
+        "androidx.concurrent:concurrent-futures:1.1.0",
+        "org.jetbrains.kotlin:kotlin-stdlib:1.8.22",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
+      ]
+    },
+    {
+      "group": "androidx.core",
+      "name": "core",
+      "version": "1.15.0",
+      "dependencies": [
+        "androidx.annotation:annotation-experimental:1.4.1",
+        "androidx.annotation:annotation:1.8.1",
+        "androidx.collection:collection:1.4.2",
+        "androidx.concurrent:concurrent-futures:1.1.0",
+        "androidx.interpolator:interpolator:1.0.0",
+        "androidx.lifecycle:lifecycle-runtime:2.6.2",
+        "androidx.tracing:tracing:1.2.0",
+        "androidx.versionedparcelable:versionedparcelable:1.1.1",
+        "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
+      ]
+    },
+    {
+      "group": "androidx.interpolator",
+      "name": "interpolator",
+      "version": "1.0.0",
+      "dependencies": [
+        "androidx.annotation:annotation:1.8.1"
+      ]
+    },
+    {
+      "group": "androidx.lifecycle",
+      "name": "lifecycle-common",
+      "version": "2.6.2",
+      "dependencies": [
+        "androidx.annotation:annotation:1.8.1",
+        "androidx.lifecycle:lifecycle-livedata-core:2.6.2",
+        "androidx.lifecycle:lifecycle-livedata:2.6.2",
+        "androidx.lifecycle:lifecycle-runtime:2.6.2",
+        "androidx.lifecycle:lifecycle-service:2.6.2",
+        "org.jetbrains.kotlin:kotlin-stdlib:1.8.22",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
+      ]
+    },
+    {
+      "group": "androidx.lifecycle",
+      "name": "lifecycle-livedata",
+      "version": "2.6.2",
+      "dependencies": [
+        "androidx.arch.core:core-common:2.2.0",
+        "androidx.arch.core:core-runtime:2.2.0",
+        "androidx.lifecycle:lifecycle-common:2.6.2",
+        "androidx.lifecycle:lifecycle-livedata-core:2.6.2",
+        "androidx.lifecycle:lifecycle-runtime:2.6.2",
+        "androidx.lifecycle:lifecycle-service:2.6.2",
+        "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
+      ]
+    },
+    {
+      "group": "androidx.lifecycle",
+      "name": "lifecycle-livedata-core",
+      "version": "2.6.2",
+      "dependencies": [
+        "androidx.arch.core:core-common:2.2.0",
+        "androidx.arch.core:core-runtime:2.2.0",
+        "androidx.lifecycle:lifecycle-common:2.6.2",
+        "androidx.lifecycle:lifecycle-livedata:2.6.2",
+        "androidx.lifecycle:lifecycle-runtime:2.6.2",
+        "androidx.lifecycle:lifecycle-service:2.6.2",
+        "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
+      ]
+    },
+    {
+      "group": "androidx.lifecycle",
+      "name": "lifecycle-runtime",
+      "version": "2.6.2",
+      "dependencies": [
+        "androidx.annotation:annotation:1.8.1",
+        "androidx.arch.core:core-common:2.2.0",
+        "androidx.arch.core:core-runtime:2.2.0",
+        "androidx.lifecycle:lifecycle-common:2.6.2",
+        "androidx.lifecycle:lifecycle-livedata-core:2.6.2",
+        "androidx.lifecycle:lifecycle-livedata:2.6.2",
+        "androidx.lifecycle:lifecycle-service:2.6.2",
+        "androidx.profileinstaller:profileinstaller:1.3.0",
+        "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
+      ]
+    },
+    {
+      "group": "androidx.lifecycle",
+      "name": "lifecycle-service",
+      "version": "2.6.2",
+      "dependencies": [
+        "androidx.lifecycle:lifecycle-common:2.6.2",
+        "androidx.lifecycle:lifecycle-livedata-core:2.6.2",
+        "androidx.lifecycle:lifecycle-livedata:2.6.2",
+        "androidx.lifecycle:lifecycle-runtime:2.6.2",
+        "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
+      ]
+    },
+    {
+      "group": "androidx.profileinstaller",
+      "name": "profileinstaller",
+      "version": "1.3.0",
+      "dependencies": [
+        "androidx.annotation:annotation:1.8.1",
+        "androidx.concurrent:concurrent-futures:1.1.0",
+        "androidx.startup:startup-runtime:1.1.1",
+        "com.google.guava:listenablefuture:1.0"
+      ]
+    },
+    {
+      "group": "androidx.room",
+      "name": "room-common",
+      "version": "2.6.1",
+      "dependencies": [
+        "androidx.annotation:annotation:1.8.1",
+        "androidx.room:room-ktx:2.6.1",
+        "androidx.room:room-runtime:2.6.1",
+        "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22"
+      ]
+    },
+    {
+      "group": "androidx.room",
+      "name": "room-ktx",
+      "version": "2.6.1",
+      "dependencies": [
+        "androidx.room:room-common:2.6.1",
+        "androidx.room:room-runtime:2.6.1",
+        "org.jetbrains.kotlin:kotlin-stdlib:1.8.22",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
+      ]
+    },
+    {
+      "group": "androidx.room",
+      "name": "room-runtime",
+      "version": "2.6.1",
+      "dependencies": [
+        "androidx.annotation:annotation-experimental:1.4.1",
+        "androidx.arch.core:core-runtime:2.2.0",
+        "androidx.room:room-common:2.6.1",
+        "androidx.room:room-ktx:2.6.1",
+        "androidx.sqlite:sqlite-framework:2.4.0",
+        "androidx.sqlite:sqlite:2.4.0"
+      ]
+    },
+    {
+      "group": "androidx.sqlite",
+      "name": "sqlite",
+      "version": "2.4.0",
+      "dependencies": [
+        "androidx.annotation:annotation:1.8.1",
+        "androidx.sqlite:sqlite-framework:2.4.0",
+        "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
+      ]
+    },
+    {
+      "group": "androidx.sqlite",
+      "name": "sqlite-framework",
+      "version": "2.4.0",
+      "dependencies": [
+        "androidx.annotation:annotation:1.8.1",
+        "androidx.sqlite:sqlite:2.4.0",
+        "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
+      ]
+    },
+    {
+      "group": "androidx.startup",
+      "name": "startup-runtime",
+      "version": "1.1.1",
+      "dependencies": [
+        "androidx.annotation:annotation:1.8.1",
+        "androidx.tracing:tracing:1.2.0"
+      ]
+    },
+    {
+      "group": "androidx.tracing",
+      "name": "tracing",
+      "version": "1.2.0",
+      "dependencies": [
+        "androidx.annotation:annotation:1.8.1",
+        "androidx.tracing:tracing-ktx:1.2.0"
+      ]
+    },
+    {
+      "group": "androidx.tracing",
+      "name": "tracing-ktx",
+      "version": "1.2.0",
+      "dependencies": [
+        "androidx.tracing:tracing:1.2.0",
+        "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
+      ]
+    },
+    {
+      "group": "androidx.versionedparcelable",
+      "name": "versionedparcelable",
+      "version": "1.1.1",
+      "dependencies": [
+        "androidx.annotation:annotation:1.8.1",
+        "androidx.collection:collection:1.4.2"
+      ]
+    },
+    {
+      "group": "androidx.webkit",
+      "name": "webkit",
+      "version": "1.12.1",
+      "dependencies": [
+        "androidx.annotation:annotation-experimental:1.4.1",
+        "androidx.annotation:annotation:1.8.1",
+        "androidx.core:core:1.15.0"
+      ]
+    },
+    {
+      "group": "androidx.work",
+      "name": "work-runtime",
+      "version": "2.10.1",
+      "dependencies": [
+        "androidx.annotation:annotation-experimental:1.4.1",
+        "androidx.concurrent:concurrent-futures-ktx:1.1.0",
+        "androidx.core:core:1.15.0",
+        "androidx.lifecycle:lifecycle-livedata:2.6.2",
+        "androidx.lifecycle:lifecycle-service:2.6.2",
+        "androidx.room:room-ktx:2.6.1",
+        "androidx.startup:startup-runtime:1.1.1",
+        "androidx.tracing:tracing-ktx:1.2.0",
+        "com.google.guava:listenablefuture:1.0",
+        "org.jetbrains.kotlin:kotlin-stdlib:1.8.22",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3"
+      ]
+    },
+    {
+      "group": "com.google.guava",
+      "name": "listenablefuture",
+      "version": "1.0",
+      "dependencies": []
+    },
+    {
+      "group": "org.jetbrains.kotlin",
+      "name": "kotlin-stdlib",
+      "version": "1.8.22",
+      "dependencies": [
+        "org.jetbrains.kotlin:kotlin-stdlib-common:1.8.22",
+        "org.jetbrains:annotations:23.0.0"
+      ]
+    },
+    {
+      "group": "org.jetbrains.kotlin",
+      "name": "kotlin-stdlib-common",
+      "version": "1.8.22",
+      "dependencies": []
+    },
+    {
+      "group": "org.jetbrains.kotlin",
+      "name": "kotlin-stdlib-jdk7",
+      "version": "1.8.22",
+      "dependencies": [
+        "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
+      ]
+    },
+    {
+      "group": "org.jetbrains.kotlin",
+      "name": "kotlin-stdlib-jdk8",
+      "version": "1.8.22",
+      "dependencies": [
+        "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22",
+        "org.jetbrains.kotlin:kotlin-stdlib:1.8.22"
+      ]
+    },
+    {
+      "group": "org.jetbrains.kotlinx",
+      "name": "kotlinx-coroutines-android",
+      "version": "1.7.3",
+      "dependencies": [
+        "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.7.3",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
+      ]
+    },
+    {
+      "group": "org.jetbrains.kotlinx",
+      "name": "kotlinx-coroutines-bom",
+      "version": "1.7.3",
+      "dependencies": [
+        "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.7.3",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3"
+      ]
+    },
+    {
+      "group": "org.jetbrains.kotlinx",
+      "name": "kotlinx-coroutines-core",
+      "version": "1.7.3",
+      "dependencies": [
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.7.3"
+      ]
+    },
+    {
+      "group": "org.jetbrains.kotlinx",
+      "name": "kotlinx-coroutines-core-jvm",
+      "version": "1.7.3",
+      "dependencies": [
+        "org.jetbrains.kotlin:kotlin-stdlib-common:1.8.22",
+        "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.7.3",
+        "org.jetbrains:annotations:23.0.0"
+      ]
+    },
+    {
+      "group": "org.jetbrains",
+      "name": "annotations",
+      "version": "23.0.0",
+      "dependencies": []
+    }
+  ],
+  "artifacts": [
+    {
+      "group": "androidx.annotation",
+      "name": "annotation-experimental",
+      "version": "1.4.1",
+      "type": "aar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/annotation/annotation-experimental/1.4.1/annotation-experimental-1.4.1.pom"
+    },
+    {
+      "group": "androidx.annotation",
+      "name": "annotation-jvm",
+      "version": "1.8.1",
+      "type": "jar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/annotation/annotation-jvm/1.8.1/annotation-jvm-1.8.1.pom"
+    },
+    {
+      "group": "androidx.arch.core",
+      "name": "core-common",
+      "version": "2.2.0",
+      "type": "jar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/arch/core/core-common/2.2.0/core-common-2.2.0.pom"
+    },
+    {
+      "group": "androidx.arch.core",
+      "name": "core-runtime",
+      "version": "2.2.0",
+      "type": "aar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/arch/core/core-runtime/2.2.0/core-runtime-2.2.0.pom"
+    },
+    {
+      "group": "androidx.collection",
+      "name": "collection-jvm",
+      "version": "1.4.2",
+      "type": "jar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/collection/collection-jvm/1.4.2/collection-jvm-1.4.2.pom"
+    },
+    {
+      "group": "androidx.concurrent",
+      "name": "concurrent-futures",
+      "version": "1.1.0",
+      "type": "jar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/concurrent/concurrent-futures/1.1.0/concurrent-futures-1.1.0.pom"
+    },
+    {
+      "group": "androidx.concurrent",
+      "name": "concurrent-futures-ktx",
+      "version": "1.1.0",
+      "type": "jar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/concurrent/concurrent-futures-ktx/1.1.0/concurrent-futures-ktx-1.1.0.pom"
+    },
+    {
+      "group": "androidx.core",
+      "name": "core",
+      "version": "1.15.0",
+      "type": "aar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/core/core/1.15.0/core-1.15.0.pom"
+    },
+    {
+      "group": "androidx.interpolator",
+      "name": "interpolator",
+      "version": "1.0.0",
+      "type": "aar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/interpolator/interpolator/1.0.0/interpolator-1.0.0.pom"
+    },
+    {
+      "group": "androidx.lifecycle",
+      "name": "lifecycle-common",
+      "version": "2.6.2",
+      "type": "jar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-common/2.6.2/lifecycle-common-2.6.2.pom"
+    },
+    {
+      "group": "androidx.lifecycle",
+      "name": "lifecycle-livedata",
+      "version": "2.6.2",
+      "type": "aar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-livedata/2.6.2/lifecycle-livedata-2.6.2.pom"
+    },
+    {
+      "group": "androidx.lifecycle",
+      "name": "lifecycle-livedata-core",
+      "version": "2.6.2",
+      "type": "aar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-livedata-core/2.6.2/lifecycle-livedata-core-2.6.2.pom"
+    },
+    {
+      "group": "androidx.lifecycle",
+      "name": "lifecycle-runtime",
+      "version": "2.6.2",
+      "type": "aar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-runtime/2.6.2/lifecycle-runtime-2.6.2.pom"
+    },
+    {
+      "group": "androidx.lifecycle",
+      "name": "lifecycle-service",
+      "version": "2.6.2",
+      "type": "aar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/lifecycle/lifecycle-service/2.6.2/lifecycle-service-2.6.2.pom"
+    },
+    {
+      "group": "androidx.profileinstaller",
+      "name": "profileinstaller",
+      "version": "1.3.0",
+      "type": "aar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/profileinstaller/profileinstaller/1.3.0/profileinstaller-1.3.0.pom"
+    },
+    {
+      "group": "androidx.room",
+      "name": "room-common",
+      "version": "2.6.1",
+      "type": "jar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/room/room-common/2.6.1/room-common-2.6.1.pom"
+    },
+    {
+      "group": "androidx.room",
+      "name": "room-ktx",
+      "version": "2.6.1",
+      "type": "aar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/room/room-ktx/2.6.1/room-ktx-2.6.1.pom"
+    },
+    {
+      "group": "androidx.room",
+      "name": "room-runtime",
+      "version": "2.6.1",
+      "type": "aar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/room/room-runtime/2.6.1/room-runtime-2.6.1.pom"
+    },
+    {
+      "group": "androidx.sqlite",
+      "name": "sqlite",
+      "version": "2.4.0",
+      "type": "aar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/sqlite/sqlite/2.4.0/sqlite-2.4.0.pom"
+    },
+    {
+      "group": "androidx.sqlite",
+      "name": "sqlite-framework",
+      "version": "2.4.0",
+      "type": "aar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/sqlite/sqlite-framework/2.4.0/sqlite-framework-2.4.0.pom"
+    },
+    {
+      "group": "androidx.startup",
+      "name": "startup-runtime",
+      "version": "1.1.1",
+      "type": "aar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/startup/startup-runtime/1.1.1/startup-runtime-1.1.1.pom"
+    },
+    {
+      "group": "androidx.tracing",
+      "name": "tracing",
+      "version": "1.2.0",
+      "type": "aar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/tracing/tracing/1.2.0/tracing-1.2.0.pom"
+    },
+    {
+      "group": "androidx.tracing",
+      "name": "tracing-ktx",
+      "version": "1.2.0",
+      "type": "aar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/tracing/tracing-ktx/1.2.0/tracing-ktx-1.2.0.pom"
+    },
+    {
+      "group": "androidx.versionedparcelable",
+      "name": "versionedparcelable",
+      "version": "1.1.1",
+      "type": "aar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/versionedparcelable/versionedparcelable/1.1.1/versionedparcelable-1.1.1.pom"
+    },
+    {
+      "group": "androidx.webkit",
+      "name": "webkit",
+      "version": "1.12.1",
+      "type": "aar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/webkit/webkit/1.12.1/webkit-1.12.1.pom"
+    },
+    {
+      "group": "androidx.work",
+      "name": "work-runtime",
+      "version": "2.10.1",
+      "type": "aar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://dl.google.com/dl/android/maven2/androidx/work/work-runtime/2.10.1/work-runtime-2.10.1.pom"
+    },
+    {
+      "group": "com.google.guava",
+      "name": "listenablefuture",
+      "version": "1.0",
+      "type": "jar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://repo.maven.apache.org/maven2/com/google/guava/listenablefuture/1.0/listenablefuture-1.0.pom",
+      "licenseInheritedFromPom": "https://repo.maven.apache.org/maven2/com/google/guava/guava-parent/26.0-android/guava-parent-26.0-android.pom"
+    },
+    {
+      "group": "org.jetbrains.kotlin",
+      "name": "kotlin-stdlib",
+      "version": "1.8.22",
+      "type": "jar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.8.22/kotlin-stdlib-1.8.22.pom"
+    },
+    {
+      "group": "org.jetbrains.kotlin",
+      "name": "kotlin-stdlib-common",
+      "version": "1.8.22",
+      "type": "jar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-common/1.8.22/kotlin-stdlib-common-1.8.22.pom"
+    },
+    {
+      "group": "org.jetbrains.kotlin",
+      "name": "kotlin-stdlib-jdk7",
+      "version": "1.8.22",
+      "type": "jar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk7/1.8.22/kotlin-stdlib-jdk7-1.8.22.pom"
+    },
+    {
+      "group": "org.jetbrains.kotlin",
+      "name": "kotlin-stdlib-jdk8",
+      "version": "1.8.22",
+      "type": "jar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache License, Version 2.0",
+          "url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/kotlin-stdlib-jdk8/1.8.22/kotlin-stdlib-jdk8-1.8.22.pom"
+    },
+    {
+      "group": "org.jetbrains.kotlinx",
+      "name": "kotlinx-coroutines-android",
+      "version": "1.7.3",
+      "type": "jar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-android/1.7.3/kotlinx-coroutines-android-1.7.3.pom"
+    },
+    {
+      "group": "org.jetbrains.kotlinx",
+      "name": "kotlinx-coroutines-core-jvm",
+      "version": "1.7.3",
+      "type": "jar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://repo.maven.apache.org/maven2/org/jetbrains/kotlinx/kotlinx-coroutines-core-jvm/1.7.3/kotlinx-coroutines-core-jvm-1.7.3.pom"
+    },
+    {
+      "group": "org.jetbrains",
+      "name": "annotations",
+      "version": "23.0.0",
+      "type": "jar",
+      "classifier": null,
+      "licenses": [
+        {
+          "name": "The Apache Software License, Version 2.0",
+          "url": "https://www.apache.org/licenses/LICENSE-2.0.txt"
+        }
+      ],
+      "pomUrl": "https://repo.maven.apache.org/maven2/org/jetbrains/annotations/23.0.0/annotations-23.0.0.pom"
+    }
+  ],
+  "verifiedAt": "2026-11-13",
+  "source": "Gradle releaseRuntimeClasspath resolved artifacts and dependency result, plus original cached POM licenses",
+  "missingPomLicenses": []
+}

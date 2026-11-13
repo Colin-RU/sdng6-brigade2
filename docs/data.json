@@ -10,7 +10,7 @@
     "sourceModifiedAt": "2026-10-21",
     "importedAt": "2026-11-12",
     "classification": "Типы извлечены из заливки ячеек DOCX и проверены по легенде PDF. Золотой — добывающая (ЭЦН), красный номер со звёздочкой — фонтан; зелёный — ППД; синий — пьезометрическая; жёлтый — законсервирована; чёрный — ликвидирована; белый — не указан.",
-    "updatedAt": "2026-11-12"
+    "updatedAt": "2026-11-13"
   },
   "pads": [
     {
@@ -1965,7 +1965,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 1,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12985",
@@ -1973,7 +1974,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 2,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13514",
@@ -1981,7 +1983,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 3,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13591",
@@ -1989,7 +1992,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 4,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12986",
@@ -1997,7 +2001,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 5,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13535",
@@ -2005,7 +2010,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 6,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12956",
@@ -2013,7 +2019,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 7,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13590",
@@ -2021,7 +2028,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 8,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12930",
@@ -2029,7 +2037,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 9,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13534",
@@ -2037,7 +2046,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 10,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13592",
@@ -2045,7 +2055,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 11,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13573",
@@ -2053,7 +2064,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 12,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "477В",
@@ -2061,7 +2073,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 14,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "13576",
@@ -2069,7 +2082,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 15,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "13516",
@@ -2077,7 +2091,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 16,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "13556",
@@ -2085,7 +2100,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 17,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "12987",
@@ -2093,7 +2109,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 18,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "13554",
@@ -2101,7 +2118,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 19,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "13557",
@@ -2109,7 +2127,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 20,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "13575",
@@ -2117,7 +2136,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 21,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "12957",
@@ -2125,7 +2145,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 22,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "13536",
@@ -2133,9 +2154,53 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 23,
-          "group": 1
+          "group": 1,
+          "position": 2
         }
-      ]
+      ],
+      "positions": [
+        {
+          "id": 1,
+          "label": "1-я позиция",
+          "shortLabel": "1п",
+          "wellIds": [
+            "476В",
+            "12985",
+            "13514",
+            "13591",
+            "12986",
+            "13535",
+            "12956",
+            "13590",
+            "12930",
+            "13534",
+            "13592",
+            "13573"
+          ]
+        },
+        {
+          "id": 2,
+          "label": "2-я позиция",
+          "shortLabel": "2п",
+          "wellIds": [
+            "477В",
+            "13576",
+            "13516",
+            "13556",
+            "12987",
+            "13554",
+            "13557",
+            "13575",
+            "12957",
+            "13536"
+          ]
+        }
+      ],
+      "positionSource": {
+        "separator": "—^",
+        "confirmedAt": "2026-11-13",
+        "sourceUrl": "https://drive.google.com/file/d/1lMgTI1lg4Eoko-m60AsgT0I173Yk14Yg/view"
+      }
     },
     {
       "id": "862",
@@ -2146,7 +2211,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 1,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13531",
@@ -2154,7 +2220,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 2,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13515",
@@ -2162,7 +2229,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 3,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13588",
@@ -2170,7 +2238,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 4,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13572",
@@ -2178,7 +2247,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 5,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13513",
@@ -2186,7 +2256,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 6,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13552",
@@ -2194,7 +2265,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 7,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13553",
@@ -2202,7 +2274,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 8,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13574",
@@ -2210,7 +2283,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 9,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13533",
@@ -2218,7 +2292,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 10,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13532",
@@ -2226,7 +2301,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 11,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13555",
@@ -2234,7 +2310,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 12,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13571",
@@ -2242,7 +2319,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 13,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13512",
@@ -2250,9 +2328,38 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 14,
-          "group": 0
+          "group": 0,
+          "position": 1
         }
-      ]
+      ],
+      "positions": [
+        {
+          "id": 1,
+          "label": "1-я позиция",
+          "shortLabel": "1п",
+          "wellIds": [
+            "551В",
+            "13531",
+            "13515",
+            "13588",
+            "13572",
+            "13513",
+            "13552",
+            "13553",
+            "13574",
+            "13533",
+            "13532",
+            "13555",
+            "13571",
+            "13512"
+          ]
+        }
+      ],
+      "positionSource": {
+        "separator": "—^",
+        "confirmedAt": "2026-11-13",
+        "sourceUrl": "https://drive.google.com/file/d/1lMgTI1lg4Eoko-m60AsgT0I173Yk14Yg/view"
+      }
     },
     {
       "id": "870",
@@ -2263,7 +2370,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 1,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13312",
@@ -2271,7 +2379,8 @@
           "method": "unknown",
           "sourceColor": "#FFFF00",
           "sourceOrder": 2,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13313",
@@ -2279,7 +2388,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 3,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "21Ш",
@@ -2288,7 +2398,8 @@
           "sourceColor": "#FFFFFF",
           "sourceOrder": 5,
           "group": 1,
-          "note": "В исходнике белая ячейка, тип в легенде не указан."
+          "note": "В исходнике белая ячейка, тип в легенде не указан.",
+          "position": 1
         },
         {
           "id": "22Ш",
@@ -2297,7 +2408,8 @@
           "sourceColor": "#FFFFFF",
           "sourceOrder": 6,
           "group": 1,
-          "note": "В исходнике белая ячейка, тип в легенде не указан."
+          "note": "В исходнике белая ячейка, тип в легенде не указан.",
+          "position": 1
         },
         {
           "id": "13300",
@@ -2305,7 +2417,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 8,
-          "group": 2
+          "group": 2,
+          "position": 1
         },
         {
           "id": "13301",
@@ -2313,7 +2426,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 9,
-          "group": 2
+          "group": 2,
+          "position": 1
         },
         {
           "id": "13303",
@@ -2321,7 +2435,8 @@
           "method": "unknown",
           "sourceColor": "#FFFF00",
           "sourceOrder": 11,
-          "group": 3
+          "group": 3,
+          "position": 1
         },
         {
           "id": "13299",
@@ -2329,9 +2444,33 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 13,
-          "group": 4
+          "group": 4,
+          "position": 1
         }
-      ]
+      ],
+      "positions": [
+        {
+          "id": 1,
+          "label": "1-я позиция",
+          "shortLabel": "1п",
+          "wellIds": [
+            "13307",
+            "13312",
+            "13313",
+            "21Ш",
+            "22Ш",
+            "13300",
+            "13301",
+            "13303",
+            "13299"
+          ]
+        }
+      ],
+      "positionSource": {
+        "separator": "—^",
+        "confirmedAt": "2026-11-13",
+        "sourceUrl": "https://drive.google.com/file/d/1lMgTI1lg4Eoko-m60AsgT0I173Yk14Yg/view"
+      }
     },
     {
       "id": "871",
@@ -2342,7 +2481,8 @@
           "method": "unknown",
           "sourceColor": "#5B9BD5",
           "sourceOrder": 1,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13295",
@@ -2350,7 +2490,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 3,
-          "group": 1
+          "group": 1,
+          "position": 1
         },
         {
           "id": "13287",
@@ -2358,7 +2499,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 4,
-          "group": 1
+          "group": 1,
+          "position": 1
         },
         {
           "id": "13279",
@@ -2366,7 +2508,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 6,
-          "group": 2
+          "group": 2,
+          "position": 1
         },
         {
           "id": "13280",
@@ -2374,7 +2517,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 7,
-          "group": 2
+          "group": 2,
+          "position": 1
         },
         {
           "id": "42Ш",
@@ -2383,7 +2527,8 @@
           "sourceColor": "#FFFFFF",
           "sourceOrder": 9,
           "group": 3,
-          "note": "В исходнике белая ячейка, тип в легенде не указан."
+          "note": "В исходнике белая ячейка, тип в легенде не указан.",
+          "position": 1
         },
         {
           "id": "13282",
@@ -2391,7 +2536,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 11,
-          "group": 4
+          "group": 4,
+          "position": 1
         },
         {
           "id": "13281",
@@ -2399,7 +2545,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 12,
-          "group": 4
+          "group": 4,
+          "position": 1
         },
         {
           "id": "13278",
@@ -2407,9 +2554,33 @@
           "method": "unknown",
           "sourceColor": "#5B9BD5",
           "sourceOrder": 13,
-          "group": 4
+          "group": 4,
+          "position": 1
         }
-      ]
+      ],
+      "positions": [
+        {
+          "id": 1,
+          "label": "1-я позиция",
+          "shortLabel": "1п",
+          "wellIds": [
+            "13288",
+            "13295",
+            "13287",
+            "13279",
+            "13280",
+            "42Ш",
+            "13282",
+            "13281",
+            "13278"
+          ]
+        }
+      ],
+      "positionSource": {
+        "separator": "—^",
+        "confirmedAt": "2026-11-13",
+        "sourceUrl": "https://drive.google.com/file/d/1lMgTI1lg4Eoko-m60AsgT0I173Yk14Yg/view"
+      }
     },
     {
       "id": "1004",
@@ -2420,7 +2591,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 1,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12774",
@@ -2428,7 +2600,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 2,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "337В",
@@ -2436,7 +2609,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 3,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12826",
@@ -2444,7 +2618,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 4,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12880",
@@ -2452,7 +2627,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 5,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12825",
@@ -2460,7 +2636,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 6,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12798",
@@ -2468,7 +2645,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 7,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "338В",
@@ -2476,7 +2654,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 8,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12799",
@@ -2484,7 +2663,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 9,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12800",
@@ -2492,7 +2672,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 10,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12878",
@@ -2500,7 +2681,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 11,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12852",
@@ -2508,7 +2690,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 12,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12850",
@@ -2516,7 +2699,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 14,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "12851",
@@ -2524,7 +2708,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 15,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "12801",
@@ -2532,7 +2717,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 16,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "12879",
@@ -2540,7 +2726,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 17,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "12905",
@@ -2548,7 +2735,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 18,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "12904",
@@ -2556,7 +2744,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 19,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "12935",
@@ -2564,7 +2753,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 20,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "12903",
@@ -2572,9 +2762,51 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 21,
-          "group": 1
+          "group": 1,
+          "position": 2
         }
-      ]
+      ],
+      "positions": [
+        {
+          "id": 1,
+          "label": "1-я позиция",
+          "shortLabel": "1п",
+          "wellIds": [
+            "12824",
+            "12774",
+            "337В",
+            "12826",
+            "12880",
+            "12825",
+            "12798",
+            "338В",
+            "12799",
+            "12800",
+            "12878",
+            "12852"
+          ]
+        },
+        {
+          "id": 2,
+          "label": "2-я позиция",
+          "shortLabel": "2п",
+          "wellIds": [
+            "12850",
+            "12851",
+            "12801",
+            "12879",
+            "12905",
+            "12904",
+            "12935",
+            "12903"
+          ]
+        }
+      ],
+      "positionSource": {
+        "separator": "—^",
+        "confirmedAt": "2026-11-13",
+        "sourceUrl": "https://drive.google.com/file/d/1lMgTI1lg4Eoko-m60AsgT0I173Yk14Yg/view"
+      }
     },
     {
       "id": "1122",
@@ -2585,7 +2817,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 1,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12599",
@@ -2593,7 +2826,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 2,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "457В",
@@ -2601,7 +2835,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 3,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "458В",
@@ -2609,7 +2844,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 4,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12598",
@@ -2617,7 +2853,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 5,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12692",
@@ -2625,7 +2862,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 6,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12659",
@@ -2633,7 +2871,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 7,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12660",
@@ -2641,7 +2880,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 8,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12629",
@@ -2649,7 +2889,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 9,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12630",
@@ -2657,7 +2898,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 10,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12723",
@@ -2665,7 +2907,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 11,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12693",
@@ -2673,7 +2916,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 12,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16718",
@@ -2681,7 +2925,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 14,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "16724",
@@ -2689,7 +2934,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 15,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "16708",
@@ -2697,7 +2943,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 16,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "16716",
@@ -2705,7 +2952,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 17,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "16722",
@@ -2713,7 +2961,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 18,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "16727",
@@ -2721,7 +2970,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 19,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "16726",
@@ -2729,7 +2979,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 20,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "16717",
@@ -2737,7 +2988,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 21,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "16709",
@@ -2745,7 +2997,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 22,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "12691",
@@ -2753,7 +3006,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 23,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "16734",
@@ -2761,7 +3015,8 @@
           "method": "unknown",
           "sourceColor": "#5B9BD5",
           "sourceOrder": 24,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "16707",
@@ -2769,9 +3024,55 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 25,
-          "group": 1
+          "group": 1,
+          "position": 2
         }
-      ]
+      ],
+      "positions": [
+        {
+          "id": 1,
+          "label": "1-я позиция",
+          "shortLabel": "1п",
+          "wellIds": [
+            "12661",
+            "12599",
+            "457В",
+            "458В",
+            "12598",
+            "12692",
+            "12659",
+            "12660",
+            "12629",
+            "12630",
+            "12723",
+            "12693"
+          ]
+        },
+        {
+          "id": 2,
+          "label": "2-я позиция",
+          "shortLabel": "2п",
+          "wellIds": [
+            "16718",
+            "16724",
+            "16708",
+            "16716",
+            "16722",
+            "16727",
+            "16726",
+            "16717",
+            "16709",
+            "12691",
+            "16734",
+            "16707"
+          ]
+        }
+      ],
+      "positionSource": {
+        "separator": "—^",
+        "confirmedAt": "2026-11-13",
+        "sourceUrl": "https://drive.google.com/file/d/1lMgTI1lg4Eoko-m60AsgT0I173Yk14Yg/view"
+      }
     },
     {
       "id": "1123",
@@ -2782,7 +3083,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 1,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12881",
@@ -2790,7 +3092,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 2,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "459В",
@@ -2798,7 +3101,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 3,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "460В",
@@ -2806,7 +3110,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 4,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12882",
@@ -2814,7 +3119,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 5,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12906",
@@ -2822,7 +3128,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 6,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12936",
@@ -2830,7 +3137,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 7,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12854",
@@ -2838,7 +3146,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 8,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12907",
@@ -2846,7 +3155,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 9,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12964",
@@ -2854,7 +3164,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 10,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12993",
@@ -2862,7 +3173,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 11,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12965",
@@ -2870,7 +3182,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 12,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12995",
@@ -2878,7 +3191,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 14,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "13522",
@@ -2886,7 +3200,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 15,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "12994",
@@ -2894,7 +3209,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 16,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "12937",
@@ -2902,9 +3218,47 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 17,
-          "group": 1
+          "group": 1,
+          "position": 2
         }
-      ]
+      ],
+      "positions": [
+        {
+          "id": 1,
+          "label": "1-я позиция",
+          "shortLabel": "1п",
+          "wellIds": [
+            "12828",
+            "12881",
+            "459В",
+            "460В",
+            "12882",
+            "12906",
+            "12936",
+            "12854",
+            "12907",
+            "12964",
+            "12993",
+            "12965"
+          ]
+        },
+        {
+          "id": 2,
+          "label": "2-я позиция",
+          "shortLabel": "2п",
+          "wellIds": [
+            "12995",
+            "13522",
+            "12994",
+            "12937"
+          ]
+        }
+      ],
+      "positionSource": {
+        "separator": "—^",
+        "confirmedAt": "2026-11-13",
+        "sourceUrl": "https://drive.google.com/file/d/1lMgTI1lg4Eoko-m60AsgT0I173Yk14Yg/view"
+      }
     },
     {
       "id": "1128",
@@ -2915,7 +3269,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 1,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12721",
@@ -2923,7 +3278,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 2,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16582",
@@ -2931,7 +3287,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 3,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16714",
@@ -2939,7 +3296,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 4,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12749",
@@ -2947,7 +3305,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 6,
-          "group": 1
+          "group": 1,
+          "position": 1
         },
         {
           "id": "12750",
@@ -2955,7 +3314,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 7,
-          "group": 1
+          "group": 1,
+          "position": 1
         },
         {
           "id": "12777",
@@ -2963,7 +3323,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 8,
-          "group": 1
+          "group": 1,
+          "position": 1
         },
         {
           "id": "16732",
@@ -2971,7 +3332,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 9,
-          "group": 1
+          "group": 1,
+          "position": 1
         },
         {
           "id": "16733",
@@ -2979,7 +3341,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 11,
-          "group": 2
+          "group": 2,
+          "position": 1
         },
         {
           "id": "16724",
@@ -2987,7 +3350,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 12,
-          "group": 2
+          "group": 2,
+          "position": 1
         },
         {
           "id": "16741",
@@ -2995,7 +3359,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 13,
-          "group": 2
+          "group": 2,
+          "position": 1
         },
         {
           "id": "16725",
@@ -3003,7 +3368,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 14,
-          "group": 2
+          "group": 2,
+          "position": 1
         },
         {
           "id": "16581",
@@ -3011,7 +3377,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 16,
-          "group": 3
+          "group": 3,
+          "position": 1
         },
         {
           "id": "16715",
@@ -3019,7 +3386,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 17,
-          "group": 3
+          "group": 3,
+          "position": 1
         },
         {
           "id": "16706",
@@ -3027,7 +3395,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 18,
-          "group": 3
+          "group": 3,
+          "position": 1
         },
         {
           "id": "16705",
@@ -3035,7 +3404,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 19,
-          "group": 3
+          "group": 3,
+          "position": 1
         },
         {
           "id": "12720",
@@ -3043,7 +3413,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 21,
-          "group": 4
+          "group": 4,
+          "position": 1
         },
         {
           "id": "12690",
@@ -3051,7 +3422,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 22,
-          "group": 4
+          "group": 4,
+          "position": 1
         },
         {
           "id": "12751",
@@ -3059,9 +3431,43 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 23,
-          "group": 4
+          "group": 4,
+          "position": 1
         }
-      ]
+      ],
+      "positions": [
+        {
+          "id": 1,
+          "label": "1-я позиция",
+          "shortLabel": "1п",
+          "wellIds": [
+            "540В",
+            "12721",
+            "16582",
+            "16714",
+            "12749",
+            "12750",
+            "12777",
+            "16732",
+            "16733",
+            "16724",
+            "16741",
+            "16725",
+            "16581",
+            "16715",
+            "16706",
+            "16705",
+            "12720",
+            "12690",
+            "12751"
+          ]
+        }
+      ],
+      "positionSource": {
+        "separator": "—^",
+        "confirmedAt": "2026-11-13",
+        "sourceUrl": "https://drive.google.com/file/d/1lMgTI1lg4Eoko-m60AsgT0I173Yk14Yg/view"
+      }
     },
     {
       "id": "1129",
@@ -3072,7 +3478,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 1,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16764",
@@ -3080,7 +3487,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 2,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12938",
@@ -3088,7 +3496,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 3,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16750",
@@ -3096,7 +3505,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 4,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16780",
@@ -3104,7 +3514,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 6,
-          "group": 1
+          "group": 1,
+          "position": 1
         },
         {
           "id": "12908",
@@ -3112,7 +3523,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 7,
-          "group": 1
+          "group": 1,
+          "position": 1
         },
         {
           "id": "16763",
@@ -3120,7 +3532,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 8,
-          "group": 1
+          "group": 1,
+          "position": 1
         },
         {
           "id": "17756",
@@ -3128,7 +3541,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 9,
-          "group": 1
+          "group": 1,
+          "position": 1
         },
         {
           "id": "16752",
@@ -3136,7 +3550,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 11,
-          "group": 2
+          "group": 2,
+          "position": 1
         },
         {
           "id": "16742",
@@ -3144,7 +3559,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 12,
-          "group": 2
+          "group": 2,
+          "position": 1
         },
         {
           "id": "16749",
@@ -3152,7 +3568,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 13,
-          "group": 2
+          "group": 2,
+          "position": 1
         },
         {
           "id": "16771",
@@ -3160,7 +3577,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 14,
-          "group": 2
+          "group": 2,
+          "position": 1
         }
       ],
       "status": {
@@ -3169,7 +3587,33 @@
         "confirmedAt": "2026-11-12",
         "source": "operator-confirmed"
       },
-      "registryNote": "Куст в бурении. В реестре указаны известные скважины; состав пополняется."
+      "registryNote": "Куст в бурении. В реестре указаны известные скважины; состав пополняется.",
+      "positions": [
+        {
+          "id": 1,
+          "label": "1-я позиция",
+          "shortLabel": "1п",
+          "wellIds": [
+            "321В",
+            "16764",
+            "12938",
+            "16750",
+            "16780",
+            "12908",
+            "16763",
+            "17756",
+            "16752",
+            "16742",
+            "16749",
+            "16771"
+          ]
+        }
+      ],
+      "positionSource": {
+        "separator": "—^",
+        "confirmedAt": "2026-11-13",
+        "sourceUrl": "https://drive.google.com/file/d/1lMgTI1lg4Eoko-m60AsgT0I173Yk14Yg/view"
+      }
     },
     {
       "id": "1131",
@@ -3180,7 +3624,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 1,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16826",
@@ -3188,7 +3633,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 2,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16858",
@@ -3196,7 +3642,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 3,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13545",
@@ -3204,7 +3651,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 4,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16828",
@@ -3212,7 +3660,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 6,
-          "group": 1
+          "group": 1,
+          "position": 1
         },
         {
           "id": "16842",
@@ -3220,7 +3669,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 7,
-          "group": 1
+          "group": 1,
+          "position": 1
         },
         {
           "id": "16841",
@@ -3228,7 +3678,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 8,
-          "group": 1
+          "group": 1,
+          "position": 1
         },
         {
           "id": "16857",
@@ -3236,7 +3687,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 9,
-          "group": 1
+          "group": 1,
+          "position": 1
         },
         {
           "id": "13564",
@@ -3244,7 +3696,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 11,
-          "group": 2
+          "group": 2,
+          "position": 1
         },
         {
           "id": "13524",
@@ -3252,7 +3705,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 12,
-          "group": 2
+          "group": 2,
+          "position": 1
         },
         {
           "id": "13565",
@@ -3260,7 +3714,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 13,
-          "group": 2
+          "group": 2,
+          "position": 1
         },
         {
           "id": "13544",
@@ -3268,7 +3723,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 14,
-          "group": 2
+          "group": 2,
+          "position": 1
         },
         {
           "id": "16799",
@@ -3276,7 +3732,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 16,
-          "group": 3
+          "group": 3,
+          "position": 1
         },
         {
           "id": "16807",
@@ -3284,7 +3741,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 17,
-          "group": 3
+          "group": 3,
+          "position": 1
         },
         {
           "id": "16827",
@@ -3292,7 +3750,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 18,
-          "group": 3
+          "group": 3,
+          "position": 1
         },
         {
           "id": "12966",
@@ -3300,7 +3759,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 19,
-          "group": 3
+          "group": 3,
+          "position": 1
         },
         {
           "id": "16790",
@@ -3308,7 +3768,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 21,
-          "group": 4
+          "group": 4,
+          "position": 1
         },
         {
           "id": "12996",
@@ -3316,7 +3777,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 22,
-          "group": 4
+          "group": 4,
+          "position": 1
         },
         {
           "id": "16798",
@@ -3324,7 +3786,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 23,
-          "group": 4
+          "group": 4,
+          "position": 1
         },
         {
           "id": "16789",
@@ -3332,9 +3795,44 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 24,
-          "group": 4
+          "group": 4,
+          "position": 1
         }
-      ]
+      ],
+      "positions": [
+        {
+          "id": 1,
+          "label": "1-я позиция",
+          "shortLabel": "1п",
+          "wellIds": [
+            "344В",
+            "16826",
+            "16858",
+            "13545",
+            "16828",
+            "16842",
+            "16841",
+            "16857",
+            "13564",
+            "13524",
+            "13565",
+            "13544",
+            "16799",
+            "16807",
+            "16827",
+            "12966",
+            "16790",
+            "12996",
+            "16798",
+            "16789"
+          ]
+        }
+      ],
+      "positionSource": {
+        "separator": "—^",
+        "confirmedAt": "2026-11-13",
+        "sourceUrl": "https://drive.google.com/file/d/1lMgTI1lg4Eoko-m60AsgT0I173Yk14Yg/view"
+      }
     },
     {
       "id": "1136",
@@ -3345,7 +3843,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 1,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12991",
@@ -3353,7 +3852,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 2,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12934",
@@ -3361,7 +3861,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 3,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13521",
@@ -3369,7 +3870,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 4,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13541",
@@ -3377,7 +3879,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 5,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12963",
@@ -3385,7 +3888,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 6,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12933",
@@ -3393,7 +3897,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 7,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12962",
@@ -3401,7 +3906,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 8,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13543",
@@ -3409,7 +3915,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 9,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12992",
@@ -3417,7 +3924,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 10,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13520",
@@ -3425,7 +3933,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 11,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13523",
@@ -3433,7 +3942,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 12,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16824",
@@ -3441,7 +3951,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 13,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16821",
@@ -3449,7 +3960,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 14,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16822",
@@ -3457,7 +3969,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 15,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16816",
@@ -3465,9 +3978,40 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 16,
-          "group": 0
+          "group": 0,
+          "position": 1
         }
-      ]
+      ],
+      "positions": [
+        {
+          "id": 1,
+          "label": "1-я позиция",
+          "shortLabel": "1п",
+          "wellIds": [
+            "537В",
+            "12991",
+            "12934",
+            "13521",
+            "13541",
+            "12963",
+            "12933",
+            "12962",
+            "13543",
+            "12992",
+            "13520",
+            "13523",
+            "16824",
+            "16821",
+            "16822",
+            "16816"
+          ]
+        }
+      ],
+      "positionSource": {
+        "separator": "—^",
+        "confirmedAt": "2026-11-13",
+        "sourceUrl": "https://drive.google.com/file/d/1lMgTI1lg4Eoko-m60AsgT0I173Yk14Yg/view"
+      }
     },
     {
       "id": "1137",
@@ -3478,7 +4022,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 1,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12928",
@@ -3486,7 +4031,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 2,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12770",
@@ -3494,7 +4040,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 3,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12820",
@@ -3502,7 +4049,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 4,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12874",
@@ -3510,7 +4058,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 5,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12899",
@@ -3518,7 +4067,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 6,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12821",
@@ -3526,7 +4076,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 7,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12743",
@@ -3534,7 +4085,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 8,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12873",
@@ -3542,7 +4094,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 9,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12795",
@@ -3550,7 +4103,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 10,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12846",
@@ -3558,7 +4112,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 11,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "18593",
@@ -3566,7 +4121,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 12,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "12847",
@@ -3574,9 +4130,37 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 13,
-          "group": 0
+          "group": 0,
+          "position": 1
         }
-      ]
+      ],
+      "positions": [
+        {
+          "id": 1,
+          "label": "1-я позиция",
+          "shortLabel": "1п",
+          "wellIds": [
+            "246В",
+            "12928",
+            "12770",
+            "12820",
+            "12874",
+            "12899",
+            "12821",
+            "12743",
+            "12873",
+            "12795",
+            "12846",
+            "18593",
+            "12847"
+          ]
+        }
+      ],
+      "positionSource": {
+        "separator": "—^",
+        "confirmedAt": "2026-11-13",
+        "sourceUrl": "https://drive.google.com/file/d/1lMgTI1lg4Eoko-m60AsgT0I173Yk14Yg/view"
+      }
     },
     {
       "id": "1139",
@@ -3587,7 +4171,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 1,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13609",
@@ -3595,7 +4180,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 2,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13578",
@@ -3603,7 +4189,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 3,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13648",
@@ -3611,7 +4198,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 4,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13647",
@@ -3619,7 +4207,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 5,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16882",
@@ -3627,7 +4216,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 6,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13577",
@@ -3635,7 +4225,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 7,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13610",
@@ -3643,7 +4234,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 8,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16852",
@@ -3651,7 +4243,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 9,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13627",
@@ -3659,7 +4252,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 10,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13628",
@@ -3667,7 +4261,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 11,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13594",
@@ -3675,7 +4270,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 12,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13595",
@@ -3683,7 +4279,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 14,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "13558",
@@ -3691,7 +4288,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 15,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "13669",
@@ -3699,7 +4297,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 16,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "13593",
@@ -3707,7 +4306,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 17,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "16905",
@@ -3715,7 +4315,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 18,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "16868",
@@ -3723,7 +4324,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 19,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "16869",
@@ -3731,7 +4333,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 20,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "16894",
@@ -3739,9 +4342,51 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 21,
-          "group": 1
+          "group": 1,
+          "position": 2
         }
-      ]
+      ],
+      "positions": [
+        {
+          "id": 1,
+          "label": "1-я позиция",
+          "shortLabel": "1п",
+          "wellIds": [
+            "247В",
+            "13609",
+            "13578",
+            "13648",
+            "13647",
+            "16882",
+            "13577",
+            "13610",
+            "16852",
+            "13627",
+            "13628",
+            "13594"
+          ]
+        },
+        {
+          "id": 2,
+          "label": "2-я позиция",
+          "shortLabel": "2п",
+          "wellIds": [
+            "13595",
+            "13558",
+            "13669",
+            "13593",
+            "16905",
+            "16868",
+            "16869",
+            "16894"
+          ]
+        }
+      ],
+      "positionSource": {
+        "separator": "—^",
+        "confirmedAt": "2026-11-13",
+        "sourceUrl": "https://drive.google.com/file/d/1lMgTI1lg4Eoko-m60AsgT0I173Yk14Yg/view"
+      }
     },
     {
       "id": "1144",
@@ -3752,7 +4397,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 1,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "502В",
@@ -3760,7 +4406,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 2,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13802",
@@ -3768,7 +4415,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 3,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13745",
@@ -3776,7 +4424,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 4,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13690",
@@ -3784,7 +4433,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 5,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13692",
@@ -3792,7 +4442,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 6,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13774",
@@ -3800,7 +4451,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 7,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13691",
@@ -3808,7 +4460,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 8,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13773",
@@ -3816,7 +4469,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 9,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13744",
@@ -3824,7 +4478,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 10,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13715",
@@ -3832,7 +4487,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 11,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13666",
@@ -3840,7 +4496,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 12,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "13607",
@@ -3848,7 +4505,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 14,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "13622",
@@ -3856,7 +4514,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 15,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "13668",
@@ -3864,7 +4523,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 16,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "13717",
@@ -3872,7 +4532,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 17,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "13646",
@@ -3880,7 +4541,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 18,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "13645",
@@ -3888,7 +4550,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 19,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "13667",
@@ -3896,7 +4559,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 20,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "13625",
@@ -3904,7 +4568,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 21,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "13606",
@@ -3912,7 +4577,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 22,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "13716",
@@ -3920,7 +4586,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 23,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "13626",
@@ -3928,7 +4595,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 24,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "13608",
@@ -3936,9 +4604,55 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 25,
-          "group": 1
+          "group": 1,
+          "position": 2
         }
-      ]
+      ],
+      "positions": [
+        {
+          "id": 1,
+          "label": "1-я позиция",
+          "shortLabel": "1п",
+          "wellIds": [
+            "506В",
+            "502В",
+            "13802",
+            "13745",
+            "13690",
+            "13692",
+            "13774",
+            "13691",
+            "13773",
+            "13744",
+            "13715",
+            "13666"
+          ]
+        },
+        {
+          "id": 2,
+          "label": "2-я позиция",
+          "shortLabel": "2п",
+          "wellIds": [
+            "13607",
+            "13622",
+            "13668",
+            "13717",
+            "13646",
+            "13645",
+            "13667",
+            "13625",
+            "13606",
+            "13716",
+            "13626",
+            "13608"
+          ]
+        }
+      ],
+      "positionSource": {
+        "separator": "—^",
+        "confirmedAt": "2026-11-13",
+        "sourceUrl": "https://drive.google.com/file/d/1lMgTI1lg4Eoko-m60AsgT0I173Yk14Yg/view"
+      }
     },
     {
       "id": "1158",
@@ -3949,7 +4663,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 1,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16862",
@@ -3957,7 +4672,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 2,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16891",
@@ -3965,7 +4681,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 3,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16830",
@@ -3973,7 +4690,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 4,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16877",
@@ -3981,7 +4699,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 5,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16844",
@@ -3989,7 +4708,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 6,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16808",
@@ -3997,7 +4717,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 7,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16829",
@@ -4005,7 +4726,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 8,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16860",
@@ -4013,7 +4735,8 @@
           "method": "unknown",
           "sourceColor": "#70AD47",
           "sourceOrder": 9,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16846",
@@ -4021,7 +4744,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 10,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16845",
@@ -4029,7 +4753,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 11,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16861",
@@ -4037,7 +4762,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 12,
-          "group": 0
+          "group": 0,
+          "position": 1
         },
         {
           "id": "16875",
@@ -4045,7 +4771,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 14,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "16878",
@@ -4053,7 +4780,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 15,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "16843",
@@ -4061,7 +4789,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 16,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "16859",
@@ -4069,7 +4798,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 17,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "16876",
@@ -4077,7 +4807,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 18,
-          "group": 1
+          "group": 1,
+          "position": 2
         },
         {
           "id": "16890",
@@ -4085,7 +4816,8 @@
           "method": "esp",
           "sourceColor": "#BF8F00",
           "sourceOrder": 19,
-          "group": 1
+          "group": 1,
+          "position": 2
         }
       ],
       "status": {
@@ -4094,7 +4826,46 @@
         "confirmedAt": "2026-11-12",
         "source": "operator-confirmed"
       },
-      "registryNote": "Куст в бурении. В реестре указаны известные скважины; состав пополняется."
+      "registryNote": "Куст в бурении. В реестре указаны известные скважины; состав пополняется.",
+      "positions": [
+        {
+          "id": 1,
+          "label": "1-я позиция",
+          "shortLabel": "1п",
+          "wellIds": [
+            "413В",
+            "16862",
+            "16891",
+            "16830",
+            "16877",
+            "16844",
+            "16808",
+            "16829",
+            "16860",
+            "16846",
+            "16845",
+            "16861"
+          ]
+        },
+        {
+          "id": 2,
+          "label": "2-я позиция",
+          "shortLabel": "2п",
+          "wellIds": [
+            "16875",
+            "16878",
+            "16843",
+            "16859",
+            "16876",
+            "16890"
+          ]
+        }
+      ],
+      "positionSource": {
+        "separator": "—^",
+        "confirmedAt": "2026-11-13",
+        "sourceUrl": "https://drive.google.com/file/d/1lMgTI1lg4Eoko-m60AsgT0I173Yk14Yg/view"
+      }
     },
     {
       "id": "ОД",

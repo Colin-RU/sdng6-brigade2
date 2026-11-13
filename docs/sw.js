@@ -1,13 +1,23 @@
 'use strict';
 
 // Bump this value with every release that changes the app shell or its data.
-const VERSION = '2026-11-12-v7';
+const VERSION = '2026-11-13-v9';
 const CACHE_PREFIX = 'sdng6-brigade2-';
 const CACHE_NAME = CACHE_PREFIX + VERSION;
 const APP_MARKER = '<meta name="sdng6-app-shell" content="brigade-2">';
 const ROOT = new URL('./', self.registration.scope);
 const ASSETS = [
   ['index.html', 'html', true],
+  ['config.js', 'js', true],
+  ['community.js', 'js', true],
+  ['notifications.js', 'js', true],
+  ['community.css', 'css', true],
+  ['calendar.js', 'js', true],
+  ['calendar.css', 'css', true],
+  ['work-shell.js', 'js', true],
+  ['work-shell.css', 'css', true],
+  ['navigation-pack.js', 'js', true],
+  ['navigation-pack.css', 'css', true],
   ['app.css', 'css', true],
   ['app.js', 'js', true],
   ['preferences.js', 'js', true],
@@ -129,9 +139,12 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
   // No interception of sign-in, API calls, foreign maps, or URLs carrying query tokens.
-  if (url.origin !== ROOT.origin || url.search) return;
+  if (url.origin !== ROOT.origin) return;
+  const notification=url.searchParams.get('notification');
+  const notificationNavigation=request.mode==='navigate'&&notification&&/^[A-Za-z0-9-]{1,64}$/.test(notification)&&[...url.searchParams.keys()].every(key=>key==='notification');
+  if(url.search&&!notificationNavigation)return;
   const isHomeNavigation = request.mode === 'navigate' &&
-    (url.href === ROOT.href || url.href === INDEX_URL);
+    (url.pathname === ROOT.pathname || url.pathname === new URL(INDEX_URL).pathname);
   if (isHomeNavigation) {
     event.respondWith((async () => {
       try {
@@ -152,14 +165,27 @@ self.addEventListener('fetch', event => {
     })());
     return;
   }
+  if(request.cache==='reload'||request.cache==='no-store')return;
   const asset = RESOURCE_BY_URL.get(url.href);
   if (!asset || asset.kind === 'html') return;
   event.respondWith((async () => {
     const cache = await caches.open(CACHE_NAME);
     const saved = await cache.match(asset.url);
     if (saved) return saved;
+    const pack=await savedMapAsset(asset.url);if(pack)return pack;
     const response = await fetch(request);
     if (await isSafeResponse(response, asset)) await cache.put(asset.url, response.clone());
     return response;
   })());
+});
+
+async function savedMapAsset(url){
+ try{const index=await caches.open('atlas-map-pack-index-v1'),record=await index.match(new URL('__atlas_map_pack__',ROOT).href);if(!record)return null;const pointer=await record.json();if(typeof pointer.cacheName!=='string'||!pointer.cacheName.startsWith('atlas-map-pack-'))return null;const cache=await caches.open(pointer.cacheName);return await cache.match(url)||null;}catch{return null;}
+}
+self.addEventListener('push',event=>{
+ event.waitUntil((async()=>{let payload={};try{payload=event.data?.json()||{};}catch{}const id=String(payload.notificationId||'');if(!/^[A-Za-z0-9-]{1,64}$/.test(id))return;await self.registration.showNotification(String(payload.title||'Новый ответ бригады').slice(0,160),{body:String(payload.body||'Откройте приложение, чтобы прочитать комментарий.').slice(0,500),icon:new URL('icon-192.png',ROOT).href,badge:new URL('icon-192.png',ROOT).href,tag:'brigade-comment-'+id,data:{notificationId:id},renotify:false});})());
+});
+self.addEventListener('notificationclick',event=>{
+ event.notification.close();const id=String(event.notification.data?.notificationId||'');if(!/^[A-Za-z0-9-]{1,64}$/.test(id))return;
+ event.waitUntil((async()=>{const windows=await self.clients.matchAll({type:'window',includeUncontrolled:true});const found=windows.find(client=>client.url.startsWith(ROOT.href));if(found){await found.focus();found.postMessage({type:'ATLAS_NOTIFICATION_OPEN',id});return;}const target=new URL(ROOT.href);target.searchParams.set('notification',id);await self.clients.openWindow(target.href);})());
 });
