@@ -6,7 +6,7 @@
   const STATUS={unknown:'Не указан',ok:'Работает',attention:'Нужно внимание',stopped:'Остановлен',absent:'Отсутствует'};
   const statusesFor=key=>Object.entries(STATUS).filter(([status])=>status!=='absent'||String(key).startsWith('equipment:'));
   const hosts=new Map(),photoPromises=new Map(),viewShells=new Map(),profileStates=new Map(),composerStates=new Set();
-  let session=null,view=null,authMode='login',authNotice='',profilePending=false,expiryTimer,sessionEpoch=0,authPending=0,apiWrites=0;
+  let session=null,view=null,authMode='login',authNotice='',profilePending=false,expiryTimer,sessionEpoch=0,authPending=0,apiWrites=0,samplingPeriodState=null,samplingClockNoticeKey='';
   let chat={items:[],before:null,hasOlder:false,pending:false,loading:false,error:'',cacheAt:null,cached:false,unread:0};
   const html=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const uuid=()=>crypto.randomUUID?crypto.randomUUID():`${Date.now()}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`;
@@ -38,7 +38,7 @@
     clearTimeout(expiryTimer);
     window.dispatchEvent(new Event('atlas-session-ended'));
     try{window.SdngGps?.configureNotifications?.('','',false);}catch{}
-    session=null;storage.remove(SESSION);storage.remove(SESSION,sessionStorage);authNotice=message;
+    session=null;samplingPeriodState=null;samplingClockNoticeKey='';storage.remove(SESSION);storage.remove(SESSION,sessionStorage);authNotice=message;
     for(const promise of photoPromises.values())promise.then(url=>URL.revokeObjectURL(url)).catch(()=>{});
     photoPromises.clear();disposeDraftViews();chat={items:[],before:null,hasOlder:false,pending:false,loading:false,error:'',cacheAt:null,cached:false,unread:0};authChanged();
   }
@@ -91,14 +91,57 @@
   }
   const draftKey=scope=>PREFIX+'draft.'+userKey()+'.'+scope;
   const getDraft=scope=>storage.get(draftKey(scope))||{body:'',clientId:uuid()};
-  const saveDraft=(scope,body,clientId,parentId,attempt)=>storage.set(draftKey(scope),{body,clientId,parentId:parentId||null,attempt:attempt===undefined?storage.get(draftKey(scope))?.attempt||null:attempt,at:new Date().toISOString()});
+  const saveDraft=(scope,body,clientId,parentId,attempt,context)=>storage.set(draftKey(scope),{body,clientId,parentId:parentId||null,attempt:attempt===undefined?storage.get(draftKey(scope))?.attempt||null:attempt,...(scope==='chat'?{context:context||null}:{}),at:new Date().toISOString()});
   const clearDraft=scope=>storage.remove(draftKey(scope));
   function sourceNotice(result){return result?.cached?`<p class="community-source" role="status">Сохранённая копия · ${html(time(result.at))}. ${online()?'Не удалось обновить.':'Сейчас нет связи.'} Сохранённые сведения доступны для чтения.</p>`:'';}
   const loginGate=()=>`<div class="community-login-gate"><p>Войдите, чтобы видеть общие записи и фотографии бригады.</p><button type="button" class="btn primary" data-community-login>Войти в профиль</button></div>`;
   const positionLabel=user=>user?.position==='master'?'Мастер':`Оператор${user?.grade?' · '+user.grade+' разряд':''}`;
   const initials=name=>String(name||'?').trim().split(/\s+/).slice(0,2).map(x=>x[0]).join('').toLocaleUpperCase('ru-RU');
   const avatar=(user,size='')=>`<span class="community-avatar ${size}" aria-hidden="true"><span>${html(initials(user?.nickname))}</span>${user?.avatarMediaId?`<img data-private-media="${html(user.avatarMediaId)}" alt="" hidden>`:''}</span>`;
-  const author=user=>`<span class="community-author">${avatar(user)}<span><b>${html(user?.nickname||'Участник')}</b><small>${html(positionLabel(user))}</small></span></span>`;
+  const author=user=>`<button type="button" class="community-author community-author-button" data-community-profile="${html(user?.id||'')}" aria-label="Профиль: ${html(user?.nickname||'Участник')}">${avatar(user)}<span><b>${html(user?.nickname||'Участник')}</b><small>${html(positionLabel(user))}</small></span></button>`;
+  const CHAT_REACTIONS=['👍','❤️','🔥','👏','👀','✅'];
+  function messageBody(item){
+    const body=String(item.body||''),mentions=new Map((item.mentions||[]).filter(user=>user?.login&&user?.id).map(user=>[String(user.login).toLowerCase(),user]));
+    const pattern=/(^|[^\p{L}\p{N}\p{M}_@.+-])@([a-z0-9][a-z0-9._-]{2,39})(?![\p{L}\p{N}\p{M}._-])/giu;let result='',offset=0;
+    for(const match of body.matchAll(pattern)){const user=mentions.get(match[2].toLowerCase());if(!user)continue;const start=match.index+match[1].length;result+=html(body.slice(offset,start))+`<button type="button" class="community-mention ${own(user.id)?'mine':''}" data-community-profile="${html(user.id)}" title="${html(user.nickname||user.login)}">${html(body.slice(start,start+match[2].length+1))}</button>`;offset=start+match[2].length+1;}
+    return result+html(body.slice(offset));
+  }
+  function sharedPadMarkup(pad,{draft=false}={}){
+    if(!pad?.id)return '';const number=value=>Number.isFinite(Number(value))?Math.max(0,Number(value)):0;
+    return `<button type="button" class="community-shared-pad" data-chat-pad="${html(pad.id)}" ${draft?'aria-label="Открыть куст перед отправкой"':''}><span class="community-shared-pad-icon" aria-hidden="true">⌖</span><span><b>${html(pad.label||'Куст '+pad.id)}</b><small>${number(pad.wellCount)} скважин · ${number(pad.productionWellCount)} добывающих · позиций: ${number(pad.positionCount)}</small></span><span aria-hidden="true">›</span></button>`;
+  }
+  function replyMarkup(reply,{draft=false}={}){
+    if(!reply?.id)return '';const label=reply.deleted?'Сообщение удалено':reply.body||reply.sharedPad?.label||(reply.mediaCount?'Фотография':'Сообщение');
+    return `<button type="button" class="community-chat-quote" ${draft?'data-chat-quote-preview':'data-chat-reply-focus="'+html(reply.id)+'"'}><b>${html(reply.deleted?'Ответ на удалённое сообщение':reply.author?.nickname||'Ответ на сообщение')}</b><span>${html(String(label).slice(0,240))}</span></button>`;
+  }
+  function openSharedPad(id){if(window.WorkShell?.openObject)window.WorkShell.openObject({key:'pad:'+id});else window.dispatchEvent(new CustomEvent('atlas-open-object',{detail:{key:'pad:'+id}}));}
+  function chatComposer(){return chatHost()?.querySelector('[data-compose="chat"]');}
+  function showChatComposer(){if(!getUser()){authModal();return null;}navigate('chat');openView('chat');return chatComposer();}
+  function localSharedPad(id){const registry=typeof data!=='undefined'?data:window.__qaSampleData,pad=registry?.pads?.find(value=>String(value.id)===String(id)&&value.id!=='ОД');if(!pad)return null;return {id:String(pad.id),label:'Куст '+pad.id,wellCount:pad.wells.length,productionWellCount:pad.wells.filter(well=>well.type==='production').length,positionCount:pad.positions?.length||new Set(pad.wells.map(well=>well.position||1)).size||1};}
+  function preparePadShare(padId){const pad=localSharedPad(padId);if(!pad){notify('Этот куст недоступен для отправки.');return false;}if(!getUser()){authModal(()=>preparePadShare(pad.id));return false;}const form=showChatComposer();if(!form)return false;if(!form._communitySetChatContext?.({sharedPadId:pad.id,sharedPad:pad}))return false;form.elements.body.focus({preventScroll:true});return true;}
+  function mentionInChat(user){const form=showChatComposer();if(!form)return;const input=form.elements.body,token='@'+user.login+' ',prefix=input.value&&!/\s$/.test(input.value)?' ':'';if(input.value.length+prefix.length+token.length>4000){notify('В сообщении уже слишком много текста.');return;}input.value+=prefix+token;input.dispatchEvent(new Event('input',{bubbles:true}));input.focus({preventScroll:true});input.setSelectionRange(input.value.length,input.value.length);}
+  let profileCardSequence=0;
+  async function openPublicProfile(id){
+    if(!id||!getUser())return;const epoch=sessionEpoch,owner=userKey(),sequence=++profileCardSequence,node=openDialog('Профиль участника','<div data-public-profile role="status">Загружаем профиль…</div>'),target=node.querySelector('[data-public-profile]');
+    const current=()=>epoch===sessionEpoch&&owner===userKey()&&sequence===profileCardSequence&&target.isConnected&&Boolean(target.getClientRects().length);
+    try{const response=await api('/profiles/'+encodeURIComponent(id));if(!current())return;const user=response.user||response;target.innerHTML=`<div class="community-public-profile">${avatar(user,'large')}<h3>${html(user.nickname||'Участник')}</h3><p>@${html(user.login||'')}</p><p>${html(positionLabel(user))}</p>${user.login?'<button type="button" class="btn" data-profile-mention>Упомянуть в чате</button>':''}</div>`;hydrateMedia(target);target.querySelector('[data-profile-mention]')?.addEventListener('click',()=>{if(!current())return;closeDialog(node);if(typeof closeModal==='function')closeModal();mentionInChat(user);});}
+    catch(error){if(current())target.textContent=error.message;}
+  }
+  function bindChatMentions(form,sameOwner,isComposing){
+    const input=form.elements.body,popup=document.createElement('div');popup.className='community-mention-popup';popup.id='community-mentions-'+uuid();popup.setAttribute('role','listbox');popup.setAttribute('aria-label','Упомянуть участника');popup.hidden=true;form.append(popup);input.setAttribute('aria-controls',popup.id);input.setAttribute('aria-autocomplete','list');
+    let directory=null,loading=null,sequence=0,options=[],selected=0,range=null;
+    const hide=()=>{popup.hidden=true;input.setAttribute('aria-expanded','false');input.removeAttribute('aria-activedescendant');options=[];range=null;};
+    async function profiles(){if(directory)return directory;if(!loading)loading=(async()=>{let result=[],after=null;do{const page=await api('/profiles?limit=100'+(after?'&after='+encodeURIComponent(after):''));if(!sameOwner())return [];result.push(...listItems(page));after=page.nextCursor;}while(after);directory=result;return result;})().finally(()=>{loading=null;});return loading;}
+    function choose(index){if(!sameOwner()||isComposing()||!range||!options[index])return;const user=options[index],token='@'+user.login+' ',value=input.value.slice(0,range.start)+token+input.value.slice(range.end);if(value.length>4000)return;const caret=range.start+token.length;input.value=value;hide();sequence++;input.focus({preventScroll:true});input.setSelectionRange(caret,caret);input.dispatchEvent(new Event('input',{bubbles:true}));}
+    function highlight(){popup.querySelectorAll('[data-mention-option]').forEach((button,index)=>{button.setAttribute('aria-selected',String(index===selected));if(index===selected)input.setAttribute('aria-activedescendant',button.id);});}
+    async function update(){const request=++sequence;if(!sameOwner()||isComposing()||document.activeElement!==input||input.selectionStart!==input.selectionEnd){hide();return;}const end=input.selectionStart,part=input.value.slice(0,end),match=/(^|[^\p{L}\p{N}\p{M}_@.+-])@([\p{L}\p{N}\p{M}._-]{0,60})$/iu.exec(part);if(!match){hide();return;}const query=match[2].toLocaleLowerCase('ru-RU'),start=end-query.length-1;
+      try{const users=await profiles();if(request!==sequence||!sameOwner()||isComposing()||document.activeElement!==input)return;options=users.filter(user=>user.login&&(String(user.login).toLowerCase().includes(query)||String(user.nickname||'').toLocaleLowerCase('ru-RU').includes(query))).slice(0,6);if(!options.length){hide();return;}range={start,end};selected=0;popup.innerHTML=options.map((user,index)=>`<button type="button" role="option" id="${popup.id}-${index}" data-mention-option="${html(user.id)}" aria-selected="${index===0}"><b>${html(user.nickname||user.login)}</b><small>@${html(user.login)}</small></button>`).join('');popup.querySelectorAll('[data-mention-option]').forEach((button,index)=>{button.onpointerdown=event=>event.preventDefault();button.onclick=()=>choose(index);});popup.hidden=false;input.setAttribute('aria-expanded','true');highlight();}
+      catch{if(request===sequence)hide();}
+    }
+    input.addEventListener('input',update);input.addEventListener('click',update);input.addEventListener('keyup',event=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(event.key))update();});input.addEventListener('compositionstart',()=>{sequence++;hide();});input.addEventListener('compositionend',()=>queueMicrotask(update));input.addEventListener('blur',()=>{sequence++;hide();});
+    input.addEventListener('keydown',event=>{if(popup.hidden||isComposing()||event.isComposing)return;if(event.key==='Escape'){event.preventDefault();sequence++;hide();}else if(event.key==='ArrowDown'||event.key==='ArrowUp'){event.preventDefault();selected=(selected+(event.key==='ArrowDown'?1:-1)+options.length)%options.length;highlight();}else if(event.key==='Enter'||event.key==='Tab'){event.preventDefault();choose(selected);}});
+  }
+  document.addEventListener('click',event=>{const profile=event.target.closest('[data-community-profile]');if(profile){event.preventDefault();openPublicProfile(profile.dataset.communityProfile);}const pad=event.target.closest('[data-chat-pad]');if(pad){event.preventDefault();openSharedPad(pad.dataset.chatPad);}});
   function openDialog(title,body){
     if(typeof showModal==='function'){showModal(title,body);return document.querySelector('#modal-content');}
     let dialog=document.querySelector('#community-dialog');
@@ -185,7 +228,7 @@
       finally{authPending--;values.password='';if(button.isConnected){button.disabled=false;button.textContent=register?'Создать профиль':'Войти';}}
     };
   }
-  function authModal(){const node=openDialog('Профиль бригады',`<div data-auth-host>${authForm(authMode)}</div>`);bindAuth(node.querySelector('[data-auth-host]'),()=>closeDialog(node));}
+  function authModal(onSuccess){const node=openDialog('Профиль бригады',`<div data-auth-host>${authForm(authMode)}</div>`);bindAuth(node.querySelector('[data-auth-host]'),()=>{closeDialog(node);if(typeof onSuccess==='function')onSuccess();});}
   function bindLogin(node){node.querySelectorAll('[data-community-login]').forEach(button=>button.onclick=authModal);}
 
 
@@ -210,9 +253,9 @@
     const old=new Map([...feed.querySelectorAll(':scope > [data-message-id]')].map(node=>[node.dataset.messageId,node])),days=new Map([...feed.querySelectorAll(':scope > [data-feed-day]')].map(node=>[node.dataset.feedDay,node])),plan=[];let lastDay='';
     for(const item of items){
       if(options.chatMode){const date=new Date(item.createdAt),day=Number.isFinite(date.getTime())?date.toLocaleDateString('sv-SE'):'';if(day&&day!==lastDay){let divider=days.get(day);if(!divider){divider=elementFrom(`<div class="community-date-separator" data-feed-day="${html(day)}"><span>${html(date.toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:date.getFullYear()!==new Date().getFullYear()?'numeric':undefined}))}</span></div>`);}plan.push(divider);lastDay=day;}}
-      const id=String(item.id),fingerprint=JSON.stringify([item,getUser()?.id,Boolean(options.editable),Boolean(options.chatMode)]);let node=old.get(id);
+      const id=String(item.id),fingerprint=JSON.stringify([item,getUser()?.id,Boolean(options.editable),Boolean(options.chatMode),Boolean(options.chatMode&&chatReactionPending.has(sessionEpoch+':'+id))]);let node=old.get(id);
       if(!node){node=elementFrom(itemMarkup(item,options));node._communityFingerprint=fingerprint;}
-      else if(node._communityFingerprint!==fingerprint){const updated=elementFrom(itemMarkup(item,options));node.replaceChildren(...updated.childNodes);node.className=updated.className;node._communityFingerprint=fingerprint;}
+      else if(node._communityFingerprint!==fingerprint){const updated=elementFrom(itemMarkup(item,options));node.replaceChildren(...updated.childNodes);node.className=updated.className;if(updated.dataset.photoCount)node.dataset.photoCount=updated.dataset.photoCount;else node.removeAttribute('data-photo-count');node._communityFingerprint=fingerprint;}
       plan.push(node);
     }
     if(!plan.length)plan.push(elementFrom(`<p class="community-empty">${html(options.empty||'Пока нет записей.')}</p>`));
@@ -293,11 +336,11 @@
 
   function bindComposer(node,scope,onSend){
     const form=node.querySelector(`[data-compose="${CSS.escape(scope)}"]`);if(!form)return;
-    const draft=getDraft(scope),epoch=sessionEpoch;let clientId=draft.clientId||uuid(),files=[],pending=false,attempt=draft.attempt||null,composing=false,disposed=false;
+    const draft=getDraft(scope),epoch=sessionEpoch;let clientId=draft.clientId||uuid(),files=[],pending=false,attempt=draft.attempt||null,composing=false,disposed=false,chatContext=scope==='chat'?{...(draft.context||{})}:null;
     const sameOwner=()=>!disposed&&epoch===sessionEpoch&&form.dataset.owner===userKey(),error=form.querySelector('[data-compose-error]'),hint=form.querySelector('[data-draft-hint]'),newButton=form.querySelector('[data-compose-new]');
-    form._communityState=()=>({busy:pending,hasDraft:sameOwner()&&Boolean(form.elements.body.value.trim()||form.dataset.parentId),hasFiles:!disposed&&files.length>0});composerStates.add(form);
-    const fingerprint=()=>JSON.stringify([form.elements.body.value.trim(),form.dataset.parentId||null,files.map(entry=>entry.clientId)]);
-    function remember(){if(sameOwner())saveDraft(scope,form.elements.body.value,clientId,form.dataset.parentId,attempt);}
+    form._communityState=()=>({busy:pending,hasDraft:sameOwner()&&Boolean(form.elements.body.value.trim()||form.dataset.parentId||chatContext?.replyToId||chatContext?.sharedPadId),hasFiles:!disposed&&files.length>0});composerStates.add(form);
+    const fingerprint=()=>JSON.stringify([form.elements.body.value.trim(),form.dataset.parentId||null,files.map(entry=>entry.clientId),...(scope==='chat'?[chatContext.replyToId||null,chatContext.sharedPadId||null]:[])]);
+    function remember(){if(sameOwner())saveDraft(scope,form.elements.body.value,clientId,form.dataset.parentId,attempt,chatContext);}
     function checkAttempt(){const changed=Boolean(attempt&&attempt!==fingerprint());newButton.hidden=!changed||pending;if(changed&&!pending){error.textContent='Предыдущая отправка ещё не подтверждена. Начните новую запись, чтобы отправить изменённый текст.';error.dataset.attemptNotice='true';}else if(error.dataset.attemptNotice==='true'){error.textContent='';delete error.dataset.attemptNotice;}return !changed;}
     function resizeInput(){if(scope!=='chat')return;const input=form.elements.body;input.style.height='auto';input.style.height=Math.min(124,Math.max(42,input.scrollHeight))+'px';updateChatViewport();}
     function sendLabel(value){const button=form.querySelector('[type="submit"]');if(scope==='chat'){button.setAttribute('aria-label',value);button.title=value;button.querySelector('[data-send-label]').textContent=value;}else button.textContent=value;}
@@ -305,6 +348,8 @@
     form._communityDispose=()=>{disposed=true;files.forEach(entry=>URL.revokeObjectURL(entry.url));files=[];if(!pending)composerStates.delete(form);};
     newButton.onclick=()=>{if(pending||!sameOwner())return;clientId=uuid();attempt=null;remember();checkAttempt();error.textContent='';hint.textContent='Новая запись подготовлена. Проверьте текст и нажмите «Отправить».';};
     const cancelReply=()=>{if(pending)return;delete form.dataset.parentId;form.querySelector('[data-reply-target]').hidden=true;remember();checkAttempt();};
+    function renderChatContext(){if(scope!=='chat')return;const target=form.querySelector('[data-reply-target]');target.hidden=!chatContext.replyToId&&!chatContext.sharedPadId;target.innerHTML=`${chatContext.replyToId?`<div class="community-compose-context">${replyMarkup(chatContext.replyTo||{id:chatContext.replyToId},{draft:true})}<button type="button" data-cancel-reply aria-label="Отменить ответ">×</button></div>`:''}${chatContext.sharedPadId?`<div class="community-compose-context">${sharedPadMarkup(chatContext.sharedPad||{id:chatContext.sharedPadId},{draft:true})}<button type="button" data-cancel-pad aria-label="Убрать куст из сообщения">×</button></div>`:''}`;target.querySelector('[data-cancel-reply]')?.addEventListener('click',()=>form._communitySetChatContext({replyToId:null,replyTo:null}));target.querySelector('[data-cancel-pad]')?.addEventListener('click',()=>form._communitySetChatContext({sharedPadId:null,sharedPad:null}));target.querySelector('[data-chat-quote-preview]')?.addEventListener('click',()=>focusChatMessage(chatContext.replyToId));resizeInput();}
+    if(scope==='chat'){form._communitySetChatContext=patch=>{if(pending||composing||!sameOwner()){if(pending)notify('Дождитесь завершения отправки.');return false;}chatContext={...chatContext,...patch};renderChatContext();remember();checkAttempt();return true;};renderChatContext();bindChatMentions(form,sameOwner,()=>composing);}
     if(draft.parentId){form.dataset.parentId=draft.parentId;const target=form.querySelector('[data-reply-target]');target.hidden=false;target.innerHTML='Ответ на запись <button type="button" data-cancel-reply aria-label="Отменить ответ">×</button>';target.querySelector('button').onclick=cancelReply;}
     form.elements.body.addEventListener('compositionstart',()=>{composing=true;form.dataset.composing='true';});
     form.elements.body.addEventListener('compositionend',()=>{composing=false;delete form.dataset.composing;remember();resizeInput();checkAttempt();});
@@ -315,15 +360,15 @@
     form.elements.photos.onchange=()=>{if(pending)return;const selected=[...form.elements.photos.files];error.textContent='';if(selected.length+files.length>3){error.textContent='К одной записи можно прикрепить не больше трёх фото.';form.elements.photos.value='';return;}for(const file of selected)files.push({file,url:URL.createObjectURL(file),clientId:uuid()});form.elements.photos.value='';previews();remember();checkAttempt();};
     form.onsubmit=async event=>{
       event.preventDefault();if(pending||composing||!sameOwner())return;if(form.dataset.readonly==='true'){error.textContent='Сначала обновите общие данные. Текст сохранён как черновик.';return;}
-      const rawBody=form.elements.body.value,body=rawBody.trim(),parentId=form.dataset.parentId||null,sentFiles=[...files],sentId=clientId;
-      if(!body&&!sentFiles.length){error.textContent='Напишите сообщение или прикрепите фото.';return;}
+      const rawBody=form.elements.body.value,body=rawBody.trim(),parentId=form.dataset.parentId||null,sentFiles=[...files],sentId=clientId,sentContext=scope==='chat'?{replyToId:chatContext.replyToId||null,sharedPadId:chatContext.sharedPadId||null}:null;
+      if(!body&&!sentFiles.length&&!sentContext?.sharedPadId){error.textContent='Напишите сообщение или прикрепите фото.';return;}
       if(!online()){error.textContent='Нет связи. Текст сохранён как черновик и ещё не отправлен.';remember();return;}
       if(!checkAttempt())return;attempt=fingerprint();remember();setPending(true);const button=form.querySelector('[type="submit"]');error.textContent='';
       try{
         const mediaIds=[];for(let i=0;i<sentFiles.length;i++){const entry=sentFiles[i];sendLabel(`Загружаем фото ${i+1}/${sentFiles.length}…`);if(!entry.mediaId){if(!entry.blob)entry.blob=await compressPhoto(entry.file);if(!sameOwner())return;entry.mediaId=(await uploadBlob(entry.blob,entry.clientId)).id;if(!sameOwner())return;}mediaIds.push(entry.mediaId);}
-        if(!sameOwner())return;sendLabel('Отправляем…');await onSend({body,clientId:sentId,mediaIds,...(parentId?{parentId}:{})});if(!sameOwner())return;
+        if(!sameOwner())return;sendLabel('Отправляем…');await onSend({body,clientId:sentId,mediaIds,...(parentId?{parentId}:{}),...(sentContext||{})});if(!sameOwner())return;
         const continued=composing||form.elements.body.value!==rawBody;
-        clientId=uuid();attempt=null;for(const entry of sentFiles)URL.revokeObjectURL(entry.url);files=files.filter(entry=>!sentFiles.includes(entry));previews();
+        clientId=uuid();attempt=null;if(scope==='chat'){chatContext={};renderChatContext();}for(const entry of sentFiles)URL.revokeObjectURL(entry.url);files=files.filter(entry=>!sentFiles.includes(entry));previews();
         if(!continued){form.elements.body.value='';delete form.dataset.parentId;form.querySelector('[data-reply-target]').hidden=true;clearDraft(scope);hint.textContent='';}
         else{remember();hint.textContent='Отправлено. Новый текст остался в черновике.';}
         resizeInput();checkAttempt();
@@ -334,8 +379,9 @@
   }
 
   function itemMarkup(item,{editable=false,chatMode=false}={}){
-    if(chatMode){const stamp=new Date(item.createdAt),clock=Number.isFinite(stamp.getTime())?stamp.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}):'';
-      return `<article class="community-message community-chat-message ${own(item.author?.id)?'own':''}" data-message-id="${html(item.id)}"><header>${author(item.author)}</header>${item.body?`<p class="community-message-body">${html(item.body)}</p>`:''}${photos(item.media||[])}<footer class="community-bubble-footer">${item.updatedAt&&item.updatedAt!==item.createdAt?'<small>изменено</small>':''}<time datetime="${html(item.createdAt)}">${html(clock)}</time></footer>${own(item.author?.id)?`<details class="community-message-menu"><summary aria-label="Действия с сообщением" title="Действия с сообщением">⋮</summary><div class="community-message-actions"><button type="button" data-edit-chat="${html(item.id)}">Изменить</button><button type="button" data-delete-chat="${html(item.id)}">Удалить</button></div></details>`:''}</article>`;
+    if(chatMode){const stamp=new Date(item.createdAt),clock=Number.isFinite(stamp.getTime())?stamp.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}):'',photoCount=(item.media||[]).length;
+      const reactions=(item.reactions||[]).filter(value=>CHAT_REACTIONS.includes(value.emoji)&&Number(value.count)>0),reacting=chatReactionPending.has(sessionEpoch+':'+item.id),mentioned=(item.mentions||[]).some(user=>own(user.id));
+      return `<article class="community-message community-chat-message ${own(item.author?.id)?'own':''} ${photoCount?'has-photos':''} ${mentioned?'mentions-me':''}" data-message-id="${html(item.id)}"${photoCount?` data-photo-count="${photoCount}"`:''}><header>${author(item.author)}</header>${replyMarkup(item.replyTo)}${item.sharedPad?sharedPadMarkup(item.sharedPad):''}${mentioned?'<small class="community-mentioned-notice">Вас упомянули</small>':''}${item.body?`<p class="community-message-body">${messageBody(item)}</p>`:''}${photos(item.media||[])}${reactions.length?`<div class="community-reactions" aria-label="Реакции" aria-busy="${reacting}">${reactions.map(value=>`<button type="button" class="community-reaction ${value.mine?'mine':''}" data-chat-reaction="${html(item.id)}" data-emoji="${html(value.emoji)}" aria-pressed="${Boolean(value.mine)}" aria-label="${html(value.emoji)}: ${Number(value.count)}, ${value.mine?'убрать свою реакцию':'поставить реакцию'}">${html(value.emoji)} <span>${Number(value.count)}</span></button>`).join('')}</div>`:''}<footer class="community-bubble-footer">${item.updatedAt&&item.updatedAt!==item.createdAt?'<small>изменено</small>':''}<time datetime="${html(item.createdAt)}">${html(clock)}</time></footer><details class="community-message-menu"><summary aria-label="Действия с сообщением" title="Действия с сообщением">⋮</summary><div class="community-message-actions"><button type="button" data-reply-chat="${html(item.id)}">Ответить</button><div class="community-reaction-palette" role="group" aria-label="Выбрать реакцию" aria-busy="${reacting}">${CHAT_REACTIONS.map(emoji=>`<button type="button" data-chat-reaction="${html(item.id)}" data-emoji="${html(emoji)}" aria-label="Реакция ${html(emoji)}">${html(emoji)}</button>`).join('')}</div>${own(item.author?.id)?`<button type="button" data-edit-chat="${html(item.id)}">Изменить</button><button type="button" data-delete-chat="${html(item.id)}">Удалить</button>`:''}</div></details></article>`;
     }
 
     return `<article class="community-message ${own(item.author?.id)?'own':''} ${item.parentId?'reply':''}" data-message-id="${html(item.id)}"><header>${author(item.author)}<span class="community-note-times"><time datetime="${html(item.createdAt)}">Записано ${html(recordedTime(item.createdAt))}</time>${item.updatedAt&&item.updatedAt!==item.createdAt?`<time datetime="${html(item.updatedAt)}">Изменено ${html(recordedTime(item.updatedAt))}</time>`:''}</span></header>${item.parentId?`<button type="button" class="community-parent-link" data-parent-note="${html(item.parentId)}">↳ Ответ на запись</button>`:''}${item.body?`<p class="community-message-body">${html(item.body)}</p>`:''}${photos(item.media||[])}${chatMode&&own(item.author?.id)?`<div class="community-message-tools"><button type="button" data-edit-chat="${html(item.id)}">Изменить</button><button type="button" data-delete-chat="${html(item.id)}">Удалить</button></div>`:editable?`<div class="community-message-tools"><button type="button" data-reply-note="${html(item.id)}">Ответить</button>${own(item.author?.id)?`<button type="button" data-edit-note="${html(item.id)}">Изменить</button><button type="button" data-delete-note="${html(item.id)}">Удалить</button>`:''}</div>`:''}</article>`;
@@ -344,6 +390,21 @@
   function mergeItems(left,right){const map=new Map(left.map(item=>[String(item.id),item]));right.forEach(item=>map.set(String(item.id),item));return [...map.values()].sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt)||compareCursor(a.cursor||a.id,b.cursor||b.id));}
   const listItems=result=>Array.isArray(result)?result:result?.items||[];
   function chatHost(){return document.querySelector('#community-view');}
+  const chatReactionPending=new Map();
+  async function reactToChatMessage(id,emoji){
+    const epoch=sessionEpoch,owner=userKey(),key=epoch+':'+id,item=chat.items.find(value=>String(value.id)===String(id));if(!item||!getUser()||!CHAT_REACTIONS.includes(emoji))return;
+    let state=chatReactionPending.get(key);if(state){state.desired=state.desired===emoji?null:emoji;state.version++;return;}
+    const mine=(item.reactions||[]).find(value=>value.mine)?.emoji||null;state={desired:mine===emoji?null:emoji,version:1};chatReactionPending.set(key,state);renderChat(chatHost(),{keepScroll:true});
+    try{while(epoch===sessionEpoch&&owner===userKey()){
+      const desired=state.desired,version=state.version;let response;
+      try{response=await api('/chat/messages/'+encodeURIComponent(id)+'/reaction',{method:'PUT',body:{emoji:desired}});}
+      catch(error){if(epoch!==sessionEpoch||owner!==userKey()||error.code==='stale_session')return;if(state.version!==version)continue;notify(error.message);break;}
+      if(epoch!==sessionEpoch||owner!==userKey())return;const reactions=response.reactions||response.item?.reactions||[],confirmed=reactions.find(value=>value.mine)?.emoji||null;
+      if(state.version!==version&&confirmed!==state.desired)continue;
+      const current=chat.items.find(value=>String(value.id)===String(id));if(current){current.reactions=reactions;chat.mutation=(chat.mutation||0)+1;saveChatCache();}break;
+    }}
+    finally{chatReactionPending.delete(key);if(epoch===sessionEpoch&&owner===userKey()&&view==='chat')renderChat(chatHost(),{keepScroll:true});}
+  }
 
   function renderChat(host,{keepScroll=false}={}){
     if(view!=='chat')return;
@@ -356,7 +417,7 @@
       node.querySelector('[data-chat-older]').onclick=()=>loadChat({older:true});
       node.querySelector('[data-chat-new]').onclick=()=>{scroller.scrollTop=scroller.scrollHeight;chat.unread=0;renderChat(host);};
       scroller.onscroll=()=>{if(scroller.scrollHeight-scroller.scrollTop-scroller.clientHeight<80){chat.unread=0;node.querySelector('[data-chat-new]').hidden=true;}};
-      node.querySelector('[data-chat-messages]').onclick=event=>{const edit=event.target.closest('[data-edit-chat]'),remove=event.target.closest('[data-delete-chat]');if(edit||remove){event.target.closest('details')?.removeAttribute('open');editChat(chat.items.find(item=>String(item.id)===(edit?.dataset.editChat||remove?.dataset.deleteChat)),Boolean(remove));}};
+      node.querySelector('[data-chat-messages]').onclick=event=>{const edit=event.target.closest('[data-edit-chat]'),remove=event.target.closest('[data-delete-chat]'),reply=event.target.closest('[data-reply-chat]'),quote=event.target.closest('[data-chat-reply-focus]'),reaction=event.target.closest('[data-chat-reaction]');if(edit||remove||reply||reaction)event.target.closest('details')?.removeAttribute('open');if(edit||remove)editChat(chat.items.find(item=>String(item.id)===(edit?.dataset.editChat||remove?.dataset.deleteChat)),Boolean(remove));else if(reply){const item=chat.items.find(value=>String(value.id)===reply.dataset.replyChat),form=node.querySelector('[data-compose="chat"]');if(item&&form._communitySetChatContext?.({replyToId:item.id,replyTo:{id:item.id,deleted:false,body:String(item.body||'').slice(0,240),author:item.author,mediaCount:item.media?.length||0,sharedPad:item.sharedPad||null}}))form.elements.body.focus({preventScroll:true});}else if(quote)focusChatMessage(quote.dataset.chatReplyFocus);else if(reaction)reactToChatMessage(reaction.dataset.chatReaction,reaction.dataset.emoji);};
       node.addEventListener('toggle',event=>{const menu=event.target;if(!menu.matches?.('.community-message-menu')||!menu.open)return;node.querySelectorAll('.community-message-menu[open]').forEach(other=>{if(other!==menu)other.open=false;});const actions=menu.querySelector('.community-message-actions'),space=scroller.getBoundingClientRect().bottom-menu.getBoundingClientRect().bottom;menu.classList.toggle('above',space<actions.offsetHeight+12);},true);
       bindComposer(node,'chat',async message=>{
         const result=await api('/chat/messages',{method:'POST',body:message});const item=result.message||result.item||result;
@@ -468,7 +529,53 @@
     node.querySelector('[data-confirm-delete]').onclick=async event=>{const button=event.currentTarget;button.disabled=true;try{await api('/notes/'+encodeURIComponent(note.id),{method:'DELETE'});if(!currentObject(record))return;record.mutation=(record.mutation||0)+1;if(record.result)record.result.notes.data.items=listItems(record.result.notes.data).filter(item=>String(item.id)!==String(note.id));renderObject(record);changed('object',{key:record.target.key,padId:record.target.padId});closeDialog(node);await loadObject(record);}catch(e){node.querySelector('[role="alert"]').textContent=e.message;button.disabled=false;}};
   }
 
-  const samplingDraftKey=padId=>PREFIX+'sampling-draft.'+userKey()+'.'+padId;
+  const samplingDraftPrefix=padId=>PREFIX+'sampling-draft.'+userKey()+'.'+padId;
+  const samplingDraftKey=(padId,periodKey)=>samplingDraftPrefix(padId)+'.'+periodKey;
+  function validSamplingPeriod(value){
+    if(!value||!/^\d{4}-\d{2}:r[1-4]$/.test(value.key||'')||!/^\d{4}-\d{2}$/.test(value.month||'')||!/^\d{4}-\d{2}-\d{2}$/.test(value.startDate||'')||!/^\d{4}-\d{2}-\d{2}$/.test(value.endDate||'')||!Number.isFinite(Date.parse(value.asOf)))return null;
+    return {...value,round:Number(value.round),isBreak:Boolean(value.isBreak)};
+  }
+  function getSamplingPeriod(){if(!getUser())return null;if(!samplingPeriodState)samplingPeriodState=validSamplingPeriod(storage.get(PREFIX+'sampling-period.'+userKey()));return samplingPeriodState;}
+  function samplingExpired(period){return !period||!Number.isFinite(Date.parse(period.endsAt))||Date.now()>=Date.parse(period.endsAt);}
+  function samplingPeriodOf(record){return validSamplingPeriod(record.result?.data?.period);}
+  function samplingScopeReadOnly(record){const period=samplingPeriodOf(record),current=getSamplingPeriod();return !period||!current||period.key!==current.key||period.isBreak||current.isBreak||samplingExpired(period);}
+  function samplingDate(value){const date=new Date(String(value)+'T12:00:00+05:00');return Number.isFinite(date.getTime())?date.toLocaleDateString('ru-RU',{timeZone:'Asia/Yekaterinburg',day:'numeric',month:'long'}):'';}
+  function samplingPeriodMarkup(period=getSamplingPeriod()){
+    if(!period)return '<section class="community-sampling-period"><b>Уточняем текущий круг</b><p>Отметки можно изменять после загрузки дат отбора.</p></section>';
+    const date=new Date(period.month+'-01T12:00:00+05:00'),month=date.toLocaleDateString('ru-RU',{timeZone:'Asia/Yekaterinburg',month:'long',year:'numeric'}),title=month.charAt(0).toLocaleUpperCase('ru-RU')+month.slice(1),range=samplingDate(period.startDate)+' — '+samplingDate(period.endDate),expired=samplingExpired(period);
+    const notice=period.isBreak?`Сегодня перерыв. Показан итог ${period.round}-го круга. Новый круг начнётся ${samplingDate(period.nextStartDate)}.`:expired?`Этот круг завершён. Для отметок нового круга подключитесь к интернету и обновите данные. Следующий круг — ${samplingDate(period.nextStartDate)}.`:'Отметки относятся только к этому кругу. Результаты предыдущих кругов сохраняются.';
+    return `<section class="community-sampling-period ${period.isBreak||expired?'read-only':''}" data-sampling-period="${html(period.key)}"><b>${html(title)} · круг ${period.round}</b><span>${html(range)}</span><p>${html(notice)}</p></section>`;
+  }
+  function acceptSamplingPeriod(value){
+    const period=validSamplingPeriod(value);if(!period)return false;const previous=getSamplingPeriod();if(previous&&Date.parse(period.asOf)<Date.parse(previous.asOf))return false;
+    const changedScope=previous&&(previous.key!==period.key||previous.isBreak!==period.isBreak);samplingPeriodState=period;storage.set(PREFIX+'sampling-period.'+userKey(),period);
+    if(changedScope){samplingClockNoticeKey='';
+      for(const record of hosts.values())if(record.kind==='sampling'&&currentObject(record)){
+        if(record.sampleDirty&&(record.sampleDraftPeriod!==period.key||period.isBreak)){clearSamplingDraft(record);record.samplePeriodNotice=period.isBreak?'Круг завершён. Несохранённый выбор не перенесён в итог.':'Начался новый круг. Прежний несохранённый выбор не перенесён.';}
+        record.sampleMutation=(record.sampleMutation||0)+1;renderSampling(record);
+      }
+      window.dispatchEvent(new CustomEvent('atlas-sampling-period',{detail:{period}}));
+    }
+    return true;
+  }
+  function checkSamplingClock(){
+    const period=getSamplingPeriod();if(!period||period.isBreak||!samplingExpired(period)||samplingClockNoticeKey===period.key)return;samplingClockNoticeKey=period.key;
+    for(const record of hosts.values())if(record.kind==='sampling'&&currentObject(record)){if(record.sampleDirty)clearSamplingDraft(record);record.samplePeriodNotice='Круг завершён. Прежний несохранённый выбор не перенесён; обновите данные нового круга.';renderSampling(record);}
+    window.dispatchEvent(new CustomEvent('atlas-sampling-period-expired',{detail:{period}}));
+  }
+  function restoreSamplingDraft(record,period){
+    if(!period||record.sampleDraftRestoredPeriod===period.key)return;record.sampleDraftRestoredPeriod=period.key;let removed=false;
+    try{for(let index=localStorage.length-1;index>=0;index--){const key=localStorage.key(index);if(key===samplingDraftPrefix(record.padId)||key?.startsWith(samplingDraftPrefix(record.padId)+'.')&&key!==samplingDraftKey(record.padId,period.key)){storage.remove(key);removed=true;}}}catch{}
+    if(removed)record.samplePeriodNotice='Прежний несохранённый выбор не перенесён в текущий круг.';
+    const saved=storage.get(samplingDraftKey(record.padId,period.key));if(period.isBreak||samplingExpired(period)){if(saved){storage.remove(samplingDraftKey(record.padId,period.key));record.samplePeriodNotice='Круг завершён. Несохранённый выбор не перенесён в итог.';}return;}
+    if(saved?.periodKey===period.key&&Array.isArray(saved.selected)&&Array.isArray(saved.base)&&Array.isArray(saved.touched)){record.sampleDraft=new Set(saved.selected.map(String));record.sampleBase=new Set(saved.base.map(String));record.sampleTouched=new Map(saved.touched.filter(entry=>Array.isArray(entry)&&entry.length===2).map(([id,value])=>[String(id),Boolean(value)]));record.sampleBaseRevision=Number(saved.revision)||0;record.sampleDraftPeriod=period.key;record.sampleDirty=record.sampleTouched.size>0;}
+  }
+  const samplingCacheKey=(padId,periodKey)=>cacheKey('/samples?padId='+encodeURIComponent(padId)+'&period='+encodeURIComponent(periodKey));
+  async function readSampling(record){
+    const epoch=sessionEpoch,path='/samples?padId='+encodeURIComponent(record.padId);
+    try{const data=await api(path);if(epoch!==sessionEpoch)throw new ApiError('Вход изменился.',0,'stale_session');const result={data,at:new Date().toISOString(),cached:false},period=validSamplingPeriod(data?.period);if(period)storage.set(samplingCacheKey(record.padId,period.key),result);return result;}
+    catch(error){if(epoch!==sessionEpoch||error.code==='stale_session')throw error;const period=getSamplingPeriod(),copy=period?storage.get(samplingCacheKey(record.padId,period.key)):null;if(copy&&error.status!==401&&error.status!==403)return {...copy,cached:true,error:error.message};throw error;}
+  }
   function samplingItem(result,padId){const value=result?.data;if(value?.padId)return value;return listItems(value).find(item=>String(item.padId)===padId)||{padId,sampled:false,revision:0};}
   function samplingPad(padId){return typeof data==='object'&&Array.isArray(data?.pads)?data.pads.find(pad=>String(pad.id)===padId):null;}
   function samplingWells(record){
@@ -479,64 +586,71 @@
   function sampleSelected(item,wells){const allowed=new Set(wells.map(well=>well.id));return new Set((Array.isArray(item.selectedWellIds)?item.selectedWellIds:item.sampled?wells.map(well=>well.id):[]).map(String).filter(id=>allowed.has(id)));}
   function rememberSampling(record){
     if(!currentObject(record))return;
-    if(!record.sampleDirty){storage.remove(samplingDraftKey(record.padId));return;}
-    storage.set(samplingDraftKey(record.padId),{selected:[...record.sampleDraft],base:[...record.sampleBase],revision:record.sampleBaseRevision,touched:[...record.sampleTouched],at:new Date().toISOString()});
+    const periodKey=record.sampleDraftPeriod||samplingPeriodOf(record)?.key;if(!periodKey)return;
+    if(!record.sampleDirty){storage.remove(samplingDraftKey(record.padId,periodKey));return;}
+    storage.set(samplingDraftKey(record.padId,periodKey),{periodKey,selected:[...record.sampleDraft],base:[...record.sampleBase],revision:record.sampleBaseRevision,touched:[...record.sampleTouched],at:new Date().toISOString()});
   }
-  function clearSamplingDraft(record){record.sampleDraft=null;record.sampleBase=null;record.sampleTouched=null;record.sampleDirty=false;record.sampleBaseRevision=null;rememberSampling(record);}
+  function clearSamplingDraft(record){record.sampleDraft=null;record.sampleBase=null;record.sampleTouched=null;record.sampleDirty=false;record.sampleBaseRevision=null;rememberSampling(record);record.sampleDraftPeriod=null;}
   function startSamplingDraft(record){
-    if(record.sampleDirty&&record.sampleDraft)return;const item=samplingItem(record.result,record.padId),selected=sampleSelected(item,samplingWells(record));record.sampleDraft=new Set(selected);record.sampleBase=new Set(selected);record.sampleTouched=new Map();record.sampleBaseRevision=Number(item.revision)||0;
+    if(record.sampleDirty&&record.sampleDraft)return;const item=samplingItem(record.result,record.padId),selected=sampleSelected(item,samplingWells(record));record.sampleDraft=new Set(selected);record.sampleBase=new Set(selected);record.sampleTouched=new Map();record.sampleBaseRevision=Number(item.revision)||0;record.sampleDraftPeriod=samplingPeriodOf(record)?.key||null;
   }
   function mountSampling(container,padId){
     if(typeof container==='string')container=document.querySelector(container);if(!container)return;
     const previous=hosts.get(container),record=previous?.kind==='sampling'&&previous.padId===String(padId)&&previous.owner===userKey()&&previous.epoch===sessionEpoch?previous:{kind:'sampling',container,padId:String(padId),result:null,loading:false,last:0,owner:userKey(),epoch:sessionEpoch};
-    if(record!==previous){const saved=storage.get(samplingDraftKey(String(padId)));if(saved&&Array.isArray(saved.selected)&&Array.isArray(saved.base)&&Array.isArray(saved.touched)){record.sampleDraft=new Set(saved.selected.map(String));record.sampleBase=new Set(saved.base.map(String));record.sampleTouched=new Map(saved.touched.filter(entry=>Array.isArray(entry)&&entry.length===2).map(([id,value])=>[String(id),Boolean(value)]));record.sampleBaseRevision=Number(saved.revision)||0;record.sampleDirty=record.sampleTouched.size>0;}}
+    if(record!==previous)restoreSamplingDraft(record,getSamplingPeriod());
     hosts.set(container,record);renderSampling(record);loadSampling(record);return()=>{if(hosts.get(container)===record)hosts.delete(container);};
   }
   function renderSampling(record){
     const {container,padId,result}=record;if(!currentObject(record))return;
     const pad=samplingPad(padId);if(pad?.samplingExcluded){content(container,`<section class="community-sampling"><h3>Отбор проб</h3><p class="community-copy">${html(pad.samplingExclusionReason||'Отбор проб не требуется')}</p></section>`);return;}
     if(!getUser()){content(container,`<section class="community-sampling"><h3>Отбор проб</h3>${loginGate()}</section>`);bindLogin(container);return;}
-    const item=samplingItem(result,padId),wells=samplingWells(record),selected=sampleSelected(item,wells),by=item.author||item.updatedBy,signature=JSON.stringify([userKey(),sessionEpoch,padId,wells]),existing=container.querySelector('[data-sampling-form]');
+    const period=samplingPeriodOf(record),currentPeriod=getSamplingPeriod(),scopeMismatch=Boolean(period&&currentPeriod&&period.key!==currentPeriod.key);
+    if(record.sampleDirty&&((currentPeriod&&(currentPeriod.isBreak||samplingExpired(currentPeriod)||record.sampleDraftPeriod!==currentPeriod.key))||(period&&record.sampleDraftPeriod!==period.key))){clearSamplingDraft(record);record.samplePeriodNotice='Круг завершён или изменился. Прежний несохранённый выбор не перенесён.';}
+    const item=samplingItem(result,padId),wells=samplingWells(record),selected=scopeMismatch?new Set():sampleSelected(item,wells),by=item.author||item.updatedBy,signature=JSON.stringify([userKey(),sessionEpoch,padId,wells]),existing=container.querySelector('[data-sampling-form]');
     if(!existing||existing.dataset.signature!==signature){
       const groups=new Map();for(const well of wells){const position=well.position||0;if(!groups.has(position))groups.set(position,[]);groups.get(position).push(well);}
-      container.replaceChildren(elementFrom(`<section class="community-sampling"><header><span class="community-sampling-icon" aria-hidden="true" data-sample-progress-icon>○</span><div><h3>Отбор проб</h3><p data-sample-summary></p></div><button type="button" class="btn" data-sample-refresh>Обновить</button></header><p class="community-sample-by" data-sample-by></p><div data-sample-source></div><form data-sampling-form data-signature="${html(signature)}"><p class="community-sampling-help">Отметьте добывающие скважины, затем сохраните выбор.</p><div class="community-sample-wells">${[...groups].map(([position,items])=>`<fieldset><legend>${position?`${position}-я позиция`:'Добывающие скважины'}</legend><div class="community-sample-checkboxes">${items.map(well=>`<label><input type="checkbox" name="wellIds" value="${html(well.id)}" data-sample-well="${html(well.id)}"><span>№ ${html(well.id)}</span></label>`).join('')}</div></fieldset>`).join('')}</div><p class="community-sampling-draft" role="status" data-sample-draft hidden></p><p class="community-sampling-warning" role="status" data-sample-warning hidden></p><p class="community-form-error" role="alert" data-sample-error></p><div class="community-sampling-actions"><button class="btn primary" type="submit" data-sample-save>Сохранить выбранные</button><button type="button" class="btn" data-sample-toggle>Отметить весь куст</button><button type="button" class="btn" data-sample-discard hidden>Использовать общие отметки</button></div></form></section>`));
+      container.replaceChildren(elementFrom(`<section class="community-sampling"><header><span class="community-sampling-icon" aria-hidden="true" data-sample-progress-icon>○</span><div><h3>Отбор проб</h3><p data-sample-summary></p></div><button type="button" class="btn" data-sample-refresh>Обновить</button></header><div data-sample-period></div><p class="community-sample-by" data-sample-by></p><div data-sample-source></div><form data-sampling-form data-signature="${html(signature)}"><p class="community-sampling-help">Отметьте добывающие скважины, затем сохраните выбор.</p><div class="community-sample-wells">${[...groups].map(([position,items])=>`<fieldset><legend>${position?`${position}-я позиция`:'Добывающие скважины'}</legend><div class="community-sample-checkboxes">${items.map(well=>`<label><input type="checkbox" name="wellIds" value="${html(well.id)}" data-sample-well="${html(well.id)}"><span>№ ${html(well.id)}</span></label>`).join('')}</div></fieldset>`).join('')}</div><p class="community-sampling-draft" role="status" data-sample-draft hidden></p><p class="community-sampling-warning" role="status" data-sample-warning hidden></p><p class="community-form-error" role="alert" data-sample-error></p><div class="community-sampling-actions"><button class="btn primary" type="submit" data-sample-save>Сохранить выбранные</button><button type="button" class="btn" data-sample-toggle>Отметить весь куст</button><button type="button" class="btn" data-sample-discard hidden>Использовать общие отметки</button></div></form></section>`));
       const form=container.querySelector('[data-sampling-form]');
-      form.onchange=event=>{const input=event.target.closest('[data-sample-well]');if(!input||record.samplePending||!currentObject(record))return;startSamplingDraft(record);const id=input.dataset.sampleWell;if(input.checked)record.sampleDraft.add(id);else record.sampleDraft.delete(id);if(record.sampleBase.has(id)===input.checked)record.sampleTouched.delete(id);else record.sampleTouched.set(id,input.checked);record.sampleDirty=record.sampleTouched.size>0;if(!record.sampleDirty){clearSamplingDraft(record);record.sampleWarning='';}else rememberSampling(record);record.error='';record.sampleWriteError=false;renderSampling(record);};
+      form.onchange=event=>{const input=event.target.closest('[data-sample-well]');if(!input||record.samplePending||!currentObject(record)||samplingScopeReadOnly(record))return;startSamplingDraft(record);const id=input.dataset.sampleWell;if(input.checked)record.sampleDraft.add(id);else record.sampleDraft.delete(id);if(record.sampleBase.has(id)===input.checked)record.sampleTouched.delete(id);else record.sampleTouched.set(id,input.checked);record.sampleDirty=record.sampleTouched.size>0;if(!record.sampleDirty){clearSamplingDraft(record);record.sampleWarning='';}else rememberSampling(record);record.error='';record.sampleWriteError=false;renderSampling(record);};
       form.onsubmit=event=>{event.preventDefault();saveSampling(record);};
-      container.querySelector('[data-sample-toggle]').onclick=()=>{if(record.samplePending)return;startSamplingDraft(record);const liveWells=samplingWells(record),all=sampleSelected(samplingItem(record.result,record.padId),liveWells).size!==liveWells.length;record.sampleDraft=new Set(all?liveWells.map(well=>well.id):[]);record.sampleTouched=new Map(liveWells.filter(well=>record.sampleBase.has(well.id)!==all).map(well=>[well.id,all]));record.sampleDirty=true;rememberSampling(record);saveSampling(record);};
+      container.querySelector('[data-sample-toggle]').onclick=()=>{if(record.samplePending||samplingScopeReadOnly(record))return;startSamplingDraft(record);const liveWells=samplingWells(record),all=sampleSelected(samplingItem(record.result,record.padId),liveWells).size!==liveWells.length;record.sampleDraft=new Set(all?liveWells.map(well=>well.id):[]);record.sampleTouched=new Map(liveWells.filter(well=>record.sampleBase.has(well.id)!==all).map(well=>[well.id,all]));record.sampleDirty=true;rememberSampling(record);saveSampling(record);};
       container.querySelector('[data-sample-discard]').onclick=()=>{if(record.samplePending)return;clearSamplingDraft(record);record.sampleWarning='';record.error='';record.sampleWriteError=false;renderSampling(record);};
       container.querySelector('[data-sample-refresh]').onclick=()=>loadSampling(record);
     }
     const form=container.querySelector('[data-sampling-form]'),checked=record.sampleDirty?record.sampleDraft:selected,total=wells.length,progress=selected.size===0?'none':selected.size===total?'done':'partial',icon=container.querySelector('[data-sample-progress-icon]');
     icon.textContent=progress==='done'?'✓':progress==='partial'?'◐':'○';icon.className='community-sampling-icon '+progress;
-    container.querySelector('[data-sample-summary]').textContent=!result?(record.error?'Общие отметки пока недоступны':'Загружаем общие отметки…'):`${selected.size} из ${total} отобрано`;
+    content(container.querySelector('[data-sample-period]'),samplingPeriodMarkup(currentPeriod||period));
+    container.querySelector('[data-sample-summary]').textContent=scopeMismatch?'Обновляем отметки нового круга…':!result?(record.error?'Общие отметки пока недоступны':'Загружаем общие отметки…'):`${selected.size} из ${total} отобрано`;
     container.querySelector('[data-sample-by]').textContent=item.updatedAt?`${by?.nickname||'Участник'} · ${recordedTime(item.updatedAt)}`:'';
     content(container.querySelector('[data-sample-source]'),sourceNotice(result));
-    for(const input of form.querySelectorAll('[data-sample-well]')){input.checked=checked?.has(input.dataset.sampleWell)||false;input.disabled=Boolean(record.samplePending);}
+    for(const input of form.querySelectorAll('[data-sample-well]')){input.checked=checked?.has(input.dataset.sampleWell)||false;input.disabled=Boolean(record.samplePending)||samplingScopeReadOnly(record);}
     const draft=form.querySelector('[data-sample-draft]');draft.hidden=!record.sampleDirty;draft.textContent=record.sampleDirty?`Выбрано ${[...checked].filter(id=>wells.some(well=>well.id===id)).length} из ${total}. Выбор сохранён на этом телефоне и ещё не отправлен.`:'';
-    const warning=form.querySelector('[data-sample-warning]'),changedRevision=record.sampleDirty&&Number(item.revision)!==record.sampleBaseRevision;warning.textContent=record.sampleWarning||(changedRevision?'Коллеги изменили общий отбор. Ваш несохранённый выбор сохранён. Проверьте обновлённый результат.':'');warning.hidden=!warning.textContent;
+    const warning=form.querySelector('[data-sample-warning]'),changedRevision=record.sampleDirty&&Number(item.revision)!==record.sampleBaseRevision;warning.textContent=record.samplePeriodNotice||record.sampleWarning||(changedRevision?'Коллеги изменили общий отбор. Ваш несохранённый выбор сохранён. Проверьте обновлённый результат.':'');warning.hidden=!warning.textContent;
     form.querySelector('[data-sample-error]').textContent=record.error||'';
-    const readOnly=!online()||!result||result.cached,save=form.querySelector('[data-sample-save]'),whole=form.querySelector('[data-sample-toggle]');save.disabled=Boolean(record.samplePending)||readOnly||!record.sampleDirty||!total;save.textContent=record.samplePending?'Сохраняем…':'Сохранить выбранные';whole.disabled=Boolean(record.samplePending)||readOnly||!total;whole.textContent=selected.size===total&&total?'Сбросить все отметки':'Отметить весь куст';form.querySelector('[data-sample-discard]').hidden=!record.sampleDirty&&!record.sampleWarning;form.querySelector('[data-sample-discard]').disabled=Boolean(record.samplePending);container.querySelector('[data-sample-refresh]').disabled=record.loading||Boolean(record.samplePending);
+    const readOnly=!online()||!result||result.cached||samplingScopeReadOnly(record),save=form.querySelector('[data-sample-save]'),whole=form.querySelector('[data-sample-toggle]');save.disabled=Boolean(record.samplePending)||readOnly||!record.sampleDirty||!total;save.textContent=record.samplePending?'Сохраняем…':'Сохранить выбранные';whole.disabled=Boolean(record.samplePending)||readOnly||!total;whole.textContent=selected.size===total&&total?'Сбросить все отметки':'Отметить весь куст';form.querySelector('[data-sample-discard]').hidden=!record.sampleDirty&&!record.sampleWarning;form.querySelector('[data-sample-discard]').disabled=Boolean(record.samplePending);container.querySelector('[data-sample-refresh]').disabled=record.loading||Boolean(record.samplePending);
   }
   async function saveSampling(record){
     if(!currentObject(record)||record.samplePending||!record.sampleDirty)return;
-    if(!online()||!record.result||record.result.cached){record.error='Нет актуальных общих отметок. Выбор сохранён на этом телефоне; обновите данные перед отправкой.';renderSampling(record);return;}
-    const wells=samplingWells(record),wellIds=wells.filter(well=>record.sampleDraft.has(well.id)).map(well=>well.id),revision=record.sampleBaseRevision;record.samplePending=true;record.error='';record.sampleWriteError=false;renderSampling(record);
+    if(!online()||!record.result||record.result.cached||samplingScopeReadOnly(record)){record.error='Нет актуальных общих отметок. Выбор сохранён на этом телефоне; обновите данные перед отправкой.';renderSampling(record);return;}
+    const wells=samplingWells(record),wellIds=wells.filter(well=>record.sampleDraft.has(well.id)).map(well=>well.id),revision=record.sampleBaseRevision,periodKey=record.sampleDraftPeriod;record.samplePending=true;record.error='';record.sampleWriteError=false;renderSampling(record);
     try{
-      const response=await api('/samples/'+encodeURIComponent(record.padId),{method:'PUT',body:{wellIds,revision}});if(!currentObject(record))return;
-      record.sampleMutation=(record.sampleMutation||0)+1;const item=response.item||response;record.result={data:item,cached:false,at:new Date().toISOString()};storage.set(cacheKey('/samples?padId='+encodeURIComponent(record.padId)),record.result);clearSamplingDraft(record);record.sampleWarning='';changed('sampling',{padId:record.padId});notify('Отбор проб сохранён.');
+      const response=await api('/samples/'+encodeURIComponent(record.padId),{method:'PUT',body:{periodKey,wellIds,revision}});if(!currentObject(record))return;if(response.period&&!acceptSamplingPeriod(response.period)){record.sampleQueued=true;return;}if(getSamplingPeriod()?.key!==periodKey||record.sampleDraftPeriod!==periodKey){record.sampleQueued=true;return;}
+      record.sampleMutation=(record.sampleMutation||0)+1;const item=response.item||response;record.result={data:{period:response.period||getSamplingPeriod(),items:[item]},cached:false,at:new Date().toISOString()};storage.set(samplingCacheKey(record.padId,periodKey),record.result);clearSamplingDraft(record);record.sampleWarning='';record.samplePeriodNotice='';changed('sampling',{padId:record.padId});notify('Отбор проб сохранён.');
     }catch(error){
       if(!currentObject(record))return;
-      if(error.status===409){
-        try{let current=error.details?.current;if(!current){const response=await api('/samples?padId='+encodeURIComponent(record.padId));if(!currentObject(record))return;current=samplingItem({data:response},record.padId);}if(!currentObject(record))return;
-          record.sampleMutation=(record.sampleMutation||0)+1;record.result={data:current,cached:false,at:new Date().toISOString()};storage.set(cacheKey('/samples?padId='+encodeURIComponent(record.padId)),record.result);const base=sampleSelected(current,samplingWells(record)),merged=new Set(base),touched=new Map();for(const [id,checked] of record.sampleTouched||[]){if(checked)merged.add(id);else merged.delete(id);if(base.has(id)!==checked)touched.set(id,checked);}record.sampleBase=base;record.sampleDraft=merged;record.sampleBaseRevision=Number(current.revision)||0;record.sampleTouched=touched;record.sampleDirty=touched.size>0;rememberSampling(record);record.sampleWarning=record.sampleDirty?'Коллеги уже обновили отбор. Общие отметки загружены, ваш выбор сохранён. Проверьте скважины и нажмите «Сохранить выбранные» ещё раз.':'Коллеги уже обновили отбор. Ваш выбор совпадает с общими отметками.';record.error='';
+      if(error.status===409&&['sampling_period_changed','sampling_break'].includes(error.code)){
+        if(error.details?.period)acceptSamplingPeriod(error.details.period);clearSamplingDraft(record);record.samplePeriodNotice=error.code==='sampling_break'?'Сегодня перерыв. Круг завершён, несохранённый выбор не перенесён в итог.':'Начался новый круг. Прежний несохранённый выбор не перенесён.';record.error='';record.sampleQueued=true;
+      }else if(error.status===409){
+        if(getSamplingPeriod()?.key!==periodKey||record.sampleDraftPeriod!==periodKey){record.sampleQueued=true;return;}
+        try{let current=error.details?.current;if(!current){const response=await api('/samples?padId='+encodeURIComponent(record.padId));if(!currentObject(record))return;if(response.period&&!acceptSamplingPeriod(response.period))return;if(getSamplingPeriod()?.key!==periodKey){record.sampleQueued=true;return;}current=samplingItem({data:response},record.padId);}if(!currentObject(record))return;
+          record.sampleMutation=(record.sampleMutation||0)+1;if(current.periodKey&&current.periodKey!==periodKey){record.sampleQueued=true;return;}record.result={data:{period:getSamplingPeriod(),items:[current]},cached:false,at:new Date().toISOString()};storage.set(samplingCacheKey(record.padId,periodKey),record.result);const base=sampleSelected(current,samplingWells(record)),merged=new Set(base),touched=new Map();for(const [id,checked] of record.sampleTouched||[]){if(checked)merged.add(id);else merged.delete(id);if(base.has(id)!==checked)touched.set(id,checked);}record.sampleBase=base;record.sampleDraft=merged;record.sampleBaseRevision=Number(current.revision)||0;record.sampleTouched=touched;record.sampleDirty=touched.size>0;rememberSampling(record);record.sampleWarning=record.sampleDirty?'Коллеги уже обновили отбор. Общие отметки загружены, ваш выбор сохранён. Проверьте скважины и нажмите «Сохранить выбранные» ещё раз.':'Коллеги уже обновили отбор. Ваш выбор совпадает с общими отметками.';record.error='';
         }catch(refreshError){if(currentObject(record))record.error='Общие отметки изменились. Не удалось их загрузить. Ваш выбор сохранён; обновите данные и повторите.';}
       }else{record.error=error.message;record.sampleWriteError=true;}
     }finally{record.samplePending=false;renderSampling(record);if(currentObject(record)&&record.sampleQueued){record.sampleQueued=false;loadSampling(record);}}
   }
   async function loadSampling(record){
     if(!currentObject(record)||!getUser())return;if(record.loading||record.samplePending){record.sampleQueued=true;return;}record.loading=true;record.last=Date.now();const mutation=record.sampleMutation||0;
-    try{const result=await read('/samples?padId='+encodeURIComponent(record.padId));if(!currentObject(record))return;if(mutation!==(record.sampleMutation||0)){record.sampleQueued=true;return;}record.result=result;if(!record.samplePending&&!record.sampleWriteError)record.error='';}catch(error){if(currentObject(record)&&error.code!=='stale_session')record.error=error.message;}finally{record.loading=false;renderSampling(record);if(currentObject(record)&&record.sampleQueued&&!record.samplePending){record.sampleQueued=false;queueMicrotask(()=>loadSampling(record));}}
+    try{const result=await readSampling(record);if(!currentObject(record))return;if(mutation!==(record.sampleMutation||0)){record.sampleQueued=true;return;}const incoming=validSamplingPeriod(result.data?.period),accepted=acceptSamplingPeriod(incoming),current=getSamplingPeriod(),sameScope=incoming&&current&&incoming.key===current.key&&incoming.isBreak===current.isBreak;if(!accepted&&!sameScope){record.sampleQueued=Boolean(incoming&&current?.key!==incoming.key);return;}if(samplingPeriodOf(record)?.key===incoming.key&&Number(samplingItem(result,record.padId).revision)<Number(samplingItem(record.result,record.padId).revision))return;record.result=result;restoreSamplingDraft(record,result.data.period);if(!record.samplePending&&!record.sampleWriteError)record.error='';}catch(error){if(currentObject(record)&&error.code!=='stale_session')record.error=error.message;}finally{record.loading=false;renderSampling(record);if(currentObject(record)&&record.sampleQueued&&!record.samplePending){record.sampleQueued=false;queueMicrotask(()=>loadSampling(record));}}
   }
   function openView(next){
     if(next!=='chat')document.documentElement.classList.remove('community-keyboard-open');if(next==='notifications'){view=next;return window.AtlasNotifications?.openView()||'';}
@@ -551,6 +665,7 @@
     for(const [node,record] of hosts){if(!node.isConnected){node.querySelector('[data-compose]')?._communityDispose?.();hosts.delete(node);continue;}if(!currentObject(record)){if(record.kind==='object')mountObject(node,record.target);else mountSampling(node,record.padId);continue;}if(record.kind==='object'){renderObject(record);loadObject(record);}else{renderSampling(record);loadSampling(record);}}
   }
   function poll(){
+    if(getUser()&&document.visibilityState==='visible')checkSamplingClock();
     if(!online()||!getUser()||document.visibilityState!=='visible')return;
     if(view==='chat'&&visible(chatHost())&&Date.now()-(chat.last||0)>=1800)loadChat({poll:true});
     for(const [node,record] of hosts){if(!node.isConnected){node.querySelector('[data-compose]')?._communityDispose?.();hosts.delete(node);continue;}if(visible(node)&&Date.now()-record.last>=2400){if(record.kind==='object')loadObject(record);else loadSampling(record);}}
@@ -610,7 +725,7 @@
     for(const record of hosts.values()){result.busy||=Boolean(record.statusPending||record.samplePending);result.hasDraft||=Boolean(record.sampleDirty);}
     return result;
   }
-  window.Community=Object.freeze({openView,mountObject,mountSampling,getUser,api,getUpdateState,renderObject:mountObject,renderSampling:mountSampling,auth:authModal,refresh:refreshVisible,sessionRemembered:()=>Boolean(authenticated()&&session.remember),configureNativeNotifications,focusChatMessage,focusNote:(key,id)=>{for(const record of hosts.values())if(record.kind==='object'&&record.target.key===key)return focusNote(record,id);pendingFocus={key,noteId:id};}});
+  window.Community=Object.freeze({openView,mountObject,mountSampling,getUser,api,getUpdateState,getSamplingPeriod,acceptSamplingPeriod,samplingPeriodMarkup,preparePadShare,renderObject:mountObject,renderSampling:mountSampling,auth:authModal,refresh:refreshVisible,sessionRemembered:()=>Boolean(authenticated()&&session.remember),configureNativeNotifications,focusChatMessage,focusNote:(key,id)=>{for(const record of hosts.values())if(record.kind==='object'&&record.target.key===key)return focusNote(record,id);pendingFocus={key,noteId:id};}});
   restore();
   scheduleExpiry();
   window.addEventListener('online',()=>{refreshVisible();poll();});

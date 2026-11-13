@@ -1,10 +1,36 @@
 import {handleApi} from '../../../worker/api/index.mjs';
 import {createSupabaseEnv} from '../../../worker/adapters/supabase.mjs';
-import {sendPush} from '../../../worker/push.mjs';
+import {sendPush} from '../../../worker/delivery.mjs';
 import {cors,json} from '../../../worker/api/core.mjs';
 
 let vapidCache:{until:number,value:Record<string,unknown>|null}={until:0,value:null};
 let vapidPending:Promise<void>|null=null;
+let fcmCache:{until:number,value:Record<string,unknown>|null}={until:0,value:null};
+let fcmPending:Promise<void>|null=null;
+let schedulerCache:{until:number,secret:string|null}={until:0,secret:null};
+async function loadScheduler(env:Record<string,any>){
+  if(schedulerCache.until<=Date.now()){
+    const row=await env.DB.prepare('SELECT value FROM app_secrets WHERE key=?').bind('sampling_scheduler').first();
+    const value=typeof row?.value==='string'?JSON.parse(row.value):row?.value;
+    schedulerCache={until:Date.now()+60000,secret:value?.secret??null};
+  }
+  env.SAMPLING_CRON_SECRET=schedulerCache.secret;
+}
+async function loadFcm(env:Record<string,any>){
+  const explicit=Deno.env.get('FCM_SERVICE_ACCOUNT');
+  if(explicit){env.FCM_SERVICE_ACCOUNT=explicit;return;}
+  if(fcmCache.until<=Date.now()){
+    if(!fcmPending)fcmPending=(async()=>{
+      try{
+        const row=await env.DB.prepare('SELECT value FROM app_secrets WHERE key=?').bind('firebase_fcm').first();
+        fcmCache={until:Date.now()+60000,value:typeof row?.value==='string'?JSON.parse(row.value):row?.value??null};
+      }catch{fcmCache={until:Date.now()+10000,value:null};}
+      finally{fcmPending=null;}
+    })();
+    await fcmPending;
+  }
+  env.FCM_SERVICE_ACCOUNT=fcmCache.value;
+}
 async function loadVapid(env:Record<string,any>){
   if(vapidCache.until<=Date.now()){
     if(!vapidPending)vapidPending=(async()=>{
@@ -41,6 +67,8 @@ Deno.serve(async(request:Request)=>{
     env.COOKIE_PATH='/functions/v1/brigade-api';
     const path=new URL(request.url).pathname;
     if(request.method!=='OPTIONS'&&(path.endsWith('/push/public-key')||(request.method==='POST'&&(path.endsWith('/notes')||path.endsWith('/chat/messages')))))await loadVapid(env);
+    if(request.method!=='OPTIONS'&&(path.endsWith('/devices/fcm/config')||(request.method==='POST'&&(path.endsWith('/devices/fcm')||path.endsWith('/notes')||path.endsWith('/chat/messages')))))await loadFcm(env);
+    if(request.method==='POST'&&path.endsWith('/internal/sampling-round'))await Promise.all([loadScheduler(env),loadVapid(env),loadFcm(env)]);
     const ctx={waitUntil(promise:Promise<unknown>){if(globalThis.EdgeRuntime?.waitUntil)globalThis.EdgeRuntime.waitUntil(promise);else promise.catch(()=>{});}};
     return await handleApi(apiRequest(request),env,ctx,{sendPush})??new Response('Not found',{status:404});
   }catch{return cors(request,json({error:{code:'unavailable',message:'Сервис временно недоступен.'}},503));}

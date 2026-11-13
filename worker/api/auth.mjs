@@ -39,7 +39,7 @@ export async function requireUser(request,env) {
   else { token=(request.headers.get('Cookie')??'').split(';').map(s=>s.trim()).find(s=>s.startsWith('atlas_session='))?.slice(14); }
   if(!token || !/^[A-Za-z0-9_-]{43}$/.test(token)) fail(401,'unauthorized','Войдите в приложение.');
   const hash=await sha256(token);
-  const user=await first(env,'SELECT p.*,s.token_hash FROM sessions s JOIN profiles p ON p.id=s.user_id WHERE s.token_hash=? AND s.expires_at>? AND s.revoked_at IS NULL',hash,now());
+  const user=await first(env,'SELECT p.*,s.token_hash,s.created_at AS session_created_at FROM sessions s JOIN profiles p ON p.id=s.user_id WHERE s.token_hash=? AND s.expires_at>? AND s.revoked_at IS NULL',hash,now());
   if(!user) fail(401,'unauthorized','Сессия закончилась. Войдите снова.'); return user;
 }
 export async function handleAuth(request,env,path) {
@@ -68,7 +68,10 @@ export async function handleAuth(request,env,path) {
 }
 export async function handleProfile(request,env,path,user) {
   if(path==='/auth/logout' && request.method==='POST') {
-    await run(env,'UPDATE sessions SET revoked_at=? WHERE token_hash=?',now(),user.token_hash);
+    await env.DB.batch([
+      env.DB.prepare('UPDATE sessions SET revoked_at=? WHERE token_hash=?').bind(now(),user.token_hash),
+      env.DB.prepare('DELETE FROM native_push_tokens WHERE session_hash=? AND user_id=?').bind(user.token_hash,user.id)
+    ]);
     return json({ok:true},200,{'Set-Cookie':`atlas_session=; Path=${env.COOKIE_PATH??'/api/v1'}; HttpOnly; Secure; SameSite=Strict; Max-Age=0`});
   }
   if(path==='/me' && request.method==='GET') return json({user:publicUser(user)});
@@ -87,6 +90,11 @@ export async function handleProfile(request,env,path,user) {
     const cursor=url.searchParams.get('after')??''; if(cursor.length>64) fail(400,'invalid_cursor','Некорректный курсор.');
     const rows=await all(env,'SELECT id,login,nickname,position,grade,avatar_media_id,created_at,updated_at FROM profiles WHERE id>? ORDER BY id LIMIT ?',cursor,limit+1);
     const more=rows.length>limit; if(more)rows.pop(); return json({items:rows.map(publicUser),nextCursor:more?rows.at(-1)?.id:null});
+  }
+  const profile=path.match(/^\/profiles\/([A-Za-z0-9-]{1,64})$/);
+  if(profile&&request.method==='GET'){
+    const row=await first(env,'SELECT id,login,nickname,position,grade,avatar_media_id,created_at,updated_at FROM profiles WHERE id=?',profile[1]);
+    if(!row)fail(404,'not_found','Профиль не найден.');return json({user:publicUser(row)});
   }
   return null;
 }

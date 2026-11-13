@@ -61,6 +61,7 @@ public final class MainActivity extends Activity implements LocationListener {
 
     @Override public void onCreate(Bundle savedState) {
         super.onCreate(savedState);
+        NativePush.attach(this);
         captureNotificationIntent(getIntent());
         if (android.os.Build.VERSION.SDK_INT >= 33) getOnBackInvokedDispatcher().registerOnBackInvokedCallback(android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT, this::handleBack);
         locations = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -202,6 +203,12 @@ public final class MainActivity extends Activity implements LocationListener {
         @JavascriptInterface public String getNotificationState() {
             return trustedDocument ? NativeNotifications.state(MainActivity.this).toString() : "{\"available\":false}";
         }
+        @JavascriptInterface public void retryPushRegistration() {
+            runOnUiThread(() -> {
+                if (!trustedPage()) return;
+                notificationCommands.execute(() -> NativePush.ensureRegistration(MainActivity.this,true));
+            });
+        }
         @JavascriptInterface public void requestNotificationPermission() {
             runOnUiThread(() -> {
                 if (!trustedPage()) return;
@@ -325,10 +332,12 @@ public final class MainActivity extends Activity implements LocationListener {
     @Override public void onProviderEnabled(String provider) { if (requestedGps) { stopGps(); startGps(); } }
     @Override public void onProviderDisabled(String provider) { if (requestedGps) { stopGps(); startGps(); } }
     @Override public void onStatusChanged(String provider, int status, Bundle extras) { }
-    @Override protected void onResume() { super.onResume(); foreground = true; if (webView != null) webView.onResume(); sendSystemTheme(); startGps(); NativeNotifications.schedule(this, false); if (notificationPageReady) send("atlas-native-notification-state", NativeNotifications.state(this)); }
+    void refreshNativeNotificationState() { if (notificationPageReady && trustedPage()) send("atlas-native-notification-state", NativeNotifications.state(this)); }
+    @Override protected void onResume() { super.onResume(); foreground = true; if (webView != null) webView.onResume(); sendSystemTheme(); startGps(); NativeNotifications.schedule(this, false); refreshNativeNotificationState(); }
     @Override protected void onPause() { foreground = false; stopGps(); if (webView != null) webView.onPause(); super.onPause(); }
     @Override protected void onSaveInstanceState(Bundle state) { if (webView != null) webView.saveState(state); super.onSaveInstanceState(state); }
     @Override protected void onDestroy() {
+        NativePush.detach(this);
         stopGps();
         trustedDocument = false; notificationCommands.shutdown();
         if (fileCallback != null) fileCallback.onReceiveValue(null);

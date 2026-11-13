@@ -1,5 +1,12 @@
 plugins { id 'com.android.application' }
 
+// Public Firebase app identifiers; no service-account key belongs in the APK.
+def firebaseConfig = new Properties()
+def firebaseFile = rootProject.file('firebase.properties')
+if (firebaseFile.exists()) firebaseFile.withInputStream { firebaseConfig.load(it) }
+def firebaseValue = { name -> firebaseConfig.getProperty(name, '').trim() }
+def quoted = { value -> groovy.json.JsonOutput.toJson(value) }
+
 android {
     namespace 'ru.brigade2.atlas'
     compileSdk 35
@@ -8,8 +15,12 @@ android {
         applicationId 'ru.brigade2.atlas'
         minSdk 26
         targetSdk 35
-        versionCode 5
-        versionName '2.0.2'
+        versionCode 6
+        versionName '2.0.3'
+        buildConfigField 'String', 'FIREBASE_APP_ID', quoted(firebaseValue('appId'))
+        buildConfigField 'String', 'FIREBASE_API_KEY', quoted(firebaseValue('apiKey'))
+        buildConfigField 'String', 'FIREBASE_PROJECT_ID', quoted(firebaseValue('projectId'))
+        buildConfigField 'String', 'FIREBASE_SENDER_ID', quoted(firebaseValue('senderId'))
     }
     signingConfigs {
         release {
@@ -38,4 +49,18 @@ dependencies {
     implementation 'androidx.webkit:webkit:1.12.1'
     implementation 'androidx.core:core:1.15.0'
     implementation 'androidx.work:work-runtime:2.10.1'
+    implementation 'com.google.firebase:firebase-messaging:26.0.2'
 }
+
+tasks.register('validateFirebaseRelease') {
+    doLast {
+        def sender = firebaseValue('senderId')
+        if (!(sender ==~ /[0-9]{4,20}/) || !(firebaseValue('appId') ==~ /1:[0-9]+:android:[a-fA-F0-9]+/) ||
+            !firebaseValue('appId').startsWith('1:' + sender + ':android:') ||
+            !(firebaseValue('apiKey') ==~ /AIza[A-Za-z0-9_-]{30,60}/) ||
+            !(firebaseValue('projectId') ==~ /[a-z][a-z0-9-]{4,28}[a-z0-9]/)) {
+            throw new GradleException('Release requires the real Firebase Android app configuration in android/firebase.properties. No placeholder release is allowed.')
+        }
+    }
+}
+tasks.configureEach { if (name == 'preReleaseBuild') dependsOn('validateFirebaseRelease') }

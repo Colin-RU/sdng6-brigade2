@@ -21,9 +21,14 @@ final class NotificationContent {
         return text.codePointCount(0, text.length()) > limit ? text.substring(0, text.offsetByCodePoints(0, limit)) + "…" : text;
     }
     static Summary create(String type, String objectKey, String actor, String objectLabel, String preview) {
+        return create(type,objectKey,actor,objectLabel,preview,false);
+    }
+    static Summary create(String type, String objectKey, String actor, String objectLabel, String preview, boolean mention) {
+        if ("sampling-round".equals(type)) return new Summary("Начался новый круг отбора",
+            clean(preview,300,"Откройте отбор проб, чтобы увидеть новый круг."),false);
         boolean chat = "chat".equals(type) || "chat".equals(objectKey);
         String name = clean(actor, 60, "Коллега");
-        String title = name + (chat ? " написал в чат" : " · ответ: " + clean(objectLabel, 100, "Запись бригады"));
+        String title = chat&&mention ? "Вас упомянули · "+name : name + (chat ? " написал в чат" : " · ответ: " + clean(objectLabel, 100, "Запись бригады"));
         String text = clean(preview, 300, chat ? "Новое сообщение в чате" : "Новый ответ на вашу запись");
         return new Summary(title, text, chat);
     }

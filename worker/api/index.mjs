@@ -2,8 +2,11 @@ import {ApiError,fail,json,cors,originAllowed,rateLimit} from './core.mjs';
 import {handleAuth,handleProfile,requireUser} from './auth.mjs';
 import {handleMedia} from './media.mjs';
 import {handleMessages} from './messages.mjs';
+import {handleReactions} from './reactions.mjs';
 import {handleField} from './field.mjs';
 import {handleNotifications} from './notifications.mjs';
+import {handleDevices} from './devices.mjs';
+import {handleSamplingScheduler} from './sampling-scheduler.mjs';
 export async function handleApi(request,env,ctx,hooks={}) {
   const pathname=new URL(request.url).pathname;
   if(pathname!=='/api/v1'&&!pathname.startsWith('/api/v1/'))return null;
@@ -14,11 +17,11 @@ export async function handleApi(request,env,ctx,hooks={}) {
     const path=pathname.slice(7)||'/';
     if(path==='/health'&&request.method==='GET')return cors(request,json({ok:true}));
     if(!env.DB||!env.BUCKET)fail(503,'unavailable','Сервис временно недоступен.');
-    response=await handleAuth(request,env,path);
+    response=await handleSamplingScheduler(request,env,path,ctx,hooks)??await handleAuth(request,env,path);
     if(!response){
       const user=await requireUser(request,env);
       if(!['GET','HEAD'].includes(request.method))await rateLimit(env,`writes:${user.id}`,120,60);
-      response=await handleProfile(request,env,path,user)??await handleMedia(request,env,path,user)??await handleMessages(request,env,path,user,ctx,hooks)??await handleField(request,env,path,user)??await handleNotifications(request,env,path,user);
+      response=await handleProfile(request,env,path,user)??await handleMedia(request,env,path,user)??await handleReactions(request,env,path,user)??await handleMessages(request,env,path,user,ctx,hooks)??await handleField(request,env,path,user)??await handleNotifications(request,env,path,user)??await handleDevices(request,env,path,user);
     }
     if(!response)fail(404,'not_found','Запрос не найден.');
   } catch(error) {

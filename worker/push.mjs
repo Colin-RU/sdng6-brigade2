@@ -34,20 +34,21 @@ export async function vapidAuthorization(endpoint,config){
 }
 export async function sendPush(env,userIds,payload){
  const config={publicKey:env.VAPID_PUBLIC_KEY,privateJwk:env.VAPID_PRIVATE_JWK,subject:env.VAPID_SUBJECT};
- const result={sent:0,failed:0,expired:0};if(!config.publicKey||!config.privateJwk||!config.subject)return result;
+ const result={sent:0,failed:0,expired:0,retryable:0};if(!config.publicKey||!config.privateJwk||!config.subject)return result;
  const ids=[...new Set(userIds)].filter(x=>typeof x==='string').slice(0,20);if(!ids.length)return result;
  const rows=(await env.DB.prepare(`SELECT id,user_id,endpoint,p256dh,auth FROM push_subscriptions WHERE user_id IN (${ids.map(()=>'?').join(',')})`).bind(...ids).all()).results||[];
  const fetcher=env.PUSH_FETCH||fetch;
  for(let offset=0;offset<rows.length;offset+=5)await Promise.all(rows.slice(offset,offset+5).map(async row=>{
   if(!providerAllowed(row.endpoint)){result.failed++;return;}
   const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),10000);
+  let fetching=false;
   try{
    const body=await encryptPush(row,payload),authorization=await vapidAuthorization(row.endpoint,config);
-   const response=await fetcher(row.endpoint,{method:'POST',headers:{Authorization:authorization,'Content-Encoding':'aes128gcm','Content-Type':'application/octet-stream',TTL:'86400',Urgency:'normal'},body,redirect:'error',signal:controller.signal});
+   fetching=true;const response=await fetcher(row.endpoint,{method:'POST',headers:{Authorization:authorization,'Content-Encoding':'aes128gcm','Content-Type':'application/octet-stream',TTL:'86400',Urgency:'normal'},body,redirect:'error',signal:controller.signal});
    await response.body?.cancel();
    if(response.status===404||response.status===410){await env.DB.prepare('DELETE FROM push_subscriptions WHERE id=? AND user_id=?').bind(row.id,row.user_id).run();result.expired++;}
-   else if(response.ok)result.sent++;else result.failed++;
-  }catch{result.failed++;}finally{clearTimeout(timeout);}
+   else if(response.ok)result.sent++;else{result.failed++;if(response.status===429||response.status>=500)result.retryable++;}
+  }catch{result.failed++;if(fetching)result.retryable++;}finally{clearTimeout(timeout);}
  }));
  return result;
 }

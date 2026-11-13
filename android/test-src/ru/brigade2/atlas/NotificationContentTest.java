@@ -19,6 +19,13 @@ public final class NotificationContentTest {
         check(NotificationContent.create("comment","chat",null,null,null).channelId.equals(NotificationContent.CHAT_CHANNEL));
         check(NotificationContent.create("chat","pad:162",null,null,null).groupKey.equals(NotificationContent.CHAT_GROUP));
         check(NotificationContent.create("comment","well:163:2655",null,null,null).groupKey.equals(NotificationContent.WORK_GROUP));
+        NotificationContent.Summary round=NotificationContent.create("sampling-round","sampling",null,"Отбор проб","Круг 2 · 8–15 ноября");
+        check(round.title.equals("Начался новый круг отбора"));check(round.body.equals("Круг 2 · 8–15 ноября"));
+        check(round.channelId.equals(NotificationContent.WORK_CHANNEL));check(round.groupKey.equals(NotificationContent.WORK_GROUP));
+        check(!NotificationContent.create("sampling-round","sampling","Не должен отображаться",null,null).title.contains("Не должен"));
+        check(NotificationContent.create("sampling-round","sampling",null,null,null).body.equals("Откройте отбор проб, чтобы увидеть новый круг."));
+        NotificationContent.Summary mention=NotificationContent.create("chat","chat","Мастер","Чат бригады","@operator проверьте куст",true);
+        check(mention.title.equals("Вас упомянули · Мастер"));check(mention.channelId.equals(NotificationContent.CHAT_CHANNEL));check(mention.body.equals("@operator проверьте куст"));
         System.out.println("PASS "+assertions+" native chat/work content and channel assertions");
     }
 }

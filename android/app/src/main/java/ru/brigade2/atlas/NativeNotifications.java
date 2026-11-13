@@ -48,7 +48,7 @@ final class NativeNotifications {
     private NativeNotifications() { }
     private static SharedPreferences prefs(Context context) { return context.getSharedPreferences(PREFS, Context.MODE_PRIVATE); }
 
-    private static SecretKey key(boolean create) throws Exception {
+    static SecretKey key(boolean create) throws Exception {
         KeyStore store = KeyStore.getInstance("AndroidKeyStore"); store.load(null);
         if (store.containsAlias(KEY)) return (SecretKey) store.getKey(KEY, null);
         if (!create) throw new IllegalStateException("Key unavailable");
@@ -63,9 +63,10 @@ final class NativeNotifications {
         if (!enabled) { disable(context); return; }
         if (!NotificationPolicy.allowedApiBase(apiBase) || !apiBase.equals(context.getString(R.string.notification_api_base))
                 || !NotificationPolicy.validToken(token)) throw new IllegalArgumentException("Не удалось включить уведомления. Войдите ещё раз.");
+        Session previous; boolean same;
         synchronized (LOCK) {
-            Session previous = session(context);
-            boolean same = previous != null && previous.token.equals(token);
+            previous = session(context);
+            same = previous != null && previous.token.equals(token);
             long createdAt = same ? previous.createdAt : System.currentTimeMillis();
             String generation = same ? previous.generation : UUID.randomUUID().toString();
             JSONObject payload = new JSONObject().put("token", token).put("createdAt", createdAt).put("generation", generation);
@@ -77,7 +78,8 @@ final class NativeNotifications {
             if (!same) edit.remove("notifiedIds").remove("lastCheckedAt").remove("nextAllowedAt").remove("lastError");
             if (!edit.commit()) throw new IllegalStateException("Не удалось сохранить вход для уведомлений.");
         }
-        createChannel(context); schedule(context, true);
+        if (!same) NativePush.removeBinding(context, previous, false);
+        createChannel(context); NativePush.initialize(context); schedule(context, true);
     }
 
     static Session session(Context context) {
@@ -109,7 +111,9 @@ final class NativeNotifications {
     }
 
     static void disable(Context context) {
+        Session previous = session(context);
         synchronized (LOCK) { prefs(context).edit().clear().commit(); }
+        NativePush.removeBinding(context, previous, true);
         cancelWork(context);
         NotificationManager manager = context.getSystemService(NotificationManager.class); if (manager != null) manager.cancelAll();
     }
@@ -139,9 +143,20 @@ final class NativeNotifications {
     }
     static void permissionRequested(Context context) { prefs(context).edit().putBoolean("permissionAsked", true).apply(); }
 
+    static void catchUp(Context context) {
+        if (session(context) == null || !hasPermission(context)) return;
+        Constraints constraints = new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build();
+        WorkManager.getInstance(context).enqueueUniqueWork(IMMEDIATE, ExistingWorkPolicy.KEEP,
+            new OneTimeWorkRequest.Builder(NotificationWorker.class).setConstraints(constraints)
+                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL,30,TimeUnit.SECONDS).build());
+    }
+
     static void schedule(Context context, boolean immediate) {
-        if (session(context) == null) return;
+        Session session = session(context);
+        if (session == null) return;
         if (!hasPermission(context)) { cancelWork(context); return; }
+        NativePush.ensureRegistration(context, false);
+        if (NativePush.registered(context, session)) { cancelWork(context); return; }
         Constraints constraints = new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build();
         PeriodicWorkRequest periodic = new PeriodicWorkRequest.Builder(NotificationWorker.class, 15, TimeUnit.MINUTES)
             .setInitialDelay(15, TimeUnit.MINUTES).setConstraints(constraints).setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.SECONDS).build();
@@ -170,6 +185,7 @@ final class NativeNotifications {
     static boolean postIfCurrent(Context context, Session session, String id, android.app.Notification notification) {
         synchronized (LOCK) {
             if (!current(context, session) || !hasPermission(context)) return false;
+            if (notified(context).contains(id)) return true;
             // A disabled category must not prevent delivery of the other category.
             if (channelAllowed(context, notification.getChannelId())) NotificationManagerCompat.from(context).notify(id, 1, notification);
             remember(context, session, id);
@@ -188,6 +204,7 @@ final class NativeNotifications {
                 .put("permission", allowed ? "granted" : Build.VERSION.SDK_INT >= 33 && !p.getBoolean("permissionAsked", false) ? "prompt" : "denied")
                 .put("background", "periodic")
                 .put("lastCheckedAt", p.getLong("lastCheckedAt", 0)).put("lastError", p.getString("lastError", ""));
+            NativePush.addState(context, result, session);
         } catch (Exception ignored) { }
         return result;
     }
