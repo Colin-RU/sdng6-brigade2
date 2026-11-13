@@ -70,11 +70,11 @@ public final class NotificationWorker extends Worker {
             .putExtra(NativeNotifications.EXTRA_ID,id).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent tap=PendingIntent.getActivity(context,id.hashCode(),intent,PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);
         long when=System.currentTimeMillis();try{when=Math.min(when,Instant.parse(item.optString("createdAt")).toEpochMilli());}catch(Exception ignored){}
-        NotificationCompat.Builder builder=new NotificationCompat.Builder(context,NativeNotifications.CHANNEL)
+        NotificationCompat.Builder builder=new NotificationCompat.Builder(context,content.channelId)
             .setSmallIcon(R.drawable.ic_notification).setContentTitle(content.title).setContentText(content.body)
             .setStyle(new NotificationCompat.BigTextStyle().bigText(content.body)).setContentIntent(tap).setAutoCancel(true)
             .setWhen(when).setCategory(NotificationCompat.CATEGORY_SOCIAL).setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
-            .setGroup("brigade_replies").setOnlyAlertOnce(true).setColor(0xff167c8a);
+            .setGroup(content.groupKey).setOnlyAlertOnce(true).setColor(content.color);
         return builder.build();
     }
 }

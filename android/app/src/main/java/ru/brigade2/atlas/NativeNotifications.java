@@ -34,7 +34,7 @@ import javax.crypto.spec.GCMParameterSpec;
 
 /** Credentials stay encrypted in private preferences; only a Keystore key can decrypt them. */
 final class NativeNotifications {
-    static final String CHANNEL = "brigade_replies_v1";
+    static final String CHANNEL = NotificationContent.WORK_CHANNEL, CHAT_CHANNEL = NotificationContent.CHAT_CHANNEL;
     static final String EXTRA_ID = "atlas_notification_id";
     private static final String PREFS = "atlas_notifications_v1", KEY = "atlas_notification_session_v1";
     private static final String PERIODIC = "atlas_notification_poll", IMMEDIATE = "atlas_notification_check";
@@ -118,14 +118,24 @@ final class NativeNotifications {
 
     static void createChannel(Context context) {
         NotificationManager manager = context.getSystemService(NotificationManager.class);
-        if (manager != null) { NotificationChannel channel = new NotificationChannel(CHANNEL, "Сообщения бригады", NotificationManager.IMPORTANCE_DEFAULT); channel.setDescription("Новые сообщения в чате и ответы на ваши записи"); manager.createNotificationChannel(channel); }
+        if (manager == null) return;
+        NotificationChannel work = new NotificationChannel(CHANNEL, "Кусты и скважины", NotificationManager.IMPORTANCE_DEFAULT);
+        work.setDescription("Ответы на записи по кустам, скважинам и оборудованию");
+        work.enableVibration(true); work.setVibrationPattern(new long[]{0,180,100,180});
+        NotificationChannel chat = new NotificationChannel(CHAT_CHANNEL, "Чат бригады", NotificationManager.IMPORTANCE_DEFAULT);
+        chat.setDescription("Новые сообщения общего чата бригады");
+        chat.enableVibration(true); chat.setVibrationPattern(new long[]{0,120});
+        manager.createNotificationChannel(work); manager.createNotificationChannel(chat);
+    }
+    private static boolean channelAllowed(Context context, String id) {
+        NotificationManager manager = context.getSystemService(NotificationManager.class);
+        NotificationChannel channel = manager == null ? null : manager.getNotificationChannel(id);
+        return channel == null || channel.getImportance() != NotificationManager.IMPORTANCE_NONE;
     }
     static boolean hasPermission(Context context) {
         if (Build.VERSION.SDK_INT >= 33 && context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return false;
         if (!NotificationManagerCompat.from(context).areNotificationsEnabled()) return false;
-        NotificationManager manager = context.getSystemService(NotificationManager.class);
-        NotificationChannel channel = manager == null ? null : manager.getNotificationChannel(CHANNEL);
-        return channel == null || channel.getImportance() != NotificationManager.IMPORTANCE_NONE;
+        return channelAllowed(context, CHANNEL) || channelAllowed(context, CHAT_CHANNEL);
     }
     static void permissionRequested(Context context) { prefs(context).edit().putBoolean("permissionAsked", true).apply(); }
 
@@ -160,7 +170,8 @@ final class NativeNotifications {
     static boolean postIfCurrent(Context context, Session session, String id, android.app.Notification notification) {
         synchronized (LOCK) {
             if (!current(context, session) || !hasPermission(context)) return false;
-            NotificationManagerCompat.from(context).notify(id, 1, notification);
+            // A disabled category must not prevent delivery of the other category.
+            if (channelAllowed(context, notification.getChannelId())) NotificationManagerCompat.from(context).notify(id, 1, notification);
             remember(context, session, id);
             return true;
         }

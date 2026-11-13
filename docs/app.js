@@ -218,7 +218,7 @@ function bindEvents(){
       case 'export':exportLocal();break;
       case 'export-registry':downloadJSON(data,'brigade2-registry.json');break;
       case 'import':importModal();break;
-      case 'update':if(swRegistration?.waiting){swRegistration.waiting.postMessage({type:'SKIP_WAITING'});navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload(),{once:true});}break;
+      case 'update':if(window.AppUpdate)window.AppUpdate.apply();else toast('Обновление ещё готовится. Повторите через несколько секунд.');break;
     }
   });
   $('#search').addEventListener('input',renderList);$('#search').addEventListener('keydown',e=>{if(e.key==='Enter'){const exact=exactNavigationTarget(e.target.value);if(exact){e.preventDefault();selectedPad=data.pads.find(p=>p.id===exact.padId);selectedWell=exact.wellId;route();}}});$('#type-filter').addEventListener('change',renderList);$('#favorite-filter').addEventListener('click',()=>{favoriteOnly=!favoriteOnly;renderList();});$('#drawer-backdrop').addEventListener('click',closeDrawer);

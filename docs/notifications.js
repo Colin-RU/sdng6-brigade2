@@ -1,7 +1,7 @@
 'use strict';
 (() => {
   const STORE='atlas.notifications.v1.';
-  let items=[],nextCursor=null,loading=false,count=0,opened=false,pushBusy=false,pushMessage='',browserSubscriptionActive=false,authGeneration=0,countRequest=0;
+  let items=[],nextCursor=null,loading=false,count=0,opened=false,pushBusy=false,pushMessage='',browserSubscriptionActive=false,authGeneration=0,countRequest=0,feedGeneration=0,filter='all';
   const openingIds=new Set();let pendingNotification=new URL(location.href).searchParams.get('notification');
   const html=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const api=(path,options)=>Community.api(path,options);
@@ -9,13 +9,13 @@
   const online=()=>navigator.onLine!==false;
   const host=()=>document.querySelector('#community-view');
   const visible=()=>opened&&host()?.isConnected&&host().dataset.communitySection==='notifications'&&host().getClientRects().length&&document.visibilityState==='visible';
-  const format=value=>new Date(value).toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+  const format=value=>new Date(value).toLocaleString('ru-RU',{timeZone:'Asia/Yekaterinburg',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
   const key=()=>STORE+String(user()?.id||'guest');
   const native=()=>Boolean(window.SdngGps?.getNotificationState&&window.SdngGps?.configureNotifications);
   function setting(){try{return JSON.parse(localStorage.getItem(key())||'null')||{enabled:false};}catch{return {enabled:false};}}
   function saveSetting(value){try{localStorage.setItem(key(),JSON.stringify(value));}catch{}}
-  function sourceCopy(){try{return JSON.parse(localStorage.getItem(key()+'.feed')||'null');}catch{return null;}}
-  function saveFeed(){try{localStorage.setItem(key()+'.feed',JSON.stringify({items,nextCursor,at:new Date().toISOString()}));}catch{}}
+  function sourceCopy(){try{return JSON.parse(localStorage.getItem(key()+'.feed.'+filter)||(filter==='all'?localStorage.getItem(key()+'.feed'):null)||'null');}catch{return null;}}
+  function saveFeed(){try{localStorage.setItem(key()+'.feed.'+filter,JSON.stringify({items,nextCursor,at:new Date().toISOString()}));}catch{}}
   function setCount(value){countRequest++;count=Math.max(0,Number(value)||0);window.dispatchEvent(new CustomEvent('atlas-notifications-count',{detail:{count}}));document.querySelectorAll('[data-notifications-count]').forEach(node=>{node.textContent=count>99?'99+':String(count);node.hidden=!count;});}
   function nativeState(){try{return JSON.parse(SdngGps.getNotificationState());}catch{return {permission:'prompt',enabled:false,background:'periodic'};}}
   function permission(){return native()?nativeState().permission:window.Notification?.permission||'unsupported';}
@@ -25,27 +25,32 @@
     if(permission()==='denied')return 'Уведомления запрещены. Разрешите их для приложения в настройках телефона или браузера, затем повторите.';
     if(native())return 'Android может задерживать фоновую доставку. Все ответы сохраняются в этом разделе.';
     if(!('Notification' in window)||!('PushManager' in window))return 'На iPhone добавьте атлас на экран «Домой» через Safari и откройте его с появившегося значка. Затем разрешите уведомления здесь.';
-    return enabled()?'Ответы на ваши записи будут появляться на экране телефона.':'Разрешите уведомления, чтобы видеть ответы коллег, когда приложение закрыто.';
+    return enabled()?'Сообщения чата и ответы по объектам будут появляться на экране телефона.':'Разрешите уведомления о сообщениях чата и ответах по объектам, когда приложение закрыто.';
   }
   function pushMarkup(){return `<article class="community-card"><div class="community-notification-controls"><button type="button" class="btn ${enabled()?'':'primary'}" data-enable-notifications ${pushBusy||!user()||!online()?'disabled':''}>${pushBusy?'Настраиваем…':enabled()?'Выключить уведомления':'Разрешить уведомления'}</button><span class="status-chip">${enabled()?'Включены на этом устройстве':'Не включены на этом устройстве'}</span></div><p class="community-notification-state" role="status">${html(pushMessage||pushHelp())}</p></article>`;}
   function render({cachedAt,error=''}={}){
     const node=host();if(!node||node.dataset.communitySection!=='notifications')return;
-    node.innerHTML=`<div class="community-page"><header class="community-section-head"><div><span class="community-kicker">ОТВЕТЫ КОЛЛЕГ</span><h2>Уведомления${count?` <span class="community-unread-badge">${count>99?'99+':count}</span>`:''}</h2></div>${user()?'<button type="button" class="btn" data-notifications-read-all>Прочитать все</button>':''}</header>${pushMarkup()}${cachedAt?`<p class="community-source" style="margin-top:15px">Сохранённая копия · ${html(format(cachedAt))}. Подключитесь к интернету для обновления.</p>`:''}${error?`<p class="community-form-error" role="status">${html(error)}</p>`:''}<section class="community-card community-notification-list" aria-label="Ответы на ваши записи">${!user()?'<p class="community-empty">Войдите, чтобы открыть ваши уведомления.</p><button type="button" class="btn primary" data-notifications-login>Войти в профиль</button>':items.length?items.map(item=>`<button type="button" class="community-notification-item ${!item.readAt?'unread':''}" data-open-notification="${html(item.id)}"><strong>${html(item.actor?.nickname||'Коллега')} ${item.type==='chat'?'написал в чат':'ответил'} · ${html(item.objectLabel||'Объект')}</strong><p>${html(item.preview||'Новый ответ на вашу запись')}</p><time datetime="${html(item.createdAt)}">${html(format(item.createdAt))}</time></button>`).join(''):`<p class="community-empty">${loading?'Загружаем уведомления…':error?'Не удалось получить уведомления.':'Новых ответов пока нет.'}</p>`}${user()?`<div class="community-notification-controls"><button type="button" class="btn" data-notifications-refresh ${loading?'disabled':''}>Обновить</button>${nextCursor?'<button type="button" class="btn" data-notifications-older>Более ранние</button>':''}</div>`:''}</section></div>`;
+    node.innerHTML=`<div class="community-page"><header class="community-section-head"><div><span class="community-kicker">СООБЩЕНИЯ И ОТВЕТЫ</span><h2>Уведомления${count?` <span class="community-unread-badge">${count>99?'99+':count}</span>`:''}</h2></div>${user()?'<button type="button" class="btn" data-notifications-read-all>Прочитать все</button>':''}</header>${pushMarkup()}<nav class="notification-type-tabs" aria-label="Тип уведомлений">${[['all','Все'],['chat','Чат'],['comment','Кусты и скважины']].map(([type,label])=>`<button type="button" data-notification-filter="${type}" aria-pressed="${filter===type}">${label}</button>`).join('')}</nav>${cachedAt?`<p class="community-source" style="margin-top:15px">Сохранённая копия · ${html(format(cachedAt))}. Подключитесь к интернету для обновления.</p>`:''}${error?`<p class="community-form-error" role="status">${html(error)}</p>`:''}<section class="community-card community-notification-list" aria-label="Ответы на ваши записи">${!user()?'<p class="community-empty">Войдите, чтобы открыть ваши уведомления.</p><button type="button" class="btn primary" data-notifications-login>Войти в профиль</button>':items.length?items.map(item=>`<button type="button" class="community-notification-item notification-${item.type==='chat'?'chat':'work'} ${!item.readAt?'unread':''}" data-open-notification="${html(item.id)}"><span class="notification-kind">${item.type==='chat'?'ЧАТ БРИГАДЫ':'ПО ОБЪЕКТУ'}</span><strong>${html(item.actor?.nickname||'Коллега')} ${item.type==='chat'?'написал в чат':'ответил'} · ${html(item.objectLabel||'Объект')}</strong><p>${html(item.preview||'Новый ответ на вашу запись')}</p><time datetime="${html(item.createdAt)}">${html(format(item.createdAt))}</time></button>`).join(''):`<p class="community-empty">${loading?'Загружаем уведомления…':error?'Не удалось получить уведомления.':'Новых уведомлений пока нет.'}</p>`}${user()?`<div class="community-notification-controls"><button type="button" class="btn" data-notifications-refresh ${loading?'disabled':''}>Обновить</button>${nextCursor?'<button type="button" class="btn" data-notifications-older>Более ранние</button>':''}</div>`:''}</section></div>`;
     node.querySelector('[data-enable-notifications]')?.addEventListener('click',async()=>{if(pushBusy)return;const generation=authGeneration;pushBusy=true;pushMessage='';render();try{if(enabled())await disable();else await enable();}catch(e){if(generation===authGeneration)pushMessage=e.message;}finally{if(generation===authGeneration){pushBusy=false;render();}}});
     node.querySelector('[data-notifications-login]')?.addEventListener('click',()=>Community.auth());
     node.querySelector('[data-notifications-refresh]')?.addEventListener('click',()=>load());
     node.querySelector('[data-notifications-older]')?.addEventListener('click',()=>load(true));
-    node.querySelector('[data-notifications-read-all]')?.addEventListener('click',async event=>{event.currentTarget.disabled=true;try{await api('/notifications/read-all',{method:'POST'});const now=new Date().toISOString();items=items.map(item=>({...item,readAt:item.readAt||now}));setCount(0);saveFeed();render();}catch(e){render({error:e.message});}});
+    node.querySelectorAll('[data-notification-filter]').forEach(button=>button.onclick=()=>selectFilter(button.dataset.notificationFilter));
+    node.querySelector('[data-notifications-read-all]')?.addEventListener('click',async event=>{const scope=filter,generation=authGeneration;event.currentTarget.disabled=true;try{await api('/notifications/read-all'+(scope==='all'?'':'?type='+scope),{method:'POST'});if(generation!==authGeneration)return;if(scope===filter){const now=new Date().toISOString();items=items.map(item=>({...item,readAt:item.readAt||now}));saveFeed();render();}await unread();}catch(e){if(generation===authGeneration&&scope===filter)render({error:e.message});}});
     node.querySelectorAll('[data-open-notification]').forEach(button=>button.onclick=()=>openNotification(button.dataset.openNotification));
   }
+  function selectFilter(next){if(!['all','chat','comment'].includes(next)||filter===next)return;filter=next;feedGeneration++;loading=false;items=[];nextCursor=null;render();if(user())return load();}
   async function unread(){if(!user()||!online())return;const generation=authGeneration,request=++countRequest;try{const result=await api('/notifications/unread-count');if(generation===authGeneration&&request===countRequest)setCount(result.count);}catch{}}
   async function load(older=false){
-    if(loading||!user())return;const generation=authGeneration;loading=true;if(!items.length)render();
-    try{const result=await api('/notifications?limit=40'+(older&&nextCursor?'&before='+encodeURIComponent(nextCursor):''));
-      if(generation!==authGeneration)return;const previous=JSON.stringify(items);const map=new Map((older?items:[]).map(item=>[String(item.id),item]));for(const item of result.items||[])map.set(String(item.id),item);
-      items=[...map.values()].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)||String(b.cursor).localeCompare(String(a.cursor)));nextCursor=result.nextCursor||null;saveFeed();if(previous!==JSON.stringify(items)||!items.length||!host()?.querySelector('[data-open-notification]')&&items.length)render();await unread();
-    }catch(error){if(generation!==authGeneration||error.code==='stale_session')return;const saved=sourceCopy();if(saved){items=saved.items||[];nextCursor=saved.nextCursor;render({cachedAt:saved.at,error:error.message});}else render({error:error.message});}
-    finally{if(generation===authGeneration){loading=false;host()?.querySelector('[data-notifications-refresh]')?.removeAttribute('disabled');}}
+    if(loading||!user())return;const generation=authGeneration,scope=filter,request=++feedGeneration;loading=true;if(!items.length)render();
+    const current=()=>generation===authGeneration&&scope===filter&&request===feedGeneration;
+    try{
+      const result=await api('/notifications?limit=40'+(scope==='all'?'':'&type='+scope)+(older&&nextCursor?'&before='+encodeURIComponent(nextCursor):''));
+      if(!current())return;const previous=JSON.stringify(items),map=new Map((older?items:[]).map(item=>[String(item.id),item]));for(const item of result.items||[])map.set(String(item.id),item);
+      items=[...map.values()].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)||Number(b.cursor)-Number(a.cursor));nextCursor=result.nextCursor||null;loading=false;saveFeed();
+      if(previous!==JSON.stringify(items)||!items.length||!host()?.querySelector('[data-open-notification]')&&items.length)render();await unread();
+    }catch(error){if(!current()||error.code==='stale_session')return;loading=false;const saved=sourceCopy();if(saved){items=saved.items||[];nextCursor=saved.nextCursor;render({cachedAt:saved.at,error:error.message});}else render({error:error.message});}
+    finally{if(current()){loading=false;host()?.querySelector('[data-notifications-refresh]')?.removeAttribute('disabled');}}
   }
   function decodeKey(value){const normal=String(value).replace(/-/g,'+').replace(/_/g,'/');const binary=atob(normal);return Uint8Array.from(binary,c=>c.charCodeAt(0));}
   async function requestNativePermission(){
@@ -94,7 +99,7 @@
   function openView(){opened=true;if(host())host().dataset.communitySection='notifications';render();if(user())load();return host()?.innerHTML||'';}
   window.AtlasNotifications=Object.freeze({openView,openNotification,enable,disable,prepareLogout,requestPermission,isEnabled:enabled,refresh:unread,getCount:()=>count});
   window.Notifications=window.AtlasNotifications;
-  window.addEventListener('atlas-auth-change',()=>{authGeneration++;items=[];nextCursor=null;loading=false;pushBusy=false;pushMessage='';setCount(0);if(visible())render();if(!user())return;if(native()&&setting().enabled&&Community.sessionRemembered()){try{Community.configureNativeNotifications(true);}catch{}}unread();if(pendingNotification)openNotification(pendingNotification);if(visible())load();});
+  window.addEventListener('atlas-auth-change',()=>{authGeneration++;feedGeneration++;filter='all';items=[];nextCursor=null;loading=false;pushBusy=false;pushMessage='';setCount(0);if(visible())render();if(!user())return;if(native()&&setting().enabled&&Community.sessionRemembered()){try{Community.configureNativeNotifications(true);}catch{}}unread();if(pendingNotification)openNotification(pendingNotification);if(visible())load();});
   window.addEventListener('atlas-native-notification-state',()=>{if(visible())render();});
   window.addEventListener('atlas-session-ended',()=>{saveSetting({enabled:false});unsubscribe(false).catch(()=>{});});
   window.addEventListener('atlas-notification-open',event=>{if(event.detail?.id)openNotification(event.detail.id);});

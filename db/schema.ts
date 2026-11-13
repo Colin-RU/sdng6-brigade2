@@ -18,14 +18,14 @@ export const objectNotes=sqliteTable('object_notes',{
   seq:integer('seq').primaryKey({autoIncrement:true}),id:text('id').notNull(),objectKey:text('object_key').notNull(),parentId:text('parent_id'),userId:text('user_id').notNull().references(()=>profiles.id),clientId:text('client_id').notNull(),body:text('body').notNull(),mediaIds:text('media_ids').notNull().default('[]'),createdAt:integer('created_at').notNull(),updatedAt:integer('updated_at').notNull(),revision:integer('revision').notNull().default(1)
 },t=>[uniqueIndex('object_notes_id_unique').on(t.id),uniqueIndex('object_notes_user_client').on(t.userId,t.clientId),index('object_notes_object_seq').on(t.objectKey,t.seq),index('object_notes_parent').on(t.parentId)]);
 export const samples=sqliteTable('samples',{
-  padId:text('pad_id').primaryKey(),sampled:integer('sampled').notNull(),note:text('note').notNull().default(''),revision:integer('revision').notNull(),updatedAt:integer('updated_at').notNull(),updatedBy:text('updated_by').notNull().references(()=>profiles.id),mutationId:text('mutation_id').notNull()
+  padId:text('pad_id').primaryKey(),sampled:integer('sampled').notNull(),note:text('note').notNull().default(''),revision:integer('revision').notNull(),updatedAt:integer('updated_at').notNull(),updatedBy:text('updated_by').notNull().references(()=>profiles.id),mutationId:text('mutation_id').notNull(),wellIds:text('well_ids')
 },t=>[check('samples_sampled',sql`${t.sampled} IN (0,1)`)]);
 export const sampleAudit=sqliteTable('sample_audit',{
-  id:text('id').primaryKey(),padId:text('pad_id').notNull(),sampled:integer('sampled').notNull(),note:text('note').notNull(),revision:integer('revision').notNull(),userId:text('user_id').notNull().references(()=>profiles.id),createdAt:integer('created_at').notNull()
+  id:text('id').primaryKey(),padId:text('pad_id').notNull(),sampled:integer('sampled').notNull(),note:text('note').notNull(),revision:integer('revision').notNull(),userId:text('user_id').notNull().references(()=>profiles.id),createdAt:integer('created_at').notNull(),wellIds:text('well_ids')
 },t=>[index('sample_audit_pad_revision').on(t.padId,t.revision)]);
 export const objectStatuses=sqliteTable('object_statuses',{
   objectKey:text('object_key').primaryKey(),status:text('status').notNull(),note:text('note').notNull().default(''),revision:integer('revision').notNull(),updatedAt:integer('updated_at').notNull(),updatedBy:text('updated_by').notNull().references(()=>profiles.id),mutationId:text('mutation_id').notNull()
-},t=>[check('object_status_value',sql`${t.status} IN ('unknown','ok','attention','stopped')`)]);
+},t=>[check('object_status_value',sql`${t.status} IN ('unknown','ok','attention','stopped') OR (${t.status}='absent' AND ${t.objectKey} LIKE 'equipment:%')`)]);
 export const statusAudit=sqliteTable('status_audit',{
   id:text('id').primaryKey(),objectKey:text('object_key').notNull(),status:text('status').notNull(),note:text('note').notNull(),revision:integer('revision').notNull(),userId:text('user_id').notNull().references(()=>profiles.id),createdAt:integer('created_at').notNull()
 },t=>[index('status_audit_object_revision').on(t.objectKey,t.revision)]);

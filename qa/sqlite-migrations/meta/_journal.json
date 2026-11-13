@@ -15,6 +15,20 @@
       "when": 1794577458034,
       "tag": "0001_shift_times",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1794583471132,
+      "tag": "0002_equipment_absent",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1794583849739,
+      "tag": "0003_partial_sampling",
+      "breakpoints": true
     }
   ]
 }

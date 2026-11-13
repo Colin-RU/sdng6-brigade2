@@ -1,7 +1,7 @@
 'use strict';
 
 // Bump this value with every release that changes the app shell or its data.
-const VERSION = '2026-11-13-v10';
+const VERSION = '2026-11-13-v11';
 const CACHE_PREFIX = 'sdng6-brigade2-';
 const CACHE_NAME = CACHE_PREFIX + VERSION;
 const APP_MARKER = '<meta name="sdng6-app-shell" content="brigade-2">';
@@ -13,6 +13,8 @@ const ASSETS = [
   ['notifications.js', 'js', true],
   ['notification-start.js', 'js', true],
   ['notification-start.css', 'css', true],
+  ['app-update.js', 'js', true],
+  ['app-update.css', 'css', true],
   ['community.css', 'css', true],
   ['calendar.js', 'js', true],
   ['calendar.css', 'css', true],
@@ -185,7 +187,7 @@ async function savedMapAsset(url){
  try{const index=await caches.open('atlas-map-pack-index-v1'),record=await index.match(new URL('__atlas_map_pack__',ROOT).href);if(!record)return null;const pointer=await record.json();if(typeof pointer.cacheName!=='string'||!pointer.cacheName.startsWith('atlas-map-pack-'))return null;const cache=await caches.open(pointer.cacheName);return await cache.match(url)||null;}catch{return null;}
 }
 self.addEventListener('push',event=>{
- event.waitUntil((async()=>{let payload={};try{payload=event.data?.json()||{};}catch{}const id=String(payload.notificationId||'');if(!/^[A-Za-z0-9-]{1,64}$/.test(id))return;await self.registration.showNotification(String(payload.title||'Новый ответ бригады').slice(0,160),{body:String(payload.body||'Откройте приложение, чтобы прочитать комментарий.').slice(0,500),icon:new URL('icon-192.png',ROOT).href,badge:new URL('icon-192.png',ROOT).href,tag:'brigade-comment-'+id,data:{notificationId:id},renotify:false});})());
+ event.waitUntil((async()=>{let payload={};try{payload=event.data?.json()||{};}catch{}const id=String(payload.notificationId||'');if(!/^[A-Za-z0-9-]{1,64}$/.test(id))return;const kind=payload.type==='chat'?'chat':'work',prefix=kind==='chat'?'Чат бригады':'Кусты и скважины',heading=String(payload.title||prefix),title=heading.startsWith(prefix)?heading:prefix+' · '+heading;await self.registration.showNotification(title.slice(0,160),{body:String(payload.body||'Откройте приложение, чтобы прочитать комментарий.').slice(0,500),icon:new URL('icon-192.png',ROOT).href,badge:new URL('icon-192.png',ROOT).href,tag:'brigade-'+kind+'-'+id,data:{notificationId:id},renotify:false});})());
 });
 self.addEventListener('notificationclick',event=>{
  event.notification.close();const id=String(event.notification.data?.notificationId||'');if(!/^[A-Za-z0-9-]{1,64}$/.test(id))return;

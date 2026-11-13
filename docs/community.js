@@ -3,14 +3,16 @@
   const PREFIX='atlas.community.v1.';
   const SESSION=PREFIX+'session';
   const LIMIT=30;
-  const STATUS={unknown:'Не указан',ok:'Работает',attention:'Нужно внимание',stopped:'Остановлен'};
-  const hosts=new Map(),photoPromises=new Map(),viewShells=new Map(),profileStates=new Map();
-  let session=null,view=null,authMode='login',authNotice='',profilePending=false,expiryTimer,sessionEpoch=0;
+  const STATUS={unknown:'Не указан',ok:'Работает',attention:'Нужно внимание',stopped:'Остановлен',absent:'Отсутствует'};
+  const statusesFor=key=>Object.entries(STATUS).filter(([status])=>status!=='absent'||String(key).startsWith('equipment:'));
+  const hosts=new Map(),photoPromises=new Map(),viewShells=new Map(),profileStates=new Map(),composerStates=new Set();
+  let session=null,view=null,authMode='login',authNotice='',profilePending=false,expiryTimer,sessionEpoch=0,authPending=0,apiWrites=0;
   let chat={items:[],before:null,hasOlder:false,pending:false,loading:false,error:'',cacheAt:null,cached:false,unread:0};
   const html=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const uuid=()=>crypto.randomUUID?crypto.randomUUID():`${Date.now()}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`;
   const online=()=>navigator.onLine!==false;
   const time=value=>{const date=new Date(value);return Number.isFinite(date.getTime())?date.toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'Время не указано';};
+  const recordedTime=value=>{const date=new Date(value);return Number.isFinite(date.getTime())?date.toLocaleString('ru-RU',{timeZone:'Asia/Yekaterinburg',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'Время не указано';};
   const visible=node=>Boolean(node?.isConnected&&document.visibilityState==='visible'&&node.getClientRects().length);
   const expiry=value=>typeof value==='number'?(value<1e12?value*1000:value):Date.parse(value);
   const authenticated=()=>Boolean(session?.token&&session.user&&expiry(session.expiresAt)>Date.now());
@@ -41,7 +43,7 @@
     photoPromises.clear();disposeDraftViews();chat={items:[],before:null,hasOlder:false,pending:false,loading:false,error:'',cacheAt:null,cached:false,unread:0};authChanged();
   }
   function scheduleExpiry(){clearTimeout(expiryTimer);if(!session)return;const delay=expiry(session.expiresAt)-Date.now();if(delay<=0){clearSession('Время входа истекло. Войдите ещё раз.');refreshVisible();return;}expiryTimer=setTimeout(scheduleExpiry,Math.min(delay,2147480000));}
-  class ApiError extends Error{constructor(message,status=0,code='network'){super(message);this.status=status;this.code=code;}}
+  class ApiError extends Error{constructor(message,status=0,code='network',details=null){super(message);this.status=status;this.code=code;this.details=details;}}
   async function api(path='',options={}){
     const base=String(window.ATLAS_API_BASE||'/api/v1').replace(/\/$/,'');
     if(!/^\//.test(path))path='/'+path;
@@ -59,6 +61,7 @@
     const controller=new AbortController();
     const timeout=setTimeout(()=>controller.abort(),options.timeout||18000);
     const onAbort=()=>controller.abort();options.signal?.addEventListener('abort',onAbort,{once:true});
+    const isWrite=!['GET','HEAD','OPTIONS'].includes(method.toUpperCase());if(isWrite)apiWrites++;
     try{
       const response=await fetch(base+path,{method,headers,body,signal:controller.signal,cache:'no-store',credentials:'omit'});
       assertSession();
@@ -68,7 +71,7 @@
         assertSession();
         if(response.status===401&&auth){clearSession('Время входа истекло. Войдите ещё раз.');refreshVisible();}
         const fallback=({400:'Проверьте заполненные поля.',401:'Неверный логин или пароль.',403:'Это действие недоступно.',404:'Запись не найдена.',409:'Данные уже изменились. Обновите их и повторите.',413:'Фото слишком большое.',429:'Слишком много попыток. Подождите немного.'})[response.status]||'Не удалось сохранить данные. Повторите позже.';
-        throw new ApiError(String(result?.error?.message||fallback).slice(0,300),response.status,result?.error?.code||'request_failed');
+        throw new ApiError(String(result?.error?.message||fallback).slice(0,300),response.status,result?.error?.code||'request_failed',result?.error?.details||null);
       }
       if(options.response==='blob'){const value=await response.blob();assertSession();return value;}
       const value=await response.json();assertSession();return value;
@@ -76,7 +79,7 @@
       if(error instanceof ApiError)throw error;
       assertSession();
       throw new ApiError(error.name==='AbortError'?'Сервер не ответил вовремя. Черновик сохранён, можно повторить.':'Нет соединения с общими данными. Проверьте связь и повторите.');
-    }finally{clearTimeout(timeout);options.signal?.removeEventListener('abort',onAbort);}
+    }finally{if(isWrite)apiWrites--;clearTimeout(timeout);options.signal?.removeEventListener('abort',onAbort);}
   }
   const userKey=()=>String(session?.user?.id||'guest');
   const cacheKey=path=>PREFIX+'cache.'+userKey()+'.'+path;
@@ -176,10 +179,10 @@
       const authEpoch=sessionEpoch;
       const values={login:form.elements.login.value.trim(),password:form.elements.password.value,remember:form.elements.remember.checked};
       if(register){values.nickname=form.elements.nickname.value.trim();values.position=position.value;values.grade=position.value==='master'?null:Number(grade.value);}
-      button.disabled=true;button.textContent=register?'Создаём профиль…':'Входим…';error.textContent='';
-      try{const result=await api(register?'/auth/register':'/auth/login',{method:'POST',body:values,auth:false});if(authEpoch!==sessionEpoch)throw new ApiError('Вход уже изменился. Обновите профиль.',0,'stale_session');saveSession(result,values.remember);form.elements.password.value='';await onSuccess?.();refreshVisible();}
+      authPending++;button.disabled=true;button.textContent=register?'Создаём профиль…':'Входим…';error.textContent='';
+      try{const result=await api(register?'/auth/register':'/auth/login',{method:'POST',body:values,auth:false});if(authEpoch!==sessionEpoch)throw new ApiError('Вход уже изменился. Обновите профиль.',0,'stale_session');saveSession(result,values.remember);form.dataset.authCompleted='true';form.elements.password.value='';await onSuccess?.();refreshVisible();}
       catch(e){error.textContent=e.message;}
-      finally{values.password='';if(button.isConnected){button.disabled=false;button.textContent=register?'Создать профиль':'Войти';}}
+      finally{authPending--;values.password='';if(button.isConnected){button.disabled=false;button.textContent=register?'Создать профиль':'Войти';}}
     };
   }
   function authModal(){const node=openDialog('Профиль бригады',`<div data-auth-host>${authForm(authMode)}</div>`);bindAuth(node.querySelector('[data-auth-host]'),()=>closeDialog(node));}
@@ -282,8 +285,9 @@
     node.querySelector('[data-profile-offline]').hidden=online();if(state&&!state.pending)state.form.querySelector('[type="submit"]').disabled=state.decoding||!online();
   }
   function composeMarkup(scope,label='Написать запись',readOnly=false){
-    const draft=getDraft(scope);
-    return `<form class="community-composer" data-compose="${html(scope)}" data-owner="${html(userKey())}"><label class="community-field"><span class="community-compose-label">${html(label)}</span><textarea name="body" rows="${scope==='chat'?1:3}" maxlength="4000" placeholder="${scope==='chat'?'Сообщение бригаде…':'Что важно сообщить коллегам?'}">${html(draft.body)}</textarea></label><div class="community-reply-target" data-reply-target hidden></div><div class="community-attachment-previews" data-attachment-previews></div><div class="community-composer-actions"><label class="btn community-file-button">+ Фото<input type="file" accept="image/*" name="photos" multiple aria-label="Прикрепить до трёх фотографий" ${!online()||readOnly?'disabled':''}></label><span class="community-attachment-hint">До 3 фото</span><button class="btn primary" type="submit" ${!online()||readOnly?'disabled':''}>Отправить</button></div><p class="community-draft-hint" data-draft-hint>${draft.body?'Черновик сохранён на этом устройстве.':''}</p><p class="community-form-error" role="alert" data-compose-error></p><button type="button" class="btn" data-compose-new hidden>Начать новую запись</button></form>`;
+    const draft=getDraft(scope),disabled=!online()||readOnly?'disabled':'';
+    if(scope==='chat')return `<form class="community-composer" data-compose="chat" data-owner="${html(userKey())}"><div class="community-reply-target" data-reply-target hidden></div><div class="community-attachment-previews" data-attachment-previews></div><p class="community-attachment-hint" data-chat-attachment-hint hidden>Можно прикрепить до 3 фото</p><div class="community-chat-compose-row"><label class="community-file-button community-chat-attach" title="Прикрепить фотографии"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 12 6.7-6.7a3 3 0 0 1 4.3 4.2l-9 9a5 5 0 0 1-7-7l9.3-9.3"/><path d="m6.5 13.5 8-8"/></svg><input type="file" accept="image/*" name="photos" multiple aria-label="Прикрепить до трёх фотографий" ${disabled}></label><label class="community-field community-chat-input"><span class="community-compose-label">Сообщение</span><textarea name="body" rows="1" maxlength="4000" placeholder="Сообщение">${html(draft.body)}</textarea></label><button class="btn primary community-chat-send" type="submit" aria-label="Отправить сообщение" title="Отправить сообщение" ${disabled}><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.5 3.4 3 10.2c-.9.4-.9 1.2.1 1.5l6.2 1.9 1.9 6.2c.3 1 .8 1.1 1.4.3l3.4-4.6 4 3c.7.5 1.3.2 1.5-.6l2.1-13.1c.2-1.1-.3-1.7-1.1-1.4ZM10.8 12.7l7.9-6.1-6.5 7.5-.7 3.5-.7-4.9Z"/></svg><span class="community-compose-label" data-send-label>Отправить</span></button></div><p class="community-draft-hint" data-draft-hint>${draft.body?'Черновик сохранён на этом устройстве.':''}</p><p class="community-form-error" role="alert" data-compose-error></p><button type="button" class="btn" data-compose-new hidden>Начать новую запись</button></form>`;
+    return `<form class="community-composer" data-compose="${html(scope)}" data-owner="${html(userKey())}"><label class="community-field"><span class="community-compose-label">${html(label)}</span><textarea name="body" rows="3" maxlength="4000" placeholder="Что важно сообщить коллегам?">${html(draft.body)}</textarea></label><div class="community-reply-target" data-reply-target hidden></div><div class="community-attachment-previews" data-attachment-previews></div><div class="community-composer-actions"><label class="btn community-file-button">+ Фото<input type="file" accept="image/*" name="photos" multiple aria-label="Прикрепить до трёх фотографий" ${disabled}></label><span class="community-attachment-hint">До 3 фото</span><button class="btn primary" type="submit" ${disabled}>Отправить</button></div><p class="community-draft-hint" data-draft-hint>${draft.body?'Черновик сохранён на этом устройстве.':''}</p><p class="community-form-error" role="alert" data-compose-error></p><button type="button" class="btn" data-compose-new hidden>Начать новую запись</button></form>`;
   }
   function composerAvailability(form,readOnly=false){if(!form)return;form.dataset.readonly=String(readOnly);if(form.dataset.sending!=='true'){form.querySelector('[type="submit"]').disabled=!online()||readOnly;form.elements.photos.disabled=!online()||readOnly;}}
 
@@ -291,12 +295,14 @@
     const form=node.querySelector(`[data-compose="${CSS.escape(scope)}"]`);if(!form)return;
     const draft=getDraft(scope),epoch=sessionEpoch;let clientId=draft.clientId||uuid(),files=[],pending=false,attempt=draft.attempt||null,composing=false,disposed=false;
     const sameOwner=()=>!disposed&&epoch===sessionEpoch&&form.dataset.owner===userKey(),error=form.querySelector('[data-compose-error]'),hint=form.querySelector('[data-draft-hint]'),newButton=form.querySelector('[data-compose-new]');
+    form._communityState=()=>({busy:pending,hasDraft:sameOwner()&&Boolean(form.elements.body.value.trim()||form.dataset.parentId),hasFiles:!disposed&&files.length>0});composerStates.add(form);
     const fingerprint=()=>JSON.stringify([form.elements.body.value.trim(),form.dataset.parentId||null,files.map(entry=>entry.clientId)]);
     function remember(){if(sameOwner())saveDraft(scope,form.elements.body.value,clientId,form.dataset.parentId,attempt);}
     function checkAttempt(){const changed=Boolean(attempt&&attempt!==fingerprint());newButton.hidden=!changed||pending;if(changed&&!pending){error.textContent='Предыдущая отправка ещё не подтверждена. Начните новую запись, чтобы отправить изменённый текст.';error.dataset.attemptNotice='true';}else if(error.dataset.attemptNotice==='true'){error.textContent='';delete error.dataset.attemptNotice;}return !changed;}
     function resizeInput(){if(scope!=='chat')return;const input=form.elements.body;input.style.height='auto';input.style.height=Math.min(124,Math.max(42,input.scrollHeight))+'px';updateChatViewport();}
-    function setPending(value){pending=value;form.dataset.sending=String(value);form.elements.photos.disabled=value||!online()||form.dataset.readonly==='true';form.querySelectorAll('button').forEach(button=>button.disabled=value);form.querySelector('[type="submit"]').disabled=value||!online()||form.dataset.readonly==='true';if(node.contains(form))node.querySelectorAll('[data-reply-note]').forEach(button=>button.disabled=value);}
-    form._communityDispose=()=>{disposed=true;files.forEach(entry=>URL.revokeObjectURL(entry.url));files=[];};
+    function sendLabel(value){const button=form.querySelector('[type="submit"]');if(scope==='chat'){button.setAttribute('aria-label',value);button.title=value;button.querySelector('[data-send-label]').textContent=value;}else button.textContent=value;}
+    function setPending(value){pending=value;form.dataset.sending=String(value);form.setAttribute('aria-busy',String(value));form.elements.photos.disabled=value||!online()||form.dataset.readonly==='true';form.querySelectorAll('button').forEach(button=>button.disabled=value);form.querySelector('[type="submit"]').disabled=value||!online()||form.dataset.readonly==='true';if(node.contains(form))node.querySelectorAll('[data-reply-note]').forEach(button=>button.disabled=value);}
+    form._communityDispose=()=>{disposed=true;files.forEach(entry=>URL.revokeObjectURL(entry.url));files=[];if(!pending)composerStates.delete(form);};
     newButton.onclick=()=>{if(pending||!sameOwner())return;clientId=uuid();attempt=null;remember();checkAttempt();error.textContent='';hint.textContent='Новая запись подготовлена. Проверьте текст и нажмите «Отправить».';};
     const cancelReply=()=>{if(pending)return;delete form.dataset.parentId;form.querySelector('[data-reply-target]').hidden=true;remember();checkAttempt();};
     if(draft.parentId){form.dataset.parentId=draft.parentId;const target=form.querySelector('[data-reply-target]');target.hidden=false;target.innerHTML='Ответ на запись <button type="button" data-cancel-reply aria-label="Отменить ответ">×</button>';target.querySelector('button').onclick=cancelReply;}
@@ -305,7 +311,7 @@
     form.elements.body.oninput=()=>{remember();hint.textContent='Черновик сохранён на этом устройстве. Ещё не отправлен.';resizeInput();if(!composing)checkAttempt();};
     form.elements.body.addEventListener('focus',updateChatViewport);form.elements.body.addEventListener('blur',()=>setTimeout(updateChatViewport,150));
     form.querySelector('[type="submit"]').addEventListener('pointerdown',event=>{if(document.activeElement===form.elements.body)event.preventDefault();});
-    function previews(){const target=form.querySelector('[data-attachment-previews]');target.innerHTML=files.map((entry,index)=>`<span class="community-draft-photo"><img src="${html(entry.url)}" alt="Выбранное фото ${index+1}"><button type="button" data-remove-photo="${index}" aria-label="Убрать фото ${index+1}">×</button></span>`).join('');target.querySelectorAll('[data-remove-photo]').forEach(button=>button.onclick=()=>{if(pending)return;const [removed]=files.splice(Number(button.dataset.removePhoto),1);URL.revokeObjectURL(removed.url);previews();remember();checkAttempt();});}
+    function previews(){const target=form.querySelector('[data-attachment-previews]');const attachmentHint=form.querySelector('[data-chat-attachment-hint]');if(attachmentHint)attachmentHint.hidden=!files.length;target.innerHTML=files.map((entry,index)=>`<span class="community-draft-photo"><img src="${html(entry.url)}" alt="Выбранное фото ${index+1}"><button type="button" data-remove-photo="${index}" aria-label="Убрать фото ${index+1}">×</button></span>`).join('');target.querySelectorAll('[data-remove-photo]').forEach(button=>button.onclick=()=>{if(pending)return;const [removed]=files.splice(Number(button.dataset.removePhoto),1);URL.revokeObjectURL(removed.url);previews();remember();checkAttempt();});if(scope==='chat')updateChatViewport();}
     form.elements.photos.onchange=()=>{if(pending)return;const selected=[...form.elements.photos.files];error.textContent='';if(selected.length+files.length>3){error.textContent='К одной записи можно прикрепить не больше трёх фото.';form.elements.photos.value='';return;}for(const file of selected)files.push({file,url:URL.createObjectURL(file),clientId:uuid()});form.elements.photos.value='';previews();remember();checkAttempt();};
     form.onsubmit=async event=>{
       event.preventDefault();if(pending||composing||!sameOwner())return;if(form.dataset.readonly==='true'){error.textContent='Сначала обновите общие данные. Текст сохранён как черновик.';return;}
@@ -314,25 +320,25 @@
       if(!online()){error.textContent='Нет связи. Текст сохранён как черновик и ещё не отправлен.';remember();return;}
       if(!checkAttempt())return;attempt=fingerprint();remember();setPending(true);const button=form.querySelector('[type="submit"]');error.textContent='';
       try{
-        const mediaIds=[];for(let i=0;i<sentFiles.length;i++){const entry=sentFiles[i];button.textContent=`Загружаем фото ${i+1}/${sentFiles.length}…`;if(!entry.mediaId){if(!entry.blob)entry.blob=await compressPhoto(entry.file);if(!sameOwner())return;entry.mediaId=(await uploadBlob(entry.blob,entry.clientId)).id;if(!sameOwner())return;}mediaIds.push(entry.mediaId);}
-        if(!sameOwner())return;button.textContent='Отправляем…';await onSend({body,clientId:sentId,mediaIds,...(parentId?{parentId}:{})});if(!sameOwner())return;
+        const mediaIds=[];for(let i=0;i<sentFiles.length;i++){const entry=sentFiles[i];sendLabel(`Загружаем фото ${i+1}/${sentFiles.length}…`);if(!entry.mediaId){if(!entry.blob)entry.blob=await compressPhoto(entry.file);if(!sameOwner())return;entry.mediaId=(await uploadBlob(entry.blob,entry.clientId)).id;if(!sameOwner())return;}mediaIds.push(entry.mediaId);}
+        if(!sameOwner())return;sendLabel('Отправляем…');await onSend({body,clientId:sentId,mediaIds,...(parentId?{parentId}:{})});if(!sameOwner())return;
         const continued=composing||form.elements.body.value!==rawBody;
         clientId=uuid();attempt=null;for(const entry of sentFiles)URL.revokeObjectURL(entry.url);files=files.filter(entry=>!sentFiles.includes(entry));previews();
         if(!continued){form.elements.body.value='';delete form.dataset.parentId;form.querySelector('[data-reply-target]').hidden=true;clearDraft(scope);hint.textContent='';}
         else{remember();hint.textContent='Отправлено. Новый текст остался в черновике.';}
         resizeInput();checkAttempt();
       }catch(failure){if(sameOwner()){remember();error.textContent=failure.message;hint.textContent='Черновик сохранён. Отправка ещё не подтверждена.';}}
-      finally{setPending(false);checkAttempt();if(button.isConnected)button.textContent='Отправить';}
+      finally{setPending(false);if(disposed)composerStates.delete(form);checkAttempt();if(button.isConnected)sendLabel(scope==='chat'?'Отправить сообщение':'Отправить');}
     };
     resizeInput();checkAttempt();
   }
 
   function itemMarkup(item,{editable=false,chatMode=false}={}){
     if(chatMode){const stamp=new Date(item.createdAt),clock=Number.isFinite(stamp.getTime())?stamp.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}):'';
-      return `<article class="community-message community-chat-message ${own(item.author?.id)?'own':''}" data-message-id="${html(item.id)}"><header>${author(item.author)}</header>${item.body?`<p class="community-message-body">${html(item.body)}</p>`:''}${photos(item.media||[])}<footer class="community-bubble-footer">${item.updatedAt&&item.updatedAt!==item.createdAt?'<small>изменено</small>':''}<time datetime="${html(item.createdAt)}">${html(clock)}</time></footer>${own(item.author?.id)?`<div class="community-message-tools"><button type="button" data-edit-chat="${html(item.id)}">Изменить</button><button type="button" data-delete-chat="${html(item.id)}">Удалить</button></div>`:''}</article>`;
+      return `<article class="community-message community-chat-message ${own(item.author?.id)?'own':''}" data-message-id="${html(item.id)}"><header>${author(item.author)}</header>${item.body?`<p class="community-message-body">${html(item.body)}</p>`:''}${photos(item.media||[])}<footer class="community-bubble-footer">${item.updatedAt&&item.updatedAt!==item.createdAt?'<small>изменено</small>':''}<time datetime="${html(item.createdAt)}">${html(clock)}</time></footer>${own(item.author?.id)?`<details class="community-message-menu"><summary aria-label="Действия с сообщением" title="Действия с сообщением">⋮</summary><div class="community-message-actions"><button type="button" data-edit-chat="${html(item.id)}">Изменить</button><button type="button" data-delete-chat="${html(item.id)}">Удалить</button></div></details>`:''}</article>`;
     }
 
-    return `<article class="community-message ${own(item.author?.id)?'own':''} ${item.parentId?'reply':''}" data-message-id="${html(item.id)}"><header>${author(item.author)}<time datetime="${html(item.createdAt)}">${html(time(item.createdAt))}${item.updatedAt&&item.updatedAt!==item.createdAt?' · изменено':''}</time></header>${item.parentId?`<button type="button" class="community-parent-link" data-parent-note="${html(item.parentId)}">↳ Ответ на запись</button>`:''}${item.body?`<p class="community-message-body">${html(item.body)}</p>`:''}${photos(item.media||[])}${chatMode&&own(item.author?.id)?`<div class="community-message-tools"><button type="button" data-edit-chat="${html(item.id)}">Изменить</button><button type="button" data-delete-chat="${html(item.id)}">Удалить</button></div>`:editable?`<div class="community-message-tools"><button type="button" data-reply-note="${html(item.id)}">Ответить</button>${own(item.author?.id)?`<button type="button" data-edit-note="${html(item.id)}">Изменить</button><button type="button" data-delete-note="${html(item.id)}">Удалить</button>`:''}</div>`:''}</article>`;
+    return `<article class="community-message ${own(item.author?.id)?'own':''} ${item.parentId?'reply':''}" data-message-id="${html(item.id)}"><header>${author(item.author)}<span class="community-note-times"><time datetime="${html(item.createdAt)}">Записано ${html(recordedTime(item.createdAt))}</time>${item.updatedAt&&item.updatedAt!==item.createdAt?`<time datetime="${html(item.updatedAt)}">Изменено ${html(recordedTime(item.updatedAt))}</time>`:''}</span></header>${item.parentId?`<button type="button" class="community-parent-link" data-parent-note="${html(item.parentId)}">↳ Ответ на запись</button>`:''}${item.body?`<p class="community-message-body">${html(item.body)}</p>`:''}${photos(item.media||[])}${chatMode&&own(item.author?.id)?`<div class="community-message-tools"><button type="button" data-edit-chat="${html(item.id)}">Изменить</button><button type="button" data-delete-chat="${html(item.id)}">Удалить</button></div>`:editable?`<div class="community-message-tools"><button type="button" data-reply-note="${html(item.id)}">Ответить</button>${own(item.author?.id)?`<button type="button" data-edit-note="${html(item.id)}">Изменить</button><button type="button" data-delete-note="${html(item.id)}">Удалить</button>`:''}</div>`:''}</article>`;
   }
   function compareCursor(left,right){const a=String(left??''),b=String(right??'');return /^\d+$/.test(a)&&/^\d+$/.test(b)?Number(a)-Number(b):a.localeCompare(b);}
   function mergeItems(left,right){const map=new Map(left.map(item=>[String(item.id),item]));right.forEach(item=>map.set(String(item.id),item));return [...map.values()].sort((a,b)=>new Date(a.createdAt)-new Date(b.createdAt)||compareCursor(a.cursor||a.id,b.cursor||b.id));}
@@ -344,14 +350,14 @@
     if(!getUser()){
       const shell=stableView(host,'chat-guest',`<div class="community-page"><header class="community-section-head"><div><span class="community-kicker">БРИГАДА №2</span><h2>Общий чат</h2></div></header><article class="community-card">${loginGate()}</article></div>`);if(shell.created)bindLogin(shell.node);return;
     }
-    const shell=stableView(host,'chat',`<div class="community-page community-chat-page"><header class="community-section-head"><div><span class="community-kicker">НА СВЯЗИ С БРИГАДОЙ</span><h2>Общий чат</h2></div><button type="button" class="btn" data-chat-refresh>Обновить</button></header><div data-chat-source></div><p class="community-form-error" role="status" data-chat-error></p><section class="community-chat-feed community-card" aria-label="Сообщения бригады" data-chat-scroll><div class="community-load-older"><button type="button" class="btn" data-chat-older hidden>Предыдущие сообщения</button></div><div data-chat-messages></div></section><button class="community-new-messages" type="button" data-chat-new hidden></button>${composeMarkup('chat','Сообщение бригаде')}</div>`);
+    const shell=stableView(host,'chat',`<div class="community-page community-chat-page"><header class="community-section-head community-chat-header"><span class="community-group-avatar" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6m2 3a5 5 0 0 1 3 4v2"/></svg></span><div><h2>Бригада №2</h2><p>Общий чат</p></div></header><div data-chat-source></div><p class="community-form-error" role="status" data-chat-error></p><section class="community-chat-feed community-card" aria-label="Сообщения бригады" data-chat-scroll><div class="community-load-older"><button type="button" class="btn" data-chat-older hidden>Предыдущие сообщения</button></div><div data-chat-messages></div></section><button class="community-new-messages" type="button" data-chat-new hidden></button>${composeMarkup('chat','Сообщение бригаде')}</div>`);
     const node=shell.node,scroller=node.querySelector('[data-chat-scroll]');
     if(shell.created){
-      node.querySelector('[data-chat-refresh]').onclick=()=>loadChat({fresh:true});
       node.querySelector('[data-chat-older]').onclick=()=>loadChat({older:true});
       node.querySelector('[data-chat-new]').onclick=()=>{scroller.scrollTop=scroller.scrollHeight;chat.unread=0;renderChat(host);};
       scroller.onscroll=()=>{if(scroller.scrollHeight-scroller.scrollTop-scroller.clientHeight<80){chat.unread=0;node.querySelector('[data-chat-new]').hidden=true;}};
-      node.querySelector('[data-chat-messages]').onclick=event=>{const edit=event.target.closest('[data-edit-chat]'),remove=event.target.closest('[data-delete-chat]');if(edit||remove)editChat(chat.items.find(item=>String(item.id)===(edit?.dataset.editChat||remove?.dataset.deleteChat)),Boolean(remove));};
+      node.querySelector('[data-chat-messages]').onclick=event=>{const edit=event.target.closest('[data-edit-chat]'),remove=event.target.closest('[data-delete-chat]');if(edit||remove){event.target.closest('details')?.removeAttribute('open');editChat(chat.items.find(item=>String(item.id)===(edit?.dataset.editChat||remove?.dataset.deleteChat)),Boolean(remove));}};
+      node.addEventListener('toggle',event=>{const menu=event.target;if(!menu.matches?.('.community-message-menu')||!menu.open)return;node.querySelectorAll('.community-message-menu[open]').forEach(other=>{if(other!==menu)other.open=false;});const actions=menu.querySelector('.community-message-actions'),space=scroller.getBoundingClientRect().bottom-menu.getBoundingClientRect().bottom;menu.classList.toggle('above',space<actions.offsetHeight+12);},true);
       bindComposer(node,'chat',async message=>{
         const result=await api('/chat/messages',{method:'POST',body:message});const item=result.message||result.item||result;
         chat.items=mergeItems(chat.items,[item]);chat.error='';chat.cached=false;chat.mutation=(chat.mutation||0)+1;saveChatCache();renderChat(host);changed('chat',{id:item.id});loadChat({fresh:true});
@@ -359,7 +365,6 @@
     }
     content(node.querySelector('[data-chat-source]'),sourceNotice({cached:chat.cached,at:chat.cacheAt}));
     node.querySelector('[data-chat-error]').textContent=chat.error||'';
-    node.querySelector('[data-chat-refresh]').disabled=chat.loading;
     node.querySelector('[data-chat-older]').hidden=!chat.hasOlder;
     node.querySelector('[data-chat-older]').disabled=chat.loading;
     const newButton=node.querySelector('[data-chat-new]');newButton.hidden=!chat.unread;newButton.textContent=chat.unread?chat.unread+' новых ↓':'';
@@ -411,7 +416,7 @@
     if(!getUser()){if(!existing||existing.dataset.owner!=='guest'){container.replaceChildren(elementFrom(`<section class="community-object" data-owner="guest"><h3>Общие записи</h3>${loginGate()}</section>`));bindLogin(container);}return;}
     if(!existing||existing.dataset.owner!==owner||existing.dataset.objectKey!==target.key||existing.dataset.epoch!==String(sessionEpoch)){
       container.querySelector('[data-compose]')?._communityDispose?.();
-      container.replaceChildren(elementFrom(`<section class="community-object" data-owner="${html(owner)}" data-epoch="${sessionEpoch}" data-object-key="${html(target.key)}"><header class="community-object-head"><div><span class="community-kicker">ДЛЯ ВСЕЙ БРИГАДЫ</span><h3>Общие записи</h3><p class="community-object-label">${html(target.label||'')}</p></div><button class="btn" type="button" data-object-refresh>Обновить</button></header><div data-object-source></div><p class="community-form-error" role="status" data-object-error></p><form class="community-status-form" data-status-form><label class="community-field">Состояние объекта<select name="status">${Object.entries(STATUS).map(([key,label])=>`<option value="${key}">${label}</option>`).join('')}</select></label><button class="btn" type="submit">Сохранить состояние</button></form><p class="community-status-by"></p><div class="community-object-feed"></div><button type="button" class="btn community-older-notes" data-notes-older hidden>Более ранние записи</button>${composeMarkup(target.key,'Запись об объекте')}</section>`));
+      container.replaceChildren(elementFrom(`<section class="community-object" data-owner="${html(owner)}" data-epoch="${sessionEpoch}" data-object-key="${html(target.key)}"><header class="community-object-head"><div><span class="community-kicker">ДЛЯ ВСЕЙ БРИГАДЫ</span><h3>Общие записи</h3><p class="community-object-label">${html(target.label||'')}</p></div><button class="btn" type="button" data-object-refresh>Обновить</button></header><div data-object-source></div><p class="community-form-error" role="status" data-object-error></p><form class="community-status-form" data-status-form><label class="community-field">Состояние объекта<select name="status">${statusesFor(target.key).map(([key,label])=>`<option value="${key}">${label}</option>`).join('')}</select></label><button class="btn" type="submit">Сохранить состояние</button></form><p class="community-status-by"></p><div class="community-object-feed"></div><button type="button" class="btn community-older-notes" data-notes-older hidden>Более ранние записи</button>${composeMarkup(target.key,'Запись об объекте')}</section>`));
       const form=container.querySelector('[data-status-form]');
       form.elements.status.onchange=()=>{record.statusDirty=true;record.baseRevision=record.result?.status?.data?.revision||0;};
       form.onsubmit=async event=>{event.preventDefault();if(record.statusPending)return;record.statusPending=true;renderObject(record);try{const saved=await api('/objects/'+encodeURIComponent(target.key)+'/status',{method:'PUT',body:{status:form.elements.status.value,revision:record.statusDirty?record.baseRevision:record.result?.status?.data?.revision||0}});if(!currentObject(record))return;record.mutation=(record.mutation||0)+1;record.statusDirty=false;record.result.status={data:saved,cached:false,at:new Date().toISOString()};record.error='';changed('object',{key:target.key,padId:target.padId});}catch(error){if(currentObject(record)){record.error=error.message;if(error.status===409){record.statusDirty=false;record.queued=true;}}}finally{record.statusPending=false;renderObject(record);if(record.queued){record.queued=false;loadObject(record);}}};
@@ -463,20 +468,75 @@
     node.querySelector('[data-confirm-delete]').onclick=async event=>{const button=event.currentTarget;button.disabled=true;try{await api('/notes/'+encodeURIComponent(note.id),{method:'DELETE'});if(!currentObject(record))return;record.mutation=(record.mutation||0)+1;if(record.result)record.result.notes.data.items=listItems(record.result.notes.data).filter(item=>String(item.id)!==String(note.id));renderObject(record);changed('object',{key:record.target.key,padId:record.target.padId});closeDialog(node);await loadObject(record);}catch(e){node.querySelector('[role="alert"]').textContent=e.message;button.disabled=false;}};
   }
 
+  const samplingDraftKey=padId=>PREFIX+'sampling-draft.'+userKey()+'.'+padId;
+  function samplingItem(result,padId){const value=result?.data;if(value?.padId)return value;return listItems(value).find(item=>String(item.padId)===padId)||{padId,sampled:false,revision:0};}
+  function samplingPad(padId){return typeof data==='object'&&Array.isArray(data?.pads)?data.pads.find(pad=>String(pad.id)===padId):null;}
+  function samplingWells(record){
+    const pad=samplingPad(record.padId),item=samplingItem(record.result,record.padId),canonical=Array.isArray(item.productionWellIds)?new Set(item.productionWellIds.map(String)):null,map=new Map();
+    for(const well of pad?.wells||[])if(well.type==='production'&&(!canonical||canonical.has(String(well.id)))&&!map.has(String(well.id)))map.set(String(well.id),{id:String(well.id),position:well.position||null});
+    for(const id of canonical||[])if(!map.has(id))map.set(id,{id,position:null});return [...map.values()];
+  }
+  function sampleSelected(item,wells){const allowed=new Set(wells.map(well=>well.id));return new Set((Array.isArray(item.selectedWellIds)?item.selectedWellIds:item.sampled?wells.map(well=>well.id):[]).map(String).filter(id=>allowed.has(id)));}
+  function rememberSampling(record){
+    if(!currentObject(record))return;
+    if(!record.sampleDirty){storage.remove(samplingDraftKey(record.padId));return;}
+    storage.set(samplingDraftKey(record.padId),{selected:[...record.sampleDraft],base:[...record.sampleBase],revision:record.sampleBaseRevision,touched:[...record.sampleTouched],at:new Date().toISOString()});
+  }
+  function clearSamplingDraft(record){record.sampleDraft=null;record.sampleBase=null;record.sampleTouched=null;record.sampleDirty=false;record.sampleBaseRevision=null;rememberSampling(record);}
+  function startSamplingDraft(record){
+    if(record.sampleDirty&&record.sampleDraft)return;const item=samplingItem(record.result,record.padId),selected=sampleSelected(item,samplingWells(record));record.sampleDraft=new Set(selected);record.sampleBase=new Set(selected);record.sampleTouched=new Map();record.sampleBaseRevision=Number(item.revision)||0;
+  }
   function mountSampling(container,padId){
     if(typeof container==='string')container=document.querySelector(container);if(!container)return;
-    const previous=hosts.get(container),record=previous?.kind==='sampling'&&previous.padId===String(padId)&&previous.owner===userKey()&&previous.epoch===sessionEpoch?previous:{kind:'sampling',container,padId:String(padId),result:null,loading:false,last:0,owner:userKey(),epoch:sessionEpoch};hosts.set(container,record);renderSampling(record);loadSampling(record);return()=>{if(hosts.get(container)===record)hosts.delete(container);};
+    const previous=hosts.get(container),record=previous?.kind==='sampling'&&previous.padId===String(padId)&&previous.owner===userKey()&&previous.epoch===sessionEpoch?previous:{kind:'sampling',container,padId:String(padId),result:null,loading:false,last:0,owner:userKey(),epoch:sessionEpoch};
+    if(record!==previous){const saved=storage.get(samplingDraftKey(String(padId)));if(saved&&Array.isArray(saved.selected)&&Array.isArray(saved.base)&&Array.isArray(saved.touched)){record.sampleDraft=new Set(saved.selected.map(String));record.sampleBase=new Set(saved.base.map(String));record.sampleTouched=new Map(saved.touched.filter(entry=>Array.isArray(entry)&&entry.length===2).map(([id,value])=>[String(id),Boolean(value)]));record.sampleBaseRevision=Number(saved.revision)||0;record.sampleDirty=record.sampleTouched.size>0;}}
+    hosts.set(container,record);renderSampling(record);loadSampling(record);return()=>{if(hosts.get(container)===record)hosts.delete(container);};
   }
-  function samplingItem(result,padId){const value=result?.data;if(value?.padId)return value;return listItems(value).find(item=>String(item.padId)===padId)||{padId,sampled:false,revision:0};}
   function renderSampling(record){
     const {container,padId,result}=record;if(!currentObject(record))return;
-    const item=samplingItem(result,padId),by=item.author||item.updatedBy;
-    container.innerHTML=`<section class="community-sampling"><header><span class="community-sampling-icon ${result&&item.sampled?'done':''}" aria-hidden="true">${result&&item.sampled?'✓':'○'}</span><div><h3>Отбор проб</h3><p>${!getUser()?'Войдите, чтобы проверить отметку':!result?(record.error?'Нет данных об отборе':'Загружаем отметку…'):item.sampled?'Отбор отмечен':'Отбор не отмечен'}</p></div></header>${item.updatedAt?`<p class="community-sample-by">${html(by?.nickname||'Участник')} · ${html(time(item.updatedAt))}</p>`:''}${sourceNotice(result)}${record.error?`<p class="community-form-error" role="status">${html(record.error)}</p>`:''}${getUser()?`<button type="button" class="btn ${item.sampled?'':'primary'}" data-sample-toggle ${!online()||record.loading||!result||result.cached?'disabled':''}>${record.loading?'Загружаем…':item.sampled?'Сбросить отметку':'Отметить отбор'}</button>`:'<button class="btn" type="button" data-community-login>Войти для отметки</button>'}</section>`;
-    bindLogin(container);container.querySelector('[data-sample-toggle]')?.addEventListener('click',async event=>{const button=event.currentTarget;button.disabled=true;button.textContent='Сохраняем…';try{await api('/samples/'+encodeURIComponent(padId),{method:'PUT',body:{sampled:!item.sampled,revision:item.revision}});if(!currentObject(record))return;changed('sampling',{padId});await loadSampling(record);notify(item.sampled?'Отметка сброшена.':'Отбор проб отмечен.');}catch(e){if(!currentObject(record))return;record.error=e.message;if(e.status===409)await loadSampling(record);else renderSampling(record);}});
+    const pad=samplingPad(padId);if(pad?.samplingExcluded){content(container,`<section class="community-sampling"><h3>Отбор проб</h3><p class="community-copy">${html(pad.samplingExclusionReason||'Отбор проб не требуется')}</p></section>`);return;}
+    if(!getUser()){content(container,`<section class="community-sampling"><h3>Отбор проб</h3>${loginGate()}</section>`);bindLogin(container);return;}
+    const item=samplingItem(result,padId),wells=samplingWells(record),selected=sampleSelected(item,wells),by=item.author||item.updatedBy,signature=JSON.stringify([userKey(),sessionEpoch,padId,wells]),existing=container.querySelector('[data-sampling-form]');
+    if(!existing||existing.dataset.signature!==signature){
+      const groups=new Map();for(const well of wells){const position=well.position||0;if(!groups.has(position))groups.set(position,[]);groups.get(position).push(well);}
+      container.replaceChildren(elementFrom(`<section class="community-sampling"><header><span class="community-sampling-icon" aria-hidden="true" data-sample-progress-icon>○</span><div><h3>Отбор проб</h3><p data-sample-summary></p></div><button type="button" class="btn" data-sample-refresh>Обновить</button></header><p class="community-sample-by" data-sample-by></p><div data-sample-source></div><form data-sampling-form data-signature="${html(signature)}"><p class="community-sampling-help">Отметьте добывающие скважины, затем сохраните выбор.</p><div class="community-sample-wells">${[...groups].map(([position,items])=>`<fieldset><legend>${position?`${position}-я позиция`:'Добывающие скважины'}</legend><div class="community-sample-checkboxes">${items.map(well=>`<label><input type="checkbox" name="wellIds" value="${html(well.id)}" data-sample-well="${html(well.id)}"><span>№ ${html(well.id)}</span></label>`).join('')}</div></fieldset>`).join('')}</div><p class="community-sampling-draft" role="status" data-sample-draft hidden></p><p class="community-sampling-warning" role="status" data-sample-warning hidden></p><p class="community-form-error" role="alert" data-sample-error></p><div class="community-sampling-actions"><button class="btn primary" type="submit" data-sample-save>Сохранить выбранные</button><button type="button" class="btn" data-sample-toggle>Отметить весь куст</button><button type="button" class="btn" data-sample-discard hidden>Использовать общие отметки</button></div></form></section>`));
+      const form=container.querySelector('[data-sampling-form]');
+      form.onchange=event=>{const input=event.target.closest('[data-sample-well]');if(!input||record.samplePending||!currentObject(record))return;startSamplingDraft(record);const id=input.dataset.sampleWell;if(input.checked)record.sampleDraft.add(id);else record.sampleDraft.delete(id);if(record.sampleBase.has(id)===input.checked)record.sampleTouched.delete(id);else record.sampleTouched.set(id,input.checked);record.sampleDirty=record.sampleTouched.size>0;if(!record.sampleDirty){clearSamplingDraft(record);record.sampleWarning='';}else rememberSampling(record);record.error='';record.sampleWriteError=false;renderSampling(record);};
+      form.onsubmit=event=>{event.preventDefault();saveSampling(record);};
+      container.querySelector('[data-sample-toggle]').onclick=()=>{if(record.samplePending)return;startSamplingDraft(record);const liveWells=samplingWells(record),all=sampleSelected(samplingItem(record.result,record.padId),liveWells).size!==liveWells.length;record.sampleDraft=new Set(all?liveWells.map(well=>well.id):[]);record.sampleTouched=new Map(liveWells.filter(well=>record.sampleBase.has(well.id)!==all).map(well=>[well.id,all]));record.sampleDirty=true;rememberSampling(record);saveSampling(record);};
+      container.querySelector('[data-sample-discard]').onclick=()=>{if(record.samplePending)return;clearSamplingDraft(record);record.sampleWarning='';record.error='';record.sampleWriteError=false;renderSampling(record);};
+      container.querySelector('[data-sample-refresh]').onclick=()=>loadSampling(record);
+    }
+    const form=container.querySelector('[data-sampling-form]'),checked=record.sampleDirty?record.sampleDraft:selected,total=wells.length,progress=selected.size===0?'none':selected.size===total?'done':'partial',icon=container.querySelector('[data-sample-progress-icon]');
+    icon.textContent=progress==='done'?'✓':progress==='partial'?'◐':'○';icon.className='community-sampling-icon '+progress;
+    container.querySelector('[data-sample-summary]').textContent=!result?(record.error?'Общие отметки пока недоступны':'Загружаем общие отметки…'):`${selected.size} из ${total} отобрано`;
+    container.querySelector('[data-sample-by]').textContent=item.updatedAt?`${by?.nickname||'Участник'} · ${recordedTime(item.updatedAt)}`:'';
+    content(container.querySelector('[data-sample-source]'),sourceNotice(result));
+    for(const input of form.querySelectorAll('[data-sample-well]')){input.checked=checked?.has(input.dataset.sampleWell)||false;input.disabled=Boolean(record.samplePending);}
+    const draft=form.querySelector('[data-sample-draft]');draft.hidden=!record.sampleDirty;draft.textContent=record.sampleDirty?`Выбрано ${[...checked].filter(id=>wells.some(well=>well.id===id)).length} из ${total}. Выбор сохранён на этом телефоне и ещё не отправлен.`:'';
+    const warning=form.querySelector('[data-sample-warning]'),changedRevision=record.sampleDirty&&Number(item.revision)!==record.sampleBaseRevision;warning.textContent=record.sampleWarning||(changedRevision?'Коллеги изменили общий отбор. Ваш несохранённый выбор сохранён. Проверьте обновлённый результат.':'');warning.hidden=!warning.textContent;
+    form.querySelector('[data-sample-error]').textContent=record.error||'';
+    const readOnly=!online()||!result||result.cached,save=form.querySelector('[data-sample-save]'),whole=form.querySelector('[data-sample-toggle]');save.disabled=Boolean(record.samplePending)||readOnly||!record.sampleDirty||!total;save.textContent=record.samplePending?'Сохраняем…':'Сохранить выбранные';whole.disabled=Boolean(record.samplePending)||readOnly||!total;whole.textContent=selected.size===total&&total?'Сбросить все отметки':'Отметить весь куст';form.querySelector('[data-sample-discard]').hidden=!record.sampleDirty&&!record.sampleWarning;form.querySelector('[data-sample-discard]').disabled=Boolean(record.samplePending);container.querySelector('[data-sample-refresh]').disabled=record.loading||Boolean(record.samplePending);
+  }
+  async function saveSampling(record){
+    if(!currentObject(record)||record.samplePending||!record.sampleDirty)return;
+    if(!online()||!record.result||record.result.cached){record.error='Нет актуальных общих отметок. Выбор сохранён на этом телефоне; обновите данные перед отправкой.';renderSampling(record);return;}
+    const wells=samplingWells(record),wellIds=wells.filter(well=>record.sampleDraft.has(well.id)).map(well=>well.id),revision=record.sampleBaseRevision;record.samplePending=true;record.error='';record.sampleWriteError=false;renderSampling(record);
+    try{
+      const response=await api('/samples/'+encodeURIComponent(record.padId),{method:'PUT',body:{wellIds,revision}});if(!currentObject(record))return;
+      record.sampleMutation=(record.sampleMutation||0)+1;const item=response.item||response;record.result={data:item,cached:false,at:new Date().toISOString()};storage.set(cacheKey('/samples?padId='+encodeURIComponent(record.padId)),record.result);clearSamplingDraft(record);record.sampleWarning='';changed('sampling',{padId:record.padId});notify('Отбор проб сохранён.');
+    }catch(error){
+      if(!currentObject(record))return;
+      if(error.status===409){
+        try{let current=error.details?.current;if(!current){const response=await api('/samples?padId='+encodeURIComponent(record.padId));if(!currentObject(record))return;current=samplingItem({data:response},record.padId);}if(!currentObject(record))return;
+          record.sampleMutation=(record.sampleMutation||0)+1;record.result={data:current,cached:false,at:new Date().toISOString()};storage.set(cacheKey('/samples?padId='+encodeURIComponent(record.padId)),record.result);const base=sampleSelected(current,samplingWells(record)),merged=new Set(base),touched=new Map();for(const [id,checked] of record.sampleTouched||[]){if(checked)merged.add(id);else merged.delete(id);if(base.has(id)!==checked)touched.set(id,checked);}record.sampleBase=base;record.sampleDraft=merged;record.sampleBaseRevision=Number(current.revision)||0;record.sampleTouched=touched;record.sampleDirty=touched.size>0;rememberSampling(record);record.sampleWarning=record.sampleDirty?'Коллеги уже обновили отбор. Общие отметки загружены, ваш выбор сохранён. Проверьте скважины и нажмите «Сохранить выбранные» ещё раз.':'Коллеги уже обновили отбор. Ваш выбор совпадает с общими отметками.';record.error='';
+        }catch(refreshError){if(currentObject(record))record.error='Общие отметки изменились. Не удалось их загрузить. Ваш выбор сохранён; обновите данные и повторите.';}
+      }else{record.error=error.message;record.sampleWriteError=true;}
+    }finally{record.samplePending=false;renderSampling(record);if(currentObject(record)&&record.sampleQueued){record.sampleQueued=false;loadSampling(record);}}
   }
   async function loadSampling(record){
-    if(!currentObject(record)||record.loading||!getUser())return;record.loading=true;record.last=Date.now();
-    try{const result=await read('/samples?padId='+encodeURIComponent(record.padId));if(!currentObject(record))return;record.result=result;record.error='';}catch(e){if(currentObject(record))record.error=e.message;}finally{record.loading=false;renderSampling(record);}
+    if(!currentObject(record)||!getUser())return;if(record.loading||record.samplePending){record.sampleQueued=true;return;}record.loading=true;record.last=Date.now();const mutation=record.sampleMutation||0;
+    try{const result=await read('/samples?padId='+encodeURIComponent(record.padId));if(!currentObject(record))return;if(mutation!==(record.sampleMutation||0)){record.sampleQueued=true;return;}record.result=result;if(!record.samplePending&&!record.sampleWriteError)record.error='';}catch(error){if(currentObject(record)&&error.code!=='stale_session')record.error=error.message;}finally{record.loading=false;renderSampling(record);if(currentObject(record)&&record.sampleQueued&&!record.samplePending){record.sampleQueued=false;queueMicrotask(()=>loadSampling(record));}}
   }
   function openView(next){
     if(next!=='chat')document.documentElement.classList.remove('community-keyboard-open');if(next==='notifications'){view=next;return window.AtlasNotifications?.openView()||'';}
@@ -488,12 +548,12 @@
   }
   function refreshVisible(){
     const host=chatHost();if(host&&visible(host)&&view==='profile')renderProfile(host);else if(host&&visible(host)&&view==='chat'){renderChat(host);if(getUser())loadChat({fresh:true});}
-    for(const [node,record] of hosts){if(!node.isConnected){hosts.delete(node);continue;}if(!currentObject(record)){if(record.kind==='object')mountObject(node,record.target);else mountSampling(node,record.padId);continue;}if(record.kind==='object'){renderObject(record);loadObject(record);}else{renderSampling(record);loadSampling(record);}}
+    for(const [node,record] of hosts){if(!node.isConnected){node.querySelector('[data-compose]')?._communityDispose?.();hosts.delete(node);continue;}if(!currentObject(record)){if(record.kind==='object')mountObject(node,record.target);else mountSampling(node,record.padId);continue;}if(record.kind==='object'){renderObject(record);loadObject(record);}else{renderSampling(record);loadSampling(record);}}
   }
   function poll(){
     if(!online()||!getUser()||document.visibilityState!=='visible')return;
     if(view==='chat'&&visible(chatHost())&&Date.now()-(chat.last||0)>=1800)loadChat({poll:true});
-    for(const [node,record] of hosts){if(!node.isConnected){hosts.delete(node);continue;}if(visible(node)&&Date.now()-record.last>=2400){if(record.kind==='object')loadObject(record);else loadSampling(record);}}
+    for(const [node,record] of hosts){if(!node.isConnected){node.querySelector('[data-compose]')?._communityDispose?.();hosts.delete(node);continue;}if(visible(node)&&Date.now()-record.last>=2400){if(record.kind==='object')loadObject(record);else loadSampling(record);}}
   }
   async function focusNote(record,noteId){
     if(!currentObject(record))return;
@@ -520,6 +580,8 @@
       const message=chatHost()?.querySelector('[data-message-id="'+CSS.escape(id)+'"]');if(message){message.tabIndex=-1;message.classList.add('community-highlight');message.scrollIntoView({behavior:'smooth',block:'center'});message.focus({preventScroll:true});setTimeout(()=>message.classList.remove('community-highlight'),6000);}
     }catch(error){if(epoch===sessionEpoch&&owner===userKey()&&error.code!=='stale_session')notify(error.status===404?'Это сообщение уже удалено.':error.message);}finally{pendingChatFocus.delete(id);}})();pendingChatFocus.set(id,promise);return promise;
   }
+  document.addEventListener('pointerdown',event=>{document.querySelectorAll('.community-message-menu[open]').forEach(menu=>{if(!menu.contains(event.target))menu.open=false;});});
+  document.addEventListener('keydown',event=>{if(event.key!=='Escape')return;const menu=document.activeElement?.closest?.('.community-message-menu[open]')||document.querySelector('.community-message-menu[open]');if(menu){event.preventDefault();event.stopPropagation();menu.open=false;menu.querySelector('summary').focus({preventScroll:true});}},true);
   let viewportWidth=0,largestViewport=0;
   function updateChatViewport(){
     if(view!=='chat')return;const host=chatHost(),node=host?.querySelector('.community-chat-page');if(!node||!visible(host))return;
@@ -528,7 +590,7 @@
     const keyboard=largestViewport-height>130&&Boolean(document.activeElement?.matches?.('textarea,input'));
     document.documentElement.classList.toggle('community-keyboard-open',keyboard);
     const top=Math.max(0,node.getBoundingClientRect().top-(viewport?.offsetTop||0)),rail=document.querySelector('.rail'),bottom=!keyboard&&rail&&getComputedStyle(rail).position==='fixed'?rail.getBoundingClientRect().height:0;
-    node.style.height=Math.max(220,height-top-bottom-8)+'px';
+    node.style.height=Math.max(220,height-top-bottom-8)+'px';node.style.setProperty('--chat-composer-height',(node.querySelector('[data-compose]')?.getBoundingClientRect().height||64)+'px');
   }
   window.visualViewport?.addEventListener('resize',updateChatViewport);window.visualViewport?.addEventListener('scroll',updateChatViewport);window.addEventListener('resize',updateChatViewport);
 
@@ -539,7 +601,16 @@
     if(enabled&&(!authenticated()||!session.remember))throw new Error('Для фоновых уведомлений войдите с отметкой «Запомнить меня».');
     window.SdngGps.configureNotifications(enabled?String(window.ATLAS_API_BASE||'/api/v1'):'',enabled?session.token:'',Boolean(enabled));
   }
-  window.Community=Object.freeze({openView,mountObject,mountSampling,getUser,api,renderObject:mountObject,renderSampling:mountSampling,auth:authModal,refresh:refreshVisible,sessionRemembered:()=>Boolean(authenticated()&&session.remember),configureNativeNotifications,focusChatMessage,focusNote:(key,id)=>{for(const record of hosts.values())if(record.kind==='object'&&record.target.key===key)return focusNote(record,id);pendingFocus={key,noteId:id};}});
+  function getUpdateState(){
+    const result={busy:authPending>0||apiWrites>0,hasDraft:false,hasFiles:false,hasTransientDraft:false};
+    for(const form of composerStates){const state=form._communityState?.();if(state)for(const key of Object.keys(result))result[key]||=Boolean(state[key]);}
+    for(const state of profileStates.values()){result.busy||=Boolean(state.pending||state.decoding);result.hasDraft||=Boolean(state.nameDirty);result.hasTransientDraft||=Boolean(state.nameDirty);result.hasFiles||=Boolean(state.crop||state.decoding);}
+    const authForms=new Set(document.querySelectorAll('[data-community-auth]'));for(const shell of viewShells.values())for(const form of shell.querySelectorAll('[data-community-auth]'))if(form.dataset.authCompleted!=='true')authForms.add(form);
+    for(const form of authForms)if(form.dataset.authCompleted!=='true'&&(visible(form)||[...viewShells.values()].some(shell=>shell.contains(form)))){const dirty=[...form.querySelectorAll('input:not([type="checkbox"])')].some(input=>input.value);result.hasDraft||=dirty;result.hasTransientDraft||=dirty;}
+    for(const record of hosts.values()){result.busy||=Boolean(record.statusPending||record.samplePending);result.hasDraft||=Boolean(record.sampleDirty);}
+    return result;
+  }
+  window.Community=Object.freeze({openView,mountObject,mountSampling,getUser,api,getUpdateState,renderObject:mountObject,renderSampling:mountSampling,auth:authModal,refresh:refreshVisible,sessionRemembered:()=>Boolean(authenticated()&&session.remember),configureNativeNotifications,focusChatMessage,focusNote:(key,id)=>{for(const record of hosts.values())if(record.kind==='object'&&record.target.key===key)return focusNote(record,id);pendingFocus={key,noteId:id};}});
   restore();
   scheduleExpiry();
   window.addEventListener('online',()=>{refreshVisible();poll();});

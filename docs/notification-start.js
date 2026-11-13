@@ -15,7 +15,7 @@
   if(!service()||card||service().isEnabled())return;
   const state=read();if(!force&&(state.accepted||state.snoozeUntil>Date.now()))return;
   card=document.createElement('aside');card.className='notification-invitation';card.setAttribute('aria-label','Уведомления бригады');
-  card.innerHTML='<div class="notification-invitation-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-bell"/></svg></div><div class="notification-invitation-copy"><strong>Не пропускайте ответы коллег</strong><p data-invite-message>Разрешите уведомления, чтобы узнавать об ответах, когда приложение закрыто.</p><div class="notification-invitation-actions"><button type="button" class="btn primary" data-invite-enable>Включить уведомления</button><button type="button" class="btn subtle" data-invite-later>Позже</button></div></div>';
+  card.innerHTML='<div class="notification-invitation-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-bell"/></svg></div><div class="notification-invitation-copy"><strong>Сообщения бригады</strong><p data-invite-message>Новые сообщения чата и ответы по кустам — на экране телефона, даже когда приложение закрыто.</p><div class="notification-invitation-actions"><button type="button" class="btn primary" data-invite-enable>Включить уведомления</button><button type="button" class="btn subtle" data-invite-later>Позже</button></div></div>';
   document.body.append(card);visibility();
   card.querySelector('[data-invite-later]').onclick=()=>{pending=false;save({pending:false,snoozeUntil:Date.now()+86400000});remove();};
   card.querySelector('[data-invite-enable]').onclick=async()=>{

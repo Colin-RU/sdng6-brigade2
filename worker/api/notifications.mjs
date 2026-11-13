@@ -1,4 +1,4 @@
-import {all,first,run,fail,now,iso,uuid,json,text,ownKeys,bodyJson,authorFrom,pageArgs,unbase64url} from './core.mjs';
+import {all,first,run,fail,now,iso,uuid,json,text,choice,ownKeys,bodyJson,authorFrom,pageArgs,unbase64url} from './core.mjs';
 export function notificationView(row){return {id:row.id,cursor:String(row.seq),actor:{id:row.actor_id,nickname:row.nickname,avatarId:row.avatar_media_id??null,avatarMediaId:row.avatar_media_id??null},type:row.type,objectKey:row.object_key,objectLabel:row.object_label,noteId:row.note_id,parentId:row.parent_id,preview:row.preview,createdAt:iso(row.created_at),readAt:iso(row.read_at)};}
 function objectLabel(key){const parts=key.split(':'),[type,pad,item]=parts;if(type==='pad')return `Куст №${pad}`;if(type==='well')return pad==='ОД'?`Отдельная скважина №${item}`:`Скважина №${item} · куст №${pad}`;const names={'agzu':'АГЗУ','btma':'БТМА','bg':'БГ','drainage':'Дренажная ёмкость','control-stations':'Станции управления','cable-racks':'Кабельные стойки'},kind=parts.at(-1),position=parts.length===4?Number(item.slice(1)):null;return `${names[kind]??'Оборудование'} · куст №${pad}${position?` · ${position}-я позиция`:''}`;}
 export function replyNotificationStatement(env,user,note,parent) {
@@ -7,7 +7,7 @@ export function replyNotificationStatement(env,user,note,parent) {
   return env.DB.prepare('INSERT INTO notifications (id,recipient_id,actor_id,type,object_key,object_label,note_id,parent_id,preview,created_at) SELECT ?,?,?,?,?,?,?,?,?,? WHERE EXISTS (SELECT 1 FROM object_notes WHERE id=?) ON CONFLICT(recipient_id,note_id) DO NOTHING RETURNING id').bind(id,parent.user_id,user.id,'comment',note.object_key,label,note.id,parent.id,note.body.slice(0,160),time,note.id);
 }
 export function dispatchReplyPush(env,userIds,id,note,parent,ctx,hooks={},actor=null) {
-  if(hooks.sendPush&&ctx?.waitUntil)ctx.waitUntil(Promise.resolve().then(()=>hooks.sendPush(env,userIds,{type:'comment',notificationId:id,objectKey:note.object_key,noteId:note.id,parentId:parent.id,title:actor?`${actor.nickname}: новый комментарий`:'Новый комментарий',body:`${objectLabel(note.object_key)} — ${note.body.slice(0,160)||'Добавлено изображение'}`})).catch(()=>{}));
+  if(hooks.sendPush&&ctx?.waitUntil)ctx.waitUntil(Promise.resolve().then(()=>hooks.sendPush(env,userIds,{type:'comment',notificationId:id,objectKey:note.object_key,noteId:note.id,parentId:parent.id,title:`${objectLabel(note.object_key)} · ${actor?.nickname||'Новый комментарий'}`,body:note.body.slice(0,160)||'Добавлено изображение'})).catch(()=>{}));
 }
 export function chatNotificationStatement(env,user,message) {
   // Both UUIDs are server generated. Their 32+32 hex digits form a stable,
@@ -19,7 +19,7 @@ export function dispatchChatPush(env,notifications,message,actor,ctx,hooks={}) {
   ctx.waitUntil((async()=>{
     // Each recipient needs their own notification ID. Keep delivery bounded,
     // while persisted notifications already exist for every other profile.
-    for(let offset=0;offset<notifications.length;offset+=2)await Promise.all(notifications.slice(offset,offset+2).map(n=>Promise.resolve().then(()=>hooks.sendPush(env,[n.recipient_id],{type:'chat',notificationId:n.id,objectKey:'chat',noteId:message.id,parentId:message.id,title:`${actor.nickname} · чат бригады`,body:message.body.slice(0,160)||'Добавлено изображение'})).catch(()=>{})));
+    for(let offset=0;offset<notifications.length;offset+=2)await Promise.all(notifications.slice(offset,offset+2).map(n=>Promise.resolve().then(()=>hooks.sendPush(env,[n.recipient_id],{type:'chat',notificationId:n.id,objectKey:'chat',noteId:message.id,parentId:message.id,title:`Чат бригады · ${actor.nickname}`,body:message.body.slice(0,160)||'Добавлено изображение'})).catch(()=>{})));
   })());
 }
 function subscriptionEndpoint(value){const endpoint=text(value,'endpoint',1,2048);let url;try{url=new URL(endpoint);}catch{fail(400,'invalid_subscription','Некорректная подписка.');}
@@ -30,12 +30,13 @@ function subscriptionEndpoint(value){const endpoint=text(value,'endpoint',1,2048
 export async function handleNotifications(request,env,path,user) {
   if(path==='/notifications/unread-count'&&request.method==='GET')return json({count:(await first(env,'SELECT COUNT(*) AS count FROM notifications WHERE recipient_id=? AND read_at IS NULL',user.id)).count});
   if(path==='/notifications'&&request.method==='GET'){
-    const url=new URL(request.url),{before,after,limit}=pageArgs(url),args=[user.id],where=['n.recipient_id=?'];
+    const url=new URL(request.url),{before,after,limit}=pageArgs(url),args=[user.id],where=['n.recipient_id=?'],type=url.searchParams.get('type');
+    if(type!==null){choice(type,'type',['chat','comment']);where.push('n.type=?');args.push(type);}
     if(url.searchParams.get('unread')==='1'||url.searchParams.get('unread')==='true')where.push('n.read_at IS NULL');
     if(before){where.push('n.seq<?');args.push(before);}if(after){where.push('n.seq>?');args.push(after);}
     const rows=await all(env,`SELECT n.*,p.nickname,p.avatar_media_id FROM notifications n JOIN profiles p ON p.id=n.actor_id WHERE ${where.join(' AND ')} ORDER BY n.seq ${after?'ASC':'DESC'} LIMIT ?`,...args,limit+1);const more=rows.length>limit;if(more)rows.pop();if(!after)rows.reverse();return json({items:rows.map(notificationView),nextCursor:more?String(after?rows.at(-1).seq:rows[0].seq):null});
   }
-  if(path==='/notifications/read-all'&&request.method==='POST'){await run(env,'UPDATE notifications SET read_at=? WHERE recipient_id=? AND read_at IS NULL',now(),user.id);return json({ok:true});}
+  if(path==='/notifications/read-all'&&request.method==='POST'){const type=new URL(request.url).searchParams.get('type');if(type!==null)choice(type,'type',['chat','comment']);await run(env,`UPDATE notifications SET read_at=? WHERE recipient_id=? AND read_at IS NULL${type!==null?' AND type=?':''}`,now(),user.id,...(type!==null?[type]:[]));return json({ok:true});}
   let m=path.match(/^\/notifications\/([A-Za-z0-9-]{1,64})\/read$/);
   if(m&&request.method==='POST'){const row=await first(env,'SELECT id FROM notifications WHERE id=? AND recipient_id=?',m[1],user.id);if(!row)fail(404,'not_found','Уведомление не найдено.');await run(env,'UPDATE notifications SET read_at=COALESCE(read_at,?) WHERE id=? AND recipient_id=?',now(),m[1],user.id);return json({ok:true});}
   m=path.match(/^\/notifications\/([A-Za-z0-9-]{1,64})$/);

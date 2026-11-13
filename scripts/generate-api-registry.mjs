@@ -4,6 +4,7 @@ const data=JSON.parse(await readFile(new URL('docs/data.json',root),'utf8'));
 const entries=Object.fromEntries(data.pads.map(p=>[String(p.id),[...new Set(p.wells.map(w=>String(w.id)))]]));
 const positions={};
 const samplingPads=data.pads.filter(p=>p.id!=='ОД'&&p.samplingExcluded!==true).map(p=>String(p.id));
+const productionWells=Object.fromEntries(data.pads.filter(p=>samplingPads.includes(String(p.id))).map(p=>[String(p.id),[...new Set(p.wells.filter(w=>w.type==='production').map(w=>String(w.id)))]]));
 for(const pad of data.pads){
   if(pad.id==='ОД')continue;
   const wellIds=entries[pad.id],groups=pad.positions??[{id:1,label:'1-я позиция',wellIds}];
@@ -24,6 +25,7 @@ export const registry=${JSON.stringify(entries,null,2)};
 export const positionRegistry=${JSON.stringify(positions,null,2)};
 export const padIds=Object.keys(positionRegistry);
 export const samplingPadIds=${JSON.stringify(samplingPads)};
+export const productionWellIds=${JSON.stringify(productionWells,null,2)};
 export const equipmentKinds=['agzu','btma','bg','drainage','control-stations','cable-racks'];
 export function padId(value) {
   if(typeof value!=='string'||!padIds.includes(value))fail(400,'unknown_pad','Куст не найден в реестре.');

@@ -8,7 +8,9 @@ window.WorkCalendar=(()=>{
  };
  const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Yekaterinburg',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
  let year=Math.min(2027,Math.max(2026,Number(today().slice(0,4)))),month=Number(today().slice(5,7))-1,selected=today(),tab='calendar',items=[],dutyItems=[],loading=false,generation=0,error='';
- const shiftDrafts=new Map();
+ const shiftDrafts=new Map(),DRAFT_KEY='atlas.calendar.drafts.v1';
+ try{const saved=JSON.parse(localStorage.getItem(DRAFT_KEY)||'null');for(const [key,value] of saved?.drafts||[])if(typeof key==='string'&&value&&typeof value==='object')shiftDrafts.set(key,value);if(saved?.view&&[2026,2027].includes(saved.view.year)&&saved.view.month>=0&&saved.view.month<12){year=saved.view.year;month=saved.view.month;if(/^202[67]-\d{2}-\d{2}$/.test(saved.view.selected))selected=saved.view.selected;tab=saved.view.tab==='shifts'?'shifts':'calendar';}}catch{}
+ function persistDrafts(){try{localStorage.setItem(DRAFT_KEY,JSON.stringify({drafts:[...shiftDrafts].slice(-300),view:{year,month,selected,tab}}));}catch{}}
  let activeRequest=null,refreshQueued=false,dataUser=null,loadedRange='',dutyReady=false;
  const e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  const iso=(y,m,d)=>`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
@@ -48,7 +50,7 @@ window.WorkCalendar=(()=>{
  }
  function renderStructure(){
   const root=document.querySelector('#calendar-view');if(!root)return;
-  const previous=root.querySelector('#shift-form');if(previous&&!previous.dataset.shiftSaved){shiftDrafts.set(previous.dataset.shiftUser+':'+previous.dataset.shiftDate,{kind:previous.querySelector('#shift-kind').value,start:previous.querySelector('#shift-start').value,end:previous.querySelector('#shift-end').value,note:previous.querySelector('#shift-note').value});}
+  const previous=root.querySelector('#shift-form');if(previous&&!previous.dataset.shiftSaved){shiftDrafts.set(previous.dataset.shiftUser+':'+previous.dataset.shiftDate,{dirty:shiftDrafts.get(previous.dataset.shiftUser+':'+previous.dataset.shiftDate)?.dirty||false,kind:previous.querySelector('#shift-kind').value,start:previous.querySelector('#shift-start').value,end:previous.querySelector('#shift-end').value,note:previous.querySelector('#shift-note').value});}
   const stats=totals(year,month),annual=totals(year),days=new Date(Date.UTC(year,month+1,0)).getUTCDate(),offset=(new Date(Date.UTC(year,month,1)).getUTCDay()+6)%7,current=today();
   if(!selected.startsWith(`${year}-${String(month+1).padStart(2,'0')}`))selected=iso(year,month,1);
   const active=day(selected),logged=window.Community?.getUser(),now=Date.now(),onDuty=dutyItems.filter(s=>shiftStart(s)<=now&&shiftEnd(s)>now),dayShifts=items.filter(s=>s.date===selected||shiftStart(s)<new Date(selected+'T23:59:59+05:00').getTime()&&shiftEnd(s)>new Date(selected+'T00:00:00+05:00').getTime());
@@ -80,13 +82,30 @@ window.WorkCalendar=(()=>{
  function open(){render();loadShifts();}
  document.addEventListener('click',async event=>{const t=event.target.closest('[data-calendar-tab],[data-calendar-move],[data-calendar-date],[data-shift-delete]');if(!t)return;if(t.dataset.calendarTab){tab=t.dataset.calendarTab;render();if(tab==='shifts')loadShifts();}else if(t.dataset.calendarMove){let m=year*12+month+Number(t.dataset.calendarMove);m=Math.max(2026*12,Math.min(2027*12+11,m));year=Math.floor(m/12);month=m%12;loadShifts();}else if(t.dataset.calendarDate){selected=t.dataset.calendarDate;render();}else if(t.dataset.shiftDelete){t.disabled=true;try{await Community.api('/shifts/'+encodeURIComponent(t.dataset.shiftDelete),{method:'DELETE'});await loadShifts();}catch(err){t.disabled=false;error=err.message;render();}}});
  document.addEventListener('change',event=>{if(event.target.id==='calendar-month')month=Number(event.target.value);else if(event.target.id==='calendar-year')year=Number(event.target.value);else return;loadShifts();});
- document.addEventListener('submit',async event=>{if(event.target.id!=='shift-form')return;event.preventDefault();const form=event.target,start=form.querySelector('#shift-start').value,end=form.querySelector('#shift-end').value,out=form.querySelector('#shift-error'),button=form.querySelector('[type="submit"]');if(!start||!end||new Date(end+'+05:00')<=new Date(start+'+05:00')){out.textContent='Окончание должно быть позже начала смены.';return;}button.disabled=true;form.dataset.saving='true';try{await Community.api('/shifts',{method:'POST',body:{date:start.slice(0,10),kind:form.querySelector('#shift-kind').value,startAt:new Date(start+'+05:00').toISOString(),endAt:new Date(end+'+05:00').toISOString(),note:form.querySelector('#shift-note').value.trim()}});form.dataset.shiftSaved='true';shiftDrafts.delete(form.dataset.shiftUser+':'+form.dataset.shiftDate);out.textContent='';await loadShifts({force:true});}catch(err){out.textContent=err.message;}finally{delete form.dataset.saving;button.disabled=!connected();}});
- const rememberDraft=event=>{const form=event.target.closest?.('#shift-form');if(!form)return;delete form.dataset.shiftSaved;shiftDrafts.set(form.dataset.shiftUser+':'+form.dataset.shiftDate,{kind:form.querySelector('#shift-kind').value,start:form.querySelector('#shift-start').value,end:form.querySelector('#shift-end').value,note:form.querySelector('#shift-note').value});};
+ document.addEventListener('submit',async event=>{
+  if(event.target.id!=='shift-form')return;event.preventDefault();
+  const form=event.target,submitted={kind:form.querySelector('#shift-kind').value,start:form.querySelector('#shift-start').value,end:form.querySelector('#shift-end').value,note:form.querySelector('#shift-note').value},key=form.dataset.shiftUser+':'+form.dataset.shiftDate,out=form.querySelector('#shift-error'),button=form.querySelector('[type="submit"]');
+  if(!submitted.start||!submitted.end||new Date(submitted.end+'+05:00')<=new Date(submitted.start+'+05:00')){out.textContent='Окончание должно быть позже начала смены.';return;}
+  const signature=draft=>JSON.stringify([draft.kind,draft.start,draft.end,draft.note]),submittedSignature=signature(submitted);
+  button.disabled=true;form.dataset.saving='true';
+  try{
+   await Community.api('/shifts',{method:'POST',body:{date:submitted.start.slice(0,10),kind:submitted.kind,startAt:new Date(submitted.start+'+05:00').toISOString(),endAt:new Date(submitted.end+'+05:00').toISOString(),note:submitted.note.trim()}});
+   const live=document.querySelector('#shift-form'),sameKey=live&&live.dataset.shiftUser+':'+live.dataset.shiftDate===key;
+   let latest=shiftDrafts.get(key);
+   if(sameKey)latest={kind:live.querySelector('#shift-kind').value,start:live.querySelector('#shift-start').value,end:live.querySelector('#shift-end').value,note:live.querySelector('#shift-note').value};
+   if(latest&&signature(latest)===submittedSignature){shiftDrafts.delete(key);if(sameKey){live.dataset.shiftSaved='true';live.querySelector('#shift-error').textContent='';}}
+   else if(latest){shiftDrafts.set(key,{...latest,dirty:true});if(sameKey){delete live.dataset.shiftSaved;live.querySelector('#shift-error').textContent='Смена сохранена. Новые изменения ещё не сохранены.';}}
+   persistDrafts();await loadShifts({force:true});
+  }catch(err){out.textContent=err.message;}
+  finally{delete form.dataset.saving;button.disabled=!connected();}
+ });
+ const rememberDraft=event=>{const form=event.target.closest?.('#shift-form');if(!form)return;delete form.dataset.shiftSaved;shiftDrafts.set(form.dataset.shiftUser+':'+form.dataset.shiftDate,{dirty:true,kind:form.querySelector('#shift-kind').value,start:form.querySelector('#shift-start').value,end:form.querySelector('#shift-end').value,note:form.querySelector('#shift-note').value});persistDrafts();};
  document.addEventListener('input',rememberDraft);document.addEventListener('change',rememberDraft);
  window.addEventListener('atlas-auth-change',()=>{generation++;activeRequest?.controller.abort();loading=false;items=[];dutyItems=[];loadedRange='';dutyReady=false;dataUser=null;error='';if(visible()){render();loadShifts({force:true});}});
  document.addEventListener('visibilitychange',()=>{if(visible())loadShifts({force:true});else pause();});
  window.addEventListener('online',()=>{if(visible())loadShifts({force:true});});window.addEventListener('offline',pause);
  const calendarRoot=document.querySelector('#calendar-view');if(calendarRoot&&typeof MutationObserver!=='undefined')new MutationObserver(()=>{if(visible())loadShifts();else pause();}).observe(calendarRoot,{attributes:true,attributeFilter:['class']});
  setInterval(()=>{if(visible()&&connected())loadShifts();},5000);
- return{open,render,day,totals,rules};
+ window.addEventListener('atlas-before-update',persistDrafts);window.addEventListener('beforeunload',persistDrafts);
+ return{open,render,day,totals,rules,getUpdateState:()=>({busy:Boolean(document.querySelector('#shift-form[data-saving="true"]')),hasDraft:[...shiftDrafts].some(([key,value])=>key.startsWith((window.Community?.getUser()?.id||'guest')+':')&&value.dirty)})};
 })();
