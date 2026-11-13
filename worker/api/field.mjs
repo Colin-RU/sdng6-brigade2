@@ -1,5 +1,5 @@
 import {all,first,run,fail,now,iso,uuid,json,text,choice,integer,boolean,ownKeys,bodyJson,authorFrom} from './core.mjs';
-import {padId,objectKey,padIds} from '../registry.mjs';
+import {padId,objectKey,samplingPadIds,samplingPadId} from '../registry.mjs';
 const authorCols='p.login,p.nickname,p.position,p.grade,p.avatar_media_id';
 function stateView(row,pad=null) {
   if(!row)return pad?{padId:pad,sampled:false,revision:0,updatedAt:null,author:null,note:''}:{status:'unknown',revision:0,updatedAt:null,author:null,note:''};
@@ -24,11 +24,11 @@ const shiftView=row=>({id:row.id,date:row.date,kind:row.kind,startAt:iso(row.sta
 export async function handleField(request,env,path,user) {
   const url=new URL(request.url);let m;
   if(path==='/samples'&&request.method==='GET') {
-    const id=url.searchParams.get('padId');if(id!==null)padId(id);
+    const id=url.searchParams.get('padId');if(id!==null){padId(id);if(!samplingPadIds.includes(id))return json({items:[]});}
     const rows=await all(env,`SELECT s.*,s.updated_by AS user_id,${authorCols} FROM samples s JOIN profiles p ON p.id=s.updated_by${id?' WHERE s.pad_id=?':''}`,...(id?[id]:[]));
-    const byPad=new Map(rows.map(r=>[r.pad_id,r]));return json({items:(id?[id]:padIds).map(p=>stateView(byPad.get(p),p))});
+    const byPad=new Map(rows.map(r=>[r.pad_id,r]));return json({items:(id?[id]:samplingPadIds).map(p=>stateView(byPad.get(p),p))});
   }
-  m=path.match(/^\/samples\/([^/]+)$/);if(m&&request.method==='PUT')return updateState(request,env,user,padId(decodeURIComponent(m[1])),true);
+  m=path.match(/^\/samples\/([^/]+)$/);if(m&&request.method==='PUT')return updateState(request,env,user,samplingPadId(decodeURIComponent(m[1])),true);
   m=path.match(/^\/objects\/([^/]+)\/status$/);
   if(m){const key=objectKey(decodeURIComponent(m[1]));if(request.method==='GET')return json(stateView(await statusGet(env,key)));if(request.method==='PUT')return updateState(request,env,user,key,false);}
   if(path==='/shifts'&&request.method==='GET') {

@@ -40,7 +40,7 @@ Deno.serve(async(request:Request)=>{
     const env:any=createSupabaseEnv({url:Deno.env.get('SUPABASE_URL'),serviceRoleKey:Deno.env.get('SUPABASE_SERVICE_ROLE_KEY'),requestIp:requestIp(request)});
     env.COOKIE_PATH='/functions/v1/brigade-api';
     const path=new URL(request.url).pathname;
-    if(request.method!=='OPTIONS'&&(path.endsWith('/push/public-key')||(request.method==='POST'&&path.endsWith('/notes'))))await loadVapid(env);
+    if(request.method!=='OPTIONS'&&(path.endsWith('/push/public-key')||(request.method==='POST'&&(path.endsWith('/notes')||path.endsWith('/chat/messages')))))await loadVapid(env);
     const ctx={waitUntil(promise:Promise<unknown>){if(globalThis.EdgeRuntime?.waitUntil)globalThis.EdgeRuntime.waitUntil(promise);else promise.catch(()=>{});}};
     return await handleApi(apiRequest(request),env,ctx,{sendPush})??new Response('Not found',{status:404});
   }catch{return cors(request,json({error:{code:'unavailable',message:'Сервис временно недоступен.'}},503));}

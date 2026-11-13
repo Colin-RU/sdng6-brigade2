@@ -9,6 +9,19 @@ export function replyNotificationStatement(env,user,note,parent) {
 export function dispatchReplyPush(env,userIds,id,note,parent,ctx,hooks={},actor=null) {
   if(hooks.sendPush&&ctx?.waitUntil)ctx.waitUntil(Promise.resolve().then(()=>hooks.sendPush(env,userIds,{type:'comment',notificationId:id,objectKey:note.object_key,noteId:note.id,parentId:parent.id,title:actor?`${actor.nickname}: новый комментарий`:'Новый комментарий',body:`${objectLabel(note.object_key)} — ${note.body.slice(0,160)||'Добавлено изображение'}`})).catch(()=>{}));
 }
+export function chatNotificationStatement(env,user,message) {
+  // Both UUIDs are server generated. Their 32+32 hex digits form a stable,
+  // recipient-specific opaque ID, distinct from 36-character reply UUIDs.
+  return env.DB.prepare(`INSERT INTO notifications (id,recipient_id,actor_id,type,object_key,object_label,note_id,parent_id,preview,created_at) SELECT replace(?,'-','')||replace(p.id,'-',''),p.id,?,'chat','chat','Чат бригады',?,?,?,? FROM profiles p WHERE p.id<>? AND EXISTS (SELECT 1 FROM chat_messages WHERE id=?) ON CONFLICT(recipient_id,note_id) DO NOTHING RETURNING id,recipient_id`).bind(message.id,user.id,message.id,message.id,message.body.slice(0,160)||'Добавлено изображение',now(),user.id,message.id);
+}
+export function dispatchChatPush(env,notifications,message,actor,ctx,hooks={}) {
+  if(!notifications.length||!hooks.sendPush||!ctx?.waitUntil)return;
+  ctx.waitUntil((async()=>{
+    // Each recipient needs their own notification ID. Keep delivery bounded,
+    // while persisted notifications already exist for every other profile.
+    for(let offset=0;offset<notifications.length;offset+=2)await Promise.all(notifications.slice(offset,offset+2).map(n=>Promise.resolve().then(()=>hooks.sendPush(env,[n.recipient_id],{type:'chat',notificationId:n.id,objectKey:'chat',noteId:message.id,parentId:message.id,title:`${actor.nickname} · чат бригады`,body:message.body.slice(0,160)||'Добавлено изображение'})).catch(()=>{})));
+  })());
+}
 function subscriptionEndpoint(value){const endpoint=text(value,'endpoint',1,2048);let url;try{url=new URL(endpoint);}catch{fail(400,'invalid_subscription','Некорректная подписка.');}
   // Push delivery is restricted to known browser push providers to avoid arbitrary server fetches.
   const host=url.hostname;const allowed=host==='fcm.googleapis.com'||host==='updates.push.services.mozilla.com'||host.endsWith('.push.services.mozilla.com')||host==='web.push.apple.com'||host.endsWith('.push.apple.com')||host==='wns2-db5p.notify.windows.com'||host.endsWith('.notify.windows.com');

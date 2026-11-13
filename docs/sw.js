@@ -1,7 +1,7 @@
 'use strict';
 
 // Bump this value with every release that changes the app shell or its data.
-const VERSION = '2026-11-13-v9';
+const VERSION = '2026-11-13-v10';
 const CACHE_PREFIX = 'sdng6-brigade2-';
 const CACHE_NAME = CACHE_PREFIX + VERSION;
 const APP_MARKER = '<meta name="sdng6-app-shell" content="brigade-2">';
@@ -11,6 +11,8 @@ const ASSETS = [
   ['config.js', 'js', true],
   ['community.js', 'js', true],
   ['notifications.js', 'js', true],
+  ['notification-start.js', 'js', true],
+  ['notification-start.css', 'css', true],
   ['community.css', 'css', true],
   ['calendar.js', 'js', true],
   ['calendar.css', 'css', true],

@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
@@ -181,6 +182,7 @@ public final class MainActivity extends Activity implements LocationListener {
     }
 
     public final class NativeBridge {
+        @JavascriptInterface public String getSystemTheme() { return trustedDocument ? systemTheme() : "light"; }
         @JavascriptInterface public void configureNotifications(String apiBase, String token, boolean enabled) {
             runOnUiThread(() -> {
                 if (!trustedPage()) return;
@@ -220,6 +222,7 @@ public final class MainActivity extends Activity implements LocationListener {
             runOnUiThread(() -> {
                 if (!trustedPage()) return;
                 notificationPageReady = true;
+                sendSystemTheme();
                 send("atlas-native-notification-state", NativeNotifications.state(MainActivity.this));
                 flushNotificationIntent();
             });
@@ -247,6 +250,15 @@ public final class MainActivity extends Activity implements LocationListener {
             });
         }
     }
+
+    private String systemTheme() {
+        return (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES ? "dark" : "light";
+    }
+    private void sendSystemTheme() {
+        try { send("atlas-system-theme-change", new JSONObject().put("theme", systemTheme())); }
+        catch (org.json.JSONException ignored) { }
+    }
+    @Override public void onConfigurationChanged(Configuration configuration) { super.onConfigurationChanged(configuration); sendSystemTheme(); }
 
     private void captureNotificationIntent(Intent intent) {
         if (intent == null) return;
@@ -313,7 +325,7 @@ public final class MainActivity extends Activity implements LocationListener {
     @Override public void onProviderEnabled(String provider) { if (requestedGps) { stopGps(); startGps(); } }
     @Override public void onProviderDisabled(String provider) { if (requestedGps) { stopGps(); startGps(); } }
     @Override public void onStatusChanged(String provider, int status, Bundle extras) { }
-    @Override protected void onResume() { super.onResume(); foreground = true; if (webView != null) webView.onResume(); startGps(); NativeNotifications.schedule(this, false); if (notificationPageReady) send("atlas-native-notification-state", NativeNotifications.state(this)); }
+    @Override protected void onResume() { super.onResume(); foreground = true; if (webView != null) webView.onResume(); sendSystemTheme(); startGps(); NativeNotifications.schedule(this, false); if (notificationPageReady) send("atlas-native-notification-state", NativeNotifications.state(this)); }
     @Override protected void onPause() { foreground = false; stopGps(); if (webView != null) webView.onPause(); super.onPause(); }
     @Override protected void onSaveInstanceState(Bundle state) { if (webView != null) webView.saveState(state); super.onSaveInstanceState(state); }
     @Override protected void onDestroy() {

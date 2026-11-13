@@ -2,16 +2,40 @@
 const PREF_KEY='sdng6.brigade2.preferences';
 let preferences={theme:'system',textSize:'normal',mapLayer:'geo',motion:'full'};
 try{const p=JSON.parse(localStorage.getItem(PREF_KEY)||'null');if(p&&typeof p==='object')preferences={...preferences,...p};}catch{}
+const appearanceMedia=matchMedia('(prefers-color-scheme: dark)');
+const motionMedia=matchMedia('(prefers-reduced-motion: reduce)');
+let themeTransitionTimer;
+function systemAppearance(){
+  if(window.isNativeAtlas&&window.SdngGps?.getSystemTheme){
+    try{const value=String(window.SdngGps.getSystemTheme());if(value==='light'||value==='dark')return value;}catch{}
+  }
+  return appearanceMedia.matches?'dark':'light';
+}
 function applyPreferences(){
-  const theme=['light','dark','system'].includes(preferences.theme)?preferences.theme:'system';
-  document.documentElement.dataset.theme=theme==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):theme;
-  document.documentElement.dataset.textSize=preferences.textSize==='large'?'large':'normal';
-  document.documentElement.dataset.motion=preferences.motion==='reduced'?'reduced':'full';
-  window.dispatchEvent(new Event('atlas-theme-change'));
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content',document.documentElement.dataset.theme==='dark'?'#0b222c':'#123c4b');
+  preferences.theme=['light','dark','system'].includes(preferences.theme)?preferences.theme:'system';
+  preferences.textSize=preferences.textSize==='large'?'large':'normal';
+  preferences.motion=preferences.motion==='reduced'?'reduced':'full';
+  preferences.mapLayer=['clean','original','geo'].includes(preferences.mapLayer)?preferences.mapLayer:'geo';
+  const root=document.documentElement,previousTheme=root.dataset.theme;
+  const theme=preferences.theme==='system'?systemAppearance():preferences.theme;
+  const reduced=preferences.motion==='reduced'||motionMedia.matches;
+  const changed=previousTheme!==theme;
+  if(changed||reduced){
+    clearTimeout(themeTransitionTimer);
+    root.classList.toggle('theme-changing',Boolean(changed&&previousTheme&&!reduced));
+  }
+  root.dataset.motion=reduced?'reduced':'full';
+  root.dataset.textSize=preferences.textSize;
+  root.dataset.theme=theme;
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content',theme==='dark'?'#102730':'#ffffff');
+  // A font, map or motion choice must not repaint every road on the map.
+  if(changed)window.dispatchEvent(new Event('atlas-theme-change'));
+  if(changed&&root.classList.contains('theme-changing'))themeTransitionTimer=setTimeout(()=>root.classList.remove('theme-changing'),240);
 }
 applyPreferences();
-matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(preferences.theme==='system')applyPreferences();});
+appearanceMedia.addEventListener('change',()=>{if(preferences.theme==='system')applyPreferences();});
+motionMedia.addEventListener('change',applyPreferences);
+window.addEventListener('atlas-system-theme-change',()=>{if(preferences.theme==='system')applyPreferences();});
 function savePreferences(){applyPreferences();try{localStorage.setItem(PREF_KEY,JSON.stringify(preferences));}catch{toast('Настройки действуют в текущем сеансе.');}}
 function renderSettings(){
   const offline=document.querySelector('#offline-state').textContent.includes('Доступен без сети');

@@ -1,7 +1,7 @@
 import {all,first,run,fail,now,iso,uuid,json,text,ownKeys,bodyJson,authorFrom,pageArgs} from './core.mjs';
 import {mediaForIds,mediaView} from './media.mjs';
 import {objectKey} from '../registry.mjs';
-import {replyNotificationStatement,dispatchReplyPush} from './notifications.mjs';
+import {replyNotificationStatement,dispatchReplyPush,chatNotificationStatement,dispatchChatPush} from './notifications.mjs';
 const joins=' JOIN profiles p ON p.id=m.user_id ';
 const columns='m.*,p.login,p.nickname,p.position,p.grade,p.avatar_media_id';
 async function view(env,row,mediaMap=null) {
@@ -36,7 +36,8 @@ async function createMessage(request,env,user,table,key=null,ctx=null,hooks={}) 
   // A simultaneous retry is resolved by the unique user/clientId key.
   const insert=env.DB.prepare(`INSERT INTO ${table} (${cols.join(',')}) VALUES (${cols.map(()=>'?').join(',')}) ON CONFLICT(user_id,client_id) DO NOTHING`).bind(...values);
   const note={id,object_key:key,body};
-  if(parent&&parent.user_id!==user.id){const results=await env.DB.batch([insert,replyNotificationStatement(env,user,note,parent)]);if(results[1].results?.length)dispatchReplyPush(env,[parent.user_id],results[1].results[0].id,note,parent,ctx,hooks,user);}
+  if(key===null){const results=await env.DB.batch([insert,chatNotificationStatement(env,user,note)]);dispatchChatPush(env,results[1].results??[],note,user,ctx,hooks);}
+  else if(parent&&parent.user_id!==user.id){const results=await env.DB.batch([insert,replyNotificationStatement(env,user,note,parent)]);if(results[1].results?.length)dispatchReplyPush(env,[parent.user_id],results[1].results[0].id,note,parent,ctx,hooks,user);}
   else await insert.run();
   const saved=await first(env,`SELECT ${columns} FROM ${table} m ${joins} WHERE m.user_id=? AND m.client_id=?`,user.id,clientId);
   if(saved.body!==body||saved.media_ids!==JSON.stringify(ids)||(key!==null&&saved.object_key!==key))fail(409,'idempotency_conflict','Этот запрос уже использован для другой записи.');
@@ -54,7 +55,7 @@ async function editMessage(request,env,user,table,id) {
   return json({item:await view(env,await first(env,`SELECT ${columns} FROM ${table} m ${joins} WHERE m.id=?`,id))});
 }
 export async function handleMessages(request,env,path,user,ctx,hooks) {
-  if(path==='/chat/messages') {if(request.method==='GET')return readPage(env,'chat_messages',new URL(request.url));if(request.method==='POST')return createMessage(request,env,user,'chat_messages');}
+  if(path==='/chat/messages') {if(request.method==='GET')return readPage(env,'chat_messages',new URL(request.url));if(request.method==='POST')return createMessage(request,env,user,'chat_messages',null,ctx,hooks);}
   let m=path.match(/^\/objects\/([^/]+)\/notes$/);
   if(m){const key=objectKey(decodeURIComponent(m[1]));if(request.method==='GET')return readPage(env,'object_notes',new URL(request.url),key);if(request.method==='POST')return createMessage(request,env,user,'object_notes',key,ctx,hooks);}
   m=path.match(/^\/(notes|chat\/messages)\/([A-Za-z0-9-]{1,64})$/);

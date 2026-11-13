@@ -12,7 +12,7 @@ export async function passwordMatches(password,stored) {
   const a=encoder.encode(candidate),b=encoder.encode(stored); let diff=a.length^b.length; for(let i=0;i<a.length;i++) diff|=a[i]^(b[i]??0); return diff===0;
 }
 function loginValue(value) { const v=text(value,'login',3,40).toLowerCase(); if(!/^[a-z0-9][a-z0-9._-]*$/.test(v)) fail(400,'invalid_login','Логин: 3–40 латинских букв, цифр, точек, дефисов или подчёркиваний.'); return v; }
-function passwordValue(value) { if(typeof value!=='string' || value.length<10 || value.length>128 || encoder.encode(value).length>512) fail(400,'invalid_password','Пароль должен содержать от 10 до 128 символов.'); return value; }
+function passwordValue(value) { if(typeof value!=='string' || value.length<4 || value.length>128 || encoder.encode(value).length>512) fail(400,'invalid_password','Пароль должен содержать от 4 до 128 символов.'); return value; }
 function profileFields(body,partial=false) {
   const out={};
   if(!partial || 'nickname' in body) out.nickname=text(body.nickname,'nickname',2,60);

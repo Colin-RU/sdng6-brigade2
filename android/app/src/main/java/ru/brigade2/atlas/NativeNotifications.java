@@ -118,7 +118,7 @@ final class NativeNotifications {
 
     static void createChannel(Context context) {
         NotificationManager manager = context.getSystemService(NotificationManager.class);
-        if (manager != null) { NotificationChannel channel = new NotificationChannel(CHANNEL, "Ответы на записи", NotificationManager.IMPORTANCE_DEFAULT); channel.setDescription("Ответы бригады на ваши записи о кустах и скважинах"); manager.createNotificationChannel(channel); }
+        if (manager != null) { NotificationChannel channel = new NotificationChannel(CHANNEL, "Сообщения бригады", NotificationManager.IMPORTANCE_DEFAULT); channel.setDescription("Новые сообщения в чате и ответы на ваши записи"); manager.createNotificationChannel(channel); }
     }
     static boolean hasPermission(Context context) {
         if (Build.VERSION.SDK_INT >= 33 && context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return false;

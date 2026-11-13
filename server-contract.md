@@ -11,7 +11,7 @@ Success JSON is described below. Errors: `{error:{code,message,details?}}`, HTTP
 ## Identity and profiles
 
 - `GET /api/v1/health` → `{ok:true}` (no data or diagnostics).
-- `POST /auth/register` body `{login,password,nickname,position,grade?,remember?}` → `{user,token,expiresAt}`. Login is lowercase, 3–40 ASCII letters/digits/`._-` and begins with a letter/digit. Nickname 2–60 characters. Password 10–128 characters, maximum 512 UTF-8 bytes. Position `operator|master`; grade `3|4|5|6|null`.
+- `POST /auth/register` body `{login,password,nickname,position,grade?,remember?}` → `{user,token,expiresAt}`. Login is lowercase, 3–40 ASCII letters/digits/`._-` and begins with a letter/digit. Nickname 2–60 characters. Password 4–128 characters, maximum 512 UTF-8 bytes; the same bounds apply to login. Position `operator|master`; grade `3|4|5|6|null`.
 - `POST /auth/login` body `{login,password,remember?}` → same envelope. `remember` defaults true; true expires in 30 days, false in 24 hours. Password must never be saved by the client. Store bearer in localStorage for remember=true or sessionStorage for false.
 - `POST /auth/logout` → `{ok:true}`; revokes this session on server.
 - `GET /me`, `PATCH /me` → `{user}`. Patch permits `{nickname?,position?,grade?,avatarMediaId?:id|null}`; avatar must belong to the caller.
@@ -45,8 +45,9 @@ For pads with multiple confirmed positions, equipment keys are `equipment:<pad>:
 
 ## Samples, statuses and shifts
 
-- `GET /samples?padId=<optional-pad>` → `{items:[{padId,sampled,revision,updatedAt,author,note}]}`. All32 pads when omitted. Missing state is `{sampled:false,revision:0,updatedAt:null,author:null,note:''}` (no recorded mark).
+- `GET /samples?padId=<optional-pad>` → `{items:[{padId,sampled,revision,updatedAt,author,note}]}`. Returns27 participating pads when omitted. Pads165Б,512,165,291,516 are excluded from sampling via source registry metadata; explicit GET for one of these returns `{items:[]}`, including when historical database rows exist. Missing state on a participating pad is `{sampled:false,revision:0,updatedAt:null,author:null,note:''}` (no recorded mark).
 - `PUT /samples/:pad` body `{sampled:boolean,revision:number,note?:string}` → `{item}`. note<=1000. Optimistic revision is mandatory; first revision0. On stale revision409 includes `error.details.current`. Every successful change creates a sample audit row atomically.
+- PUT for an excluded pad returns400 `sampling_excluded` with a clear message. Historical marks and audit remain untouched; this exclusion changes neither the32-pad map/well registry nor well types.
 - `GET /objects/:encodedKey/status` → `{status,revision,updatedAt,author,note}`. Missing state: unknown/revision0/null author and time.
 - `PUT /objects/:encodedKey/status` body `{status:'unknown'|'ok'|'attention'|'stopped',revision,note?}` → status envelope. Same revision/audit rules as samples.
 - `GET /shifts?from=YYYY-MM-DD&to=YYYY-MM-DD` → `{items,nextCursor:null}`, max93-day range and1000 results. `POST /shifts` body `{date,kind:'day'|'night',note?,startAt?,endAt?}` → `{item}` (one record per user/date/kind; repeat updates note/times). Exact ISO times require explicit timezone, both values, end>start and duration<=36h. Start's UTC+05 local date must match date. note<=500. `DELETE /shifts/:id` owner only → `{ok:true}`.
@@ -63,7 +64,9 @@ Shift item: `{id,date,kind,startAt,endAt,note,author,createdAt}`. Without exact 
 - `POST /push/subscriptions` standard body `{endpoint,keys:{p256dh,auth},expirationTime?}` → `{ok:true}`. HTTPS endpoints restricted to browser push providers. At most ten per user; another account cannot overwrite an existing subscription.
 - `DELETE /push/subscriptions` body `{endpoint}` → `{ok:true}`, owner scoped.
 
-Notification: `{id,cursor,actor:{id,nickname,avatarId,avatarMediaId},type:'comment',objectKey,objectLabel,noteId,parentId,preview,createdAt,readAt}`. Note and notification writes are atomic. Idempotent retries do not duplicate notifications or push. Root hook `sendPush(env,[recipientId],payload)` runs with ctx.waitUntil after persistence; provider failure never removes persisted notifications. Public key is safe to expose; VAPID private key stays in runtime secrets, never the client/repository.
+Notification: `{id,cursor,actor:{id,nickname,avatarId,avatarMediaId},type:'comment'|'chat',objectKey,objectLabel,noteId,parentId,preview,createdAt,readAt}`. Note and notification writes are atomic. Idempotent retries do not duplicate notifications or push. Root hook `sendPush(env,[recipientId],payload)` runs with ctx.waitUntil after persistence; provider failure never removes persisted notifications. Public key is safe to expose; VAPID private key stays in runtime secrets, never the client/repository.
+
+Ordinary new chat messages atomically create `type:'chat'` notifications for every other profile, excluding the sender. These use objectKey `chat`, objectLabel `Чат бригады`, and noteId/parentId equal to the message ID. Each recipient has a distinct opaque notification ID and receives a corresponding encrypted push payload. Push recipients are processed two at a time after persistence. Exact clientId retries, edits and deletions create no new notifications. Chat deep links use GET /chat/messages/:id; deleted messages return404 and the UI can explain that the message was removed. The same authenticated, recipient-isolated notification feed serves Android background polling.
 
 Schema changes live in db/schema.ts, generated SQLite QA migrations under qa/sqlite-migrations (production uses supabase/migrations). Request handlers never create tables or seed field data. `worker/registry.mjs` is generated from existing dist/data.json without changing source records.
 

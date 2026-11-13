@@ -3,6 +3,7 @@ const root=new URL('../',import.meta.url);
 const data=JSON.parse(await readFile(new URL('docs/data.json',root),'utf8'));
 const entries=Object.fromEntries(data.pads.map(p=>[String(p.id),[...new Set(p.wells.map(w=>String(w.id)))]]));
 const positions={};
+const samplingPads=data.pads.filter(p=>p.id!=='ОД'&&p.samplingExcluded!==true).map(p=>String(p.id));
 for(const pad of data.pads){
   if(pad.id==='ОД')continue;
   const wellIds=entries[pad.id],groups=pad.positions??[{id:1,label:'1-я позиция',wellIds}];
@@ -22,9 +23,15 @@ import {fail} from './api/core.mjs';
 export const registry=${JSON.stringify(entries,null,2)};
 export const positionRegistry=${JSON.stringify(positions,null,2)};
 export const padIds=Object.keys(positionRegistry);
+export const samplingPadIds=${JSON.stringify(samplingPads)};
 export const equipmentKinds=['agzu','btma','bg','drainage','control-stations','cable-racks'];
 export function padId(value) {
   if(typeof value!=='string'||!padIds.includes(value))fail(400,'unknown_pad','Куст не найден в реестре.');
+  return value;
+}
+export function samplingPadId(value) {
+  padId(value);
+  if(!samplingPadIds.includes(value))fail(400,'sampling_excluded','Куст №'+value+' исключён из отбора проб.');
   return value;
 }
 export function objectKey(value) {
@@ -43,4 +50,4 @@ export function objectKey(value) {
 }
 `;
 await writeFile(new URL('worker/registry.mjs',root),output,'utf8');
-console.log(`API registry: ${Object.keys(positions).length} pads + separate wells; ${Object.values(positions).filter(p=>p.length>1).length} pads with multiple positions`);
+console.log(`API registry: ${Object.keys(positions).length} pads + separate wells; ${samplingPads.length} sampling pads; ${Object.values(positions).filter(p=>p.length>1).length} pads with multiple positions`);

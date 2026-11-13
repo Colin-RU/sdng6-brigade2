@@ -780,9 +780,15 @@ export const positionRegistry={
   ]
 };
 export const padIds=Object.keys(positionRegistry);
+export const samplingPadIds=["162","163","163Б","164","166","279","380","381","383","513","514","829","856","862","870","871","1004","1122","1123","1128","1129","1131","1136","1137","1139","1144","1158"];
 export const equipmentKinds=['agzu','btma','bg','drainage','control-stations','cable-racks'];
 export function padId(value) {
   if(typeof value!=='string'||!padIds.includes(value))fail(400,'unknown_pad','Куст не найден в реестре.');
+  return value;
+}
+export function samplingPadId(value) {
+  padId(value);
+  if(!samplingPadIds.includes(value))fail(400,'sampling_excluded','Куст №'+value+' исключён из отбора проб.');
   return value;
 }
 export function objectKey(value) {

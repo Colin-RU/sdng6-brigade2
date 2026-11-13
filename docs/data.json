@@ -803,7 +803,9 @@
           "sourceOrder": 21,
           "group": 2
         }
-      ]
+      ],
+      "samplingExcluded": true,
+      "samplingExclusionReason": "Отбор проб не требуется"
     },
     {
       "id": "165Б",
@@ -840,7 +842,9 @@
           "sourceOrder": 4,
           "group": 0
         }
-      ]
+      ],
+      "samplingExcluded": true,
+      "samplingExclusionReason": "Отбор проб не требуется"
     },
     {
       "id": "166",
@@ -1271,7 +1275,9 @@
           "sourceOrder": 9,
           "group": 0
         }
-      ]
+      ],
+      "samplingExcluded": true,
+      "samplingExclusionReason": "Отбор проб не требуется"
     },
     {
       "id": "380",
@@ -1451,7 +1457,9 @@
           "sourceOrder": 6,
           "group": 0
         }
-      ]
+      ],
+      "samplingExcluded": true,
+      "samplingExclusionReason": "Отбор проб не требуется"
     },
     {
       "id": "513",
@@ -1859,7 +1867,9 @@
           "sourceOrder": 8,
           "group": 0
         }
-      ]
+      ],
+      "samplingExcluded": true,
+      "samplingExclusionReason": "Отбор проб не требуется"
     },
     {
       "id": "829",

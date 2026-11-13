@@ -63,16 +63,16 @@ public final class NotificationWorker extends Worker {
         } finally { if(connection!=null)connection.disconnect(); }
     }
 
-    private static String text(String value,int limit) { if(value==null)return "";String clean=value.replaceAll("[\\p{Cntrl}\\r\\n]+"," ").trim();return clean.length()>limit?clean.substring(0,limit)+"…":clean; }
     private static android.app.Notification notification(Context context,String id,JSONObject item) {
-        JSONObject actor=item.optJSONObject("actor");String nickname=text(actor==null?"Коллега":actor.optString("nickname","Коллега"),60),object=text(item.optString("objectLabel","Запись бригады"),100),preview=text(item.optString("preview","Новый ответ на вашу запись"),300);
+        JSONObject actor=item.optJSONObject("actor");
+        NotificationContent.Summary content=NotificationContent.create(item.optString("type"),item.optString("objectKey"),actor==null?null:actor.optString("nickname"),item.optString("objectLabel"),item.optString("preview"));
         Intent intent=new Intent(context,MainActivity.class).setData(Uri.parse("atlas://notification/"+Uri.encode(id)))
             .putExtra(NativeNotifications.EXTRA_ID,id).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent tap=PendingIntent.getActivity(context,id.hashCode(),intent,PendingIntent.FLAG_UPDATE_CURRENT|PendingIntent.FLAG_IMMUTABLE);
         long when=System.currentTimeMillis();try{when=Math.min(when,Instant.parse(item.optString("createdAt")).toEpochMilli());}catch(Exception ignored){}
         NotificationCompat.Builder builder=new NotificationCompat.Builder(context,NativeNotifications.CHANNEL)
-            .setSmallIcon(R.drawable.ic_notification).setContentTitle(object).setContentText(nickname+": "+preview)
-            .setStyle(new NotificationCompat.BigTextStyle().bigText(nickname+": "+preview)).setContentIntent(tap).setAutoCancel(true)
+            .setSmallIcon(R.drawable.ic_notification).setContentTitle(content.title).setContentText(content.body)
+            .setStyle(new NotificationCompat.BigTextStyle().bigText(content.body)).setContentIntent(tap).setAutoCancel(true)
             .setWhen(when).setCategory(NotificationCompat.CATEGORY_SOCIAL).setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
             .setGroup("brigade_replies").setOnlyAlertOnce(true).setColor(0xff167c8a);
         return builder.build();
